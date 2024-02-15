@@ -10,68 +10,38 @@ import java.util.Date;
  */
 public class Student extends AbstractPerson {
 	private static final long serialVersionUID = -4057680552881492210L;
-	private Date dateOfBirth;
+	private SchoolClass classroom = new SchoolClass();
+	private Parent[] parents = new Parent[2];
 	
-	private Parent parents;
+	Student() {}
 	
-	private StringBuilder note;
-	private SchoolClass classRoom;
-	private Date yearJoined;
-	
-	/*
-	 * private AcademicRecord schoolProgression;
-	 */
-	
-	public Student(String name, Parent parents){
-		//TODO required constructor
+	Student(String name, String Gender, Date dob, String nationality, StringBuilder note, Parent parents){
+		//inherited methods
+		setName(name);
+		setGender(Gender);
+		setDateOfBirth(dob);
+		setNationality(nationality);
 		setRole(STUDENT_ROLE);
-		this.name = name;
-		this.parents = parents;
-		parents.addChild(this);
-		classRoom	= null;
+		setDateRegistered(new Date());
+		setNote(note);
+		
+		//the child's parent
+		getParents()[0] = parents;
 	}
-	
-	public Student(String name, Parent parents, SchoolClass sClass){
-		//TODO required constructor
-		setRole(STUDENT_ROLE);
-		classRoom	= sClass;
-		this.parents = parents;
+
+	public SchoolClass getClassroom() {
+		return classroom;
 	}
-	
-	public SchoolClass getSchoolClass() {
-		//TODO return the students class
-		return classRoom;
+
+	public void setClassroom(SchoolClass classroom) {
+		this.classroom = classroom;
 	}
-	
-	public void setSchoolClass(SchoolClass sClass) {
-		//TODO set the student in a certain class
-		classRoom = sClass;
-	}
-	
-	public Parent getParents() {
-		//TODO obtain parent's information
+
+	public Parent[] getParents() {
 		return parents;
 	}
-	
-	public void setParents(Parent parents) {
-		//TODO set the parents information
+
+	public void setParents(Parent[] parents) {
 		this.parents = parents;
 	}
-	
-	@Override
-	public String getName() {
-		return name;
-	}
-	
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-	@Override
-	public String toString() {
-		String summary;
-		summary = getName() + "\nt" + getParents().getName();
-		return summary;
-	}
-	
 }

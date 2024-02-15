@@ -18,6 +18,8 @@ public class Contact implements Cloneable, Serializable, Comparable<Contact>{
 	private String secondaryPhone;
 	private String location;
 	
+	Contact(){}
+	
 	Contact(String email, String primaryPhone, String secondaryPhone, String location){
 		this.email = email;
 		this.primaryPhone = primaryPhone;

@@ -10,32 +10,28 @@ import java.util.ArrayList;
  */
 public class Parent extends AbstractPerson {
 	private static final long serialVersionUID = -4414380891539446068L;
-	public ArrayList<Student> children = new ArrayList<>();
-	Parent(){
-		super();
-	}
+	private ArrayList<Student> children = new ArrayList<>();
+	private Contact contact = new Contact();
+	
+	Parent(){}
+	
 	Parent(Contact contact){
-		super(contact);
-		setRole(PARENT_ROLE);
+		setContact(contact);
+	}
+
+	public ArrayList<Student> getChildren() {
+		return children;
 	}
 	
-	java.util.Iterator<Student> iterator = children.iterator();
-	
-	public void addChild(Student child) {
-		children.add(child);
+	public void setChildren(ArrayList<Student> children) {
+		this.children = children;
 	}
-	
-	public Student getChild(Student child) {
-		return children.get(children.indexOf(child));
+
+	public Contact getContact() {
+		return contact;
 	}
-	
-	public void removeChild(Student child) {
-		children.remove(child);
-	}
-	
-	public void displayAllChildren () {
-		for(Student elem : children) {
-			System.out.println(elem.getName());
-		}
+
+	public void setContact(Contact contact) {
+		this.contact = contact;
 	}
 }
