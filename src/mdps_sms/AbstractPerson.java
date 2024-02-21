@@ -9,6 +9,7 @@ public abstract class AbstractPerson implements Cloneable, Comparable<AbstractPe
 	final transient String PARENT_ROLE = "Parent";
 	final transient String TEACHER_ROLE = "Teacher";
 	final transient String STAFF_ROLE = "Staff member";
+	final transient String ADMINISTRATOR_ROLE = "Admin";
 	
 	private String name;
 	private String gender;
