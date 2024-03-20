@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 public abstract class UiComponents {
@@ -12,7 +13,7 @@ public abstract class UiComponents {
 	public static int iconSize = 24;
 	public static int fontSize = 14;
 	public static String iconPrefix = "Black.png";
-	public static String backgroundcolor = "#F3F3F3";
+	public static String backgroundcolor = "#D9D9D9";
 
 	public UiComponents() {
 		// TODO Auto-generated constructor stub
@@ -34,14 +35,14 @@ public abstract class UiComponents {
 		button.getTooltip().setFont(Font.font("ubuntu", 14));
 		
 		//register events
-		button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #e3dedb5f;"));
+		button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #AAAAAA"));
 		button.setOnMouseExited(e -> button.setStyle("-fx-background-color: #e3dedb08;"));
 		
 		//round corner effect
-		/*Rectangle rect = new Rectangle(iconSize + 10, iconSize +10);
+		Rectangle rect = new Rectangle(iconSize + 10, iconSize +10);
 		rect.setArcHeight(30);
 		rect.setArcWidth(30);
-		button.setClip(rect);*/
+		button.setClip(rect);
 		
 		return button;
 	}
