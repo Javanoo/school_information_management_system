@@ -55,7 +55,7 @@ public class Login extends GridPane {
 		forName.setFont(Font.font("inter SemiBold", 15));
 		forName.setTextFill(Color.WHITE);
 		name.setMaxWidth(250);
-		name.setMinHeight(30);
+		name.setMinHeight(40);
 		name.setPromptText("Enter name");
 		name.setFont(Font.font("Outfit", 16));
 		name.setStyle("-fx-background-color: #F3F3F3");
@@ -66,7 +66,7 @@ public class Login extends GridPane {
 		forEmail.setFont(Font.font("inter SemiBold", 15));
 		forEmail.setTextFill(Color.WHITE);
 		email.setMaxWidth(250);
-		email.setMinHeight(30);
+		email.setMinHeight(40);
 		email.setPromptText("Enter name");
 		email.setFont(Font.font("Outfit", 16));
 		email.setStyle("-fx-background-color: #F3F3F3");
@@ -76,7 +76,7 @@ public class Login extends GridPane {
 		forPassword.setFont(Font.font("inter SemiBold", 15));
 		forPassword.setTextFill(Color.WHITE);
 		password.setMaxWidth(250);
-		password.setMinHeight(30);
+		password.setMinHeight(40);
 		password.setPromptText("Enter password");
 		password.setFont(Font.font("Outfit", 14));
 		password.setStyle("-fx-background-color: #F3F3F3");
@@ -87,7 +87,7 @@ public class Login extends GridPane {
 		forConfirmPassword.setFont(Font.font("inter SemiBold", 15));
 		forConfirmPassword.setTextFill(Color.WHITE);
 		confirmPassword.setMaxWidth(250);
-		confirmPassword.setMinHeight(30);
+		confirmPassword.setMinHeight(40);
 		confirmPassword.setPromptText("Re-enter password");
 		confirmPassword.setFont(Font.font("Outfit", 14));
 		confirmPassword.setStyle("-fx-background-color: #F3F3F3");
@@ -97,8 +97,8 @@ public class Login extends GridPane {
 		
 		forToken.setFont(Font.font("inter SemiBold", 15));
 		forToken.setTextFill(Color.WHITE);
-		token.setMaxWidth(270);
-		token.setMinHeight(30);
+		token.setMaxWidth(350);
+		token.setMinHeight(40);
 		token.setPromptText("Enter the token sent to your email...");
 		token.setFont(Font.font("Outfit", 16));
 		token.setStyle("-fx-background-color: #F3F3F3");
