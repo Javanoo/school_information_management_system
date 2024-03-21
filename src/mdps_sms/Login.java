@@ -159,7 +159,7 @@ public class Login extends GridPane {
 		this.setMaxHeight(400);
 		this.setMaxWidth(700);
 		this.setClip(rect);
-		this.setStyle("-fx-background-color: #404040");
+		this.setStyle("-fx-background-color:  #232323");
 	}
 	
 	public void clearFields() {
