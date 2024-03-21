@@ -27,7 +27,7 @@ public class Teacher extends AbstractPerson {
 		setDateRegistered(new Date());
 		setNote(note);
 	}
-
+	
 	public LinkedList<String> getSubjects() {
 		return subjects;
 	}
