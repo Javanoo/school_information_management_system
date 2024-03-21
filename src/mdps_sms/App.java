@@ -1,13 +1,17 @@
 package mdps_sms;
 
+import java.util.LinkedList;
+
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -17,11 +21,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class App extends BorderPane {
 	private StackPane leftPanel = new StackPane();
-	private StackPane centralPanel = new StackPane();
+	private BorderPane centralPanel = new BorderPane();
 	
 	private HBox profileBox = new HBox();
 	private Label loggedUser = new Label("Admin");
@@ -52,11 +57,11 @@ public class App extends BorderPane {
 		loggedUser.setPadding(new Insets(5, 0, 2, 19));
 		loggedUser.setGraphicTextGap(30);
 		profileBox.getChildren().add(loggedUser);
-		profileBox.setStyle("-fx-background-color: #D9D9D9");
+		profileBox.setStyle("-fx-background-color:" + UiComponents.backgroundcolor);
 		profileBox.setMinHeight(35);
 		Rectangle profRec = new Rectangle(230, 35);
-		profRec.setArcHeight(12);
-		profRec.setArcWidth(12);
+		profRec.setArcHeight(11.5);
+		profRec.setArcWidth(11.5);
 		profileBox.setClip(profRec);
 		
 		//navigation tabs
@@ -110,9 +115,10 @@ public class App extends BorderPane {
 		
 		navigation.setItems(FXCollections.observableArrayList(dashboard, students,
 				teachers, staff, calendar, exams, fees, fleet));
-		navigation.setMaxHeight(365);
+		navigation.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
+		navigation.setMaxHeight(362);
 		navigation.setFixedCellSize(45);
-		Rectangle navRec = new Rectangle(200, 365);
+		Rectangle navRec = new Rectangle(200, 362);
 		navRec.setArcHeight(15);
 		navRec.setArcWidth(15);
 		navigation.setClip(navRec);
@@ -152,25 +158,98 @@ public class App extends BorderPane {
 		leftPanelContents.setTranslateX(5);
 		leftPanel.getChildren().add(leftPanelContents);
 		leftPanel.setMaxWidth(200);
-		leftPanel.minHeightProperty().bind(scene.heightProperty().subtract(20));
-		leftPanel.setStyle("-fx-background-color: #404040");
+		leftPanel.setStyle("-fx-background-color: #232323");
 		
 		
 		centralPanel.maxWidthProperty().bind(this.widthProperty().subtract(230));
 		centralPanel.maxHeightProperty().bind(this.heightProperty().subtract(10));
-		centralPanel.setPadding(new Insets(10));
-		centralPanel.setStyle("-fx-background-color: #404040");
-		centralPanel.getChildren().add(new ActionBar());
+		centralPanel.setPadding(new Insets(15, 5, 5, 5));
+		centralPanel.setStyle("-fx-background-color: #232323");
+		centralPanel.setCenter(new ItemList(centralPanel));
+		centralPanel.setBottom(new ActionBar());
+		BorderPane.setAlignment(centralPanel.getBottom(), Pos.CENTER);
 		Rectangle centRec = new Rectangle(centralPanel.getWidth(), centralPanel.getHeight());
 		centRec.widthProperty().bind(centralPanel.widthProperty());
 		centRec.heightProperty().bind(centralPanel.heightProperty());
-		centRec.setArcHeight(24);
-		centRec.setArcWidth(24);
+		centRec.setArcHeight(15);
+		centRec.setArcWidth(15);
 		centralPanel.setClip(centRec);
 		
 		
 		this.setLeft(leftPanel);
 		this.setCenter(centralPanel);
-		this.setStyle("-fx-background-color: #D9D9D9");
+		this.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
 	}
+}
+class ItemList extends VBox{
+		private HBox columnHeads = new HBox();
+		private Separator separate = new Separator();
+		private ListView<HBox> list = new ListView<>();
+		
+		Label placeholder = new Label("loading..."); 
+		StackPane placeholderContainer = new StackPane(placeholder); 
+		
+		LinkedList<HBox> studentList = new LinkedList<>();
+		
+		ItemList(BorderPane s){
+			
+			columnHeads.getChildren().addAll(new Label("StudentID"), new Label("Name"), new Label("Gender") ,
+					new Label("Class room"), new Label ("Parent"), new Label ("Date addded"));
+			columnHeads.maxWidthProperty().bind(s.widthProperty().subtract(30));
+			columnHeads.setMinHeight(35);
+			columnHeads.setSpacing(160);
+			columnHeads.spacingProperty().bind(columnHeads.maxWidthProperty().divide(7.5));
+			columnHeads.setAlignment(Pos.CENTER_LEFT);
+			columnHeads.setPadding(new Insets(0, 0, 0, 15));
+			columnHeads.setStyle("-fx-background-color:" + UiComponents.backgroundcolor);
+			for( Node elem : columnHeads.getChildren()) {
+				((Label)elem).setFont(Font.font("ubuntu mono", FontWeight.BOLD, 16));
+			}
+			Rectangle colRec = new Rectangle(columnHeads.getMaxWidth(), 35);
+			colRec.widthProperty().bind(columnHeads.widthProperty());
+			colRec.setArcHeight(15);
+			colRec.setArcWidth(15);
+			columnHeads.setClip(colRec);
+			
+			separate.maxWidthProperty().bind(colRec.widthProperty().subtract(10));
+			
+			placeholder.setFont(Font.font("Outfit SemiBold", 16));
+			placeholderContainer.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
+			
+			//Dummy list for testing
+			for(int i = 0; i <= 250; i++) {
+				HBox entry = new HBox();
+				entry.setSpacing(160);
+				entry.spacingProperty().bind(columnHeads.maxWidthProperty().divide(6.7));
+				entry.maxWidthProperty().bind(s.widthProperty().subtract(30));
+				entry.setAlignment(Pos.CENTER_LEFT);
+				entry.setPadding(new Insets(0, 0, 0, 15));
+				entry.getChildren().addAll(new Label(Math.round(10000 + Math.random() * 10000) + ""), new Label(Math.round(10000 + Math.random() * 10000) + ""), 
+						new Label(Math.round(10000 + Math.random() * 10000) + "") , new Label(Math.round(10000 + Math.random() * 10000) + ""), 
+						new Label (Math.round(10000 + Math.random() * 10000) + ""), new Label (Math.round(10000 + Math.random() * 10000) + ""));
+				for( Node elem : entry.getChildren()) {
+					((Label)elem).setFont(Font.font("ubuntu mono", FontWeight.BOLD, 14));
+				}
+				studentList.add(entry);
+			}
+			
+			list.setItems(FXCollections.observableList(studentList));
+			list.setFixedCellSize(40);
+			list.setPlaceholder(placeholderContainer);
+			list.maxWidthProperty().bind(s.widthProperty().subtract(30));
+			list.minHeightProperty().bind(s.heightProperty().subtract(125));
+			Rectangle listRec = new Rectangle(list.getMaxWidth(), list.getMinHeight());
+			listRec.widthProperty().bind(list.maxWidthProperty());
+			listRec.heightProperty().bind(list.minHeightProperty());
+			listRec.setArcHeight(15);
+			listRec.setArcWidth(15);
+			list.setClip(listRec);
+			
+			
+			this.getChildren().addAll(columnHeads, list);
+			this.maxWidthProperty().bind(s.maxWidthProperty().subtract(20));
+			this.setSpacing(20);
+			this.setAlignment(Pos.TOP_CENTER);
+			this.setScaleShape(false);
+		}
 }
