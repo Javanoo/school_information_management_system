@@ -6,6 +6,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public abstract class UiComponents {
 	
@@ -13,7 +14,7 @@ public abstract class UiComponents {
 	public static int iconSize = 24;
 	public static int fontSize = 14;
 	public static String iconPrefix = "Black.png";
-	public static String backgroundcolor = "#D9D9D9";
+	public static String backgroundcolor = "#E2DFD8";
 
 	public UiComponents() {
 		// TODO Auto-generated constructor stub
@@ -33,6 +34,7 @@ public abstract class UiComponents {
 		button.setPadding(new Insets(5));
 		button.setTooltip(new Tooltip(tip));
 		button.getTooltip().setFont(Font.font("ubuntu", 14));
+		button.getTooltip().setShowDelay(new Duration(50));
 		
 		//register events
 		button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #AAAAAA"));
