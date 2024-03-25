@@ -133,6 +133,7 @@ public class App extends BorderPane {
 		settings.setTranslateX(6);
 		settings.setAlignment(Pos.CENTER_LEFT);
 		settings.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
+		settings.setOnAction(e -> Main.switchScene(new Settings()));
 		Rectangle setRec = new Rectangle(160, 34);
 		setRec.setArcHeight(30);
 		setRec.setArcWidth(30);

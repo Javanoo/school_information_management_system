@@ -172,37 +172,57 @@ public class Login extends GridPane {
 	
 	public void verify() {
 		if((name.getText()).matches("[A-Z][a-zA-Z]{1,20}")) {
-			if(password.getText().equals(confirmPassword.getText())) {
-				String generatedToken = ((int)(1000 + Math.random() * 1000)) + "";
-				System.out.println(generatedToken);
-				credentialsField.getChildren().removeAll(nameField, emailField, passwordField, 
-					confirmPasswordField,new VBox(errorInfor));
-				credentialsField.getChildren().addAll(tokenField, new VBox(errorInfor));
-				login.setOnAction(e -> {if(token.getText().equals(generatedToken)) {
-											 Main.holder.getChildren().clear();
-											 Main.holder.getChildren().add(new App(Main.scene));
-										}else {
-											token.clear();
-											errorInfor.setText("Wrong Token.\nCancel to go back or Re-enter.");
-										}
-				});
-				cancel.setOnAction(e -> {
-					errorInfor.setText("");
-					credentialsField.getChildren().removeAll(tokenField, credentialsField.getChildren().get(1) );
-					credentialsField.getChildren().addAll(nameField, emailField, passwordField, 
-							confirmPasswordField,new VBox(errorInfor));
-					login.setOnAction(a -> verify());
-					cancel.setOnAction(a -> clearFields());
-				});
+			if(password.getText().equals(confirmPassword.getText()) && !password.getText().isBlank()) {
+				verifyEmail(email.getText());
 			}
 			else{
+				errorInfor.setText(((password.getText().isBlank() && confirmPassword.getText().isBlank() ) ? "Blank Password" : "The passwords did not match."));
 				password.clear();
 				confirmPassword.clear();
-				errorInfor.setText("The passwords did not match.");
 			}
 		}else{
 			name.clear();
 			errorInfor.setText("Please enter a valid name");
 		}
+	}
+	
+	public boolean verifyEmail(String email) {
+		if(!email.isBlank() && email.matches(".*")) {
+			
+			//generate token to send to email
+			String generatedToken = ((int)(1000 + Math.random() * 1000)) + "";
+			System.out.println(generatedToken); //dummy for testing
+			
+			//request token
+			credentialsField.getChildren().clear();
+			credentialsField.getChildren().addAll(tokenField, new VBox(errorInfor));
+			Main.fadeIn(credentialsField);
+			
+			//on login toggle, verify, if yes proceed
+			//otherwise show error.
+			login.setOnAction(e -> {
+				if(token.getText().equals(generatedToken)) {
+					Main.holder.getChildren().clear();
+					Main.switchScene(new App(Main.scene));
+				}else {
+					token.clear();
+					errorInfor.setText("Wrong Token.\nCancel to go back or Re-enter.");
+				}
+			});
+			
+			//option for going back, to start again.
+			cancel.setOnAction(e -> {
+				errorInfor.setText("");
+				credentialsField.getChildren().clear();
+				clearFields();
+				credentialsField.getChildren().addAll(nameField, emailField, passwordField, 
+						confirmPasswordField,new VBox(errorInfor));
+				errorInfor.setText("Make sure the email is correct.");
+				Main.fadeIn(credentialsField);
+				login.setOnAction(a -> verify());
+				cancel.setOnAction(a -> clearFields());
+			});
+		}
+		return false;
 	}
 }

@@ -73,16 +73,16 @@ public class ItemList extends VBox{
 		list.setFixedCellSize(40);
 		list.setPlaceholder(placeholderContainer);
 		list.maxWidthProperty().bind(s.widthProperty().subtract(30));
-		list.minHeightProperty().bind(s.heightProperty().subtract(125));
-		Rectangle listRec = new Rectangle(list.getMaxWidth(), list.getMinHeight());
+		/*list.minHeightProperty().bind(s.heightProperty().subtract(125));
+		Rectangle listRec = new Rectangle(list.getMaxWidth(), s.getMinHeight());
 		listRec.widthProperty().bind(list.maxWidthProperty());
 		listRec.heightProperty().bind(list.minHeightProperty());
 		listRec.setArcHeight(15);
 		listRec.setArcWidth(15);
-		list.setClip(listRec);
+		list.setClip(listRec);*/
 		
 		
-		this.getChildren().addAll(columnHeads, list);
+		this.getChildren().addAll(columnHeads, new StackPane(list));
 		this.maxWidthProperty().bind(s.maxWidthProperty().subtract(20));
 		this.setSpacing(20);
 		this.setAlignment(Pos.TOP_CENTER);

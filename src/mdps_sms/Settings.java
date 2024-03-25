@@ -3,6 +3,7 @@ package mdps_sms;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -23,11 +24,12 @@ import javafx.scene.text.Font;
  * It also has a restore option which can be used to revert the settings to their
  * default values in case the user messed up.
  */
-public class Settings extends BorderPane {
+public class Settings extends GridPane {
 	
 	//top header
 	Label forSettings =  new Label("Settings");
 	Button restore = new Button("Restore");
+	Button cancel = UiComponents.createButton("cancelBlack.png", 28, "cancel");
 	Separator separate = new Separator();
 	HBox liner = new HBox(forSettings, restore);
 	
@@ -61,10 +63,14 @@ public class Settings extends BorderPane {
 		
 		restore.setFont(Font.font("Outfit SemiBold", 16));
 		restore.setTextFill(Color.WHITE);
+		cancel.setOnAction(e -> Main.switchScene(new App(Main.scene)));
 		restore.setStyle("-fx-background-color: #232323");
-		liner.setPadding(new Insets(25, 0, 15, 0));
+		separate.setBorder(null);
+		separate.setMinHeight(5);
+		separate.setStyle("-fx-background-color: black");
+		liner.setPadding(new Insets(15, 0, 15, 0));
 		liner.setMaxWidth(710);
-		liner.setSpacing(531);
+		liner.setSpacing(540);
 		
 		
 		//style sub headers
@@ -106,16 +112,23 @@ public class Settings extends BorderPane {
 		generalSettings.board.add(newPair, 1, 3);
 		generalSettings.board.setHgap(150);
 		generalSettings.board.setVgap(5);
-		Rectangle genRec = new Rectangle(700, 300);
+		Rectangle genRec = new Rectangle(710, 300);
 		genRec.setArcHeight(30);
 		genRec.setArcWidth(30);
 		generalSettings.board.setClip(genRec);
 		
 		
-		
-		this.setTop(liner);
-		this.setCenter(generalSettings);
-		BorderPane.setAlignment(liner, Pos.CENTER);
+		this.add(liner, 0, 0);
+		this.add(cancel, 1, 0);
+		this.add(separate, 0, 1);
+		this.add(generalSettings, 0, 2);
+		this.setAlignment(Pos.TOP_CENTER);
+		this.setVgap(10);
+		this.setHgap(50);
+	//	this.setGridLinesVisible(true);
+		GridPane.setHalignment(generalSettings, HPos.CENTER);
+		GridPane.setValignment(cancel, VPos.CENTER);
+		GridPane.setValignment(liner, VPos.CENTER);
 	}
 }
 
