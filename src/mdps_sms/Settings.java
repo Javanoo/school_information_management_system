@@ -1,5 +1,7 @@
 package mdps_sms;
 
+import java.awt.Paint;
+
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -7,9 +9,14 @@ import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -56,6 +63,38 @@ public class Settings extends GridPane {
 	
 	Card generalSettings = new Card("General");
 	
+	
+	
+	
+	
+	
+	
+	//third card
+	Label changeMemory = new Label("Change memory buffer size");
+	//--------------------------------------------------------
+	Label forBuffer = new Label("Buffer size");
+	TextField buffer = new TextField();
+	VBox bufferPair = new VBox(forBuffer, buffer);
+	//--------------------------------------------------------
+	Label forThreads = new Label("number of threads");
+	TextField thread = new TextField();
+	VBox threadPair = new VBox(forThreads, thread);
+		
+	Label changeSecurity = new Label("Change security details");
+	//---------------------------------------------------------
+	Label forEncryptionStandard = new Label("encryption standard");
+	TextField encryptionStandard = new TextField();
+	VBox encryptionPair = new VBox(forEncryptionStandard, encryptionStandard);
+	//---------------------------------------------------------
+	Label forRecoveryEmail = new Label("recovery email");
+	TextField recoveryEmail = new TextField();
+	VBox recoveryPair = new VBox(forRecoveryEmail, recoveryEmail);
+		
+	Card securitySettings = new Card("Security and Performance");
+	
+	Button delete = new Button("Delete Account");
+	Button save = new Button("Save");
+	
 	Settings(){
 		
 		forSettings.setFont(Font.font("Outfit SemiBold", 24));
@@ -74,17 +113,19 @@ public class Settings extends GridPane {
 		
 		
 		//style sub headers
-		for(Label elem : new Label[]{changeAccount, changePassword}) {
+		for(Label elem : new Label[]{changeAccount, changePassword, changeMemory, changeSecurity }) {
 			elem.setFont(Font.font("Outfit SemiBold", 16));
 			elem.setTextFill(Color.WHITE);
 		}
 		//style points
-		for(Label elem : new Label[]{forAccountName, forAccountEmail, forOldPassword, forNewPassword}) {
+		for(Label elem : new Label[]{forAccountName, forAccountEmail, forOldPassword, forNewPassword
+				, forBuffer, forThreads, forEncryptionStandard, forRecoveryEmail}) {
 			elem.setFont(Font.font("Outfit", 16));
 			elem.setTextFill(Color.WHITE);
 		}
 		//style fields
-		for(TextField elem : new TextField[]{name, email, oldPassword, newPassword}) {
+		for(TextField elem : new TextField[]{name, email, oldPassword, newPassword, buffer, thread, 
+				encryptionStandard, recoveryEmail}) {
 			elem.setFont(Font.font("ubuntu", 14));
 			elem.setMinWidth(250);
 			elem.setMinHeight(40);
@@ -99,29 +140,61 @@ public class Settings extends GridPane {
 		emailPair.setSpacing(5);
 		generalSettings.board.add(changeAccount, 0, 0);
 		generalSettings.board.add(namePair, 0, 1);
-		generalSettings.board.add(emailPair, 1, 1);
-		generalSettings.board.setHgap(150);
+		generalSettings.board.add(emailPair, 0, 2);
 		
-		changePassword.setPadding(new Insets(50,0,0,0));
+		changePassword.setPadding(new Insets(30,0,0,0));
 		oldPassword.setPromptText("enter old password ...");
 		newPassword.setPromptText("enter new password ...");
 		oldPair.setSpacing(5);
 		newPair.setSpacing(5);
-		generalSettings.board.add(changePassword, 0, 2);
-		generalSettings.board.add(oldPair, 0, 3);
-		generalSettings.board.add(newPair, 1, 3);
-		generalSettings.board.setHgap(150);
-		generalSettings.board.setVgap(5);
-		Rectangle genRec = new Rectangle(710, 300);
+		generalSettings.board.add(changePassword, 0, 3);
+		generalSettings.board.add(oldPair, 0, 4);
+		generalSettings.board.add(newPair, 0, 5);
+		generalSettings.board.setVgap(15);
+		Rectangle genRec = new Rectangle(700, 470);
 		genRec.setArcHeight(30);
 		genRec.setArcWidth(30);
 		generalSettings.board.setClip(genRec);
 		
 		
+		
+		buffer.setPromptText("enter size ...");
+		buffer.setText("512kbs");
+		thread.setPromptText("enter number of threads ...");
+		thread.setText("4");
+		bufferPair.setSpacing(5);
+		threadPair.setSpacing(5);
+		securitySettings.board.add(changeMemory, 0, 0);
+		securitySettings.board.add(bufferPair, 0, 1);
+		securitySettings.board.add(threadPair, 0, 2);
+		
+		changeSecurity.setPadding(new Insets(30,0,0,0));
+		encryptionStandard.setPromptText("enter standard ...");
+		recoveryEmail.setPromptText("enter recovery email ...");
+		encryptionPair.setSpacing(5);
+		recoveryPair.setSpacing(5);
+		securitySettings.board.add(changeSecurity, 0, 3);
+		securitySettings.board.add(encryptionPair, 0, 4);
+		securitySettings.board.add(recoveryPair, 0, 5);
+		securitySettings.board.setVgap(15);
+		Rectangle secRec = new Rectangle(700, 470);
+		secRec.setArcHeight(30);
+		secRec.setArcWidth(30);
+		securitySettings.board.setClip(secRec);
+		
+		
+		VBox cards = new VBox(generalSettings, securitySettings );
+		cards.setSpacing(30);
+		
+		ScrollPane scrl= new ScrollPane(cards);
+		scrl.setMaxHeight(700);
+		scrl.setBlendMode(getBlendMode().DARKEN);
+		scrl.setStyle("-fx-background-color: none");
+		
 		this.add(liner, 0, 0);
 		this.add(cancel, 1, 0);
 		this.add(separate, 0, 1);
-		this.add(generalSettings, 0, 2);
+		this.add(scrl, 0, 2);
 		this.setAlignment(Pos.TOP_CENTER);
 		this.setVgap(10);
 		this.setHgap(50);
@@ -145,7 +218,7 @@ class Card extends VBox{
 		
 		board.setStyle("-fx-background-color: #232323");
 		board.setPadding(new Insets(30));
-		board.setMaxWidth(700);
+		board.setMinWidth(690);
 		
 		this.getChildren().addAll(cardLabel, board);
 		this.setSpacing(10);

@@ -81,8 +81,11 @@ public class ItemList extends VBox{
 		listRec.setArcWidth(15);
 		list.setClip(listRec);*/
 		
+		StackPane stack = new StackPane(list);
+		stack.setMinHeight(700);
 		
-		this.getChildren().addAll(columnHeads, new StackPane(list));
+		
+		this.getChildren().addAll(columnHeads, stack);
 		this.maxWidthProperty().bind(s.maxWidthProperty().subtract(20));
 		this.setSpacing(20);
 		this.setAlignment(Pos.TOP_CENTER);
