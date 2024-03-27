@@ -26,6 +26,12 @@ public class ActionBar extends HBox {
 		separator2.setMaxHeight(20);
 		separator3.setOrientation(Orientation.VERTICAL);
 		separator3.setMaxHeight(20);
+		
+		
+		add.setOnAction(e -> new ApplicationForm('s'));
+		
+		
+		
 		this.getChildren().addAll(search,separator, add, separator2, edit,  
 				separator3, delete);
 		this.setAlignment(Pos.CENTER);

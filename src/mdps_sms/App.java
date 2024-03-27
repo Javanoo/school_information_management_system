@@ -1,6 +1,8 @@
 package mdps_sms;
 
+import java.util.Date;
 import java.util.LinkedList;
+import java.util.TreeSet;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -48,6 +50,8 @@ public class App extends BorderPane {
 	
 	private VBox leftPanelContents = new VBox();
 	
+	//testing
+	TreeSet<Staff> list = new TreeSet<>();
 	
 	public App(Scene scene) {
 		//user profile
@@ -117,7 +121,7 @@ public class App extends BorderPane {
 				teachers, staff, calendar, exams, fees, fleet));
 		navigation.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
 		navigation.setMaxHeight(362);
-		navigation.setFixedCellSize(45);
+		navigation.setFixedCellSize(40);
 		Rectangle navRec = new Rectangle(200, 362);
 		navRec.setArcHeight(15);
 		navRec.setArcWidth(15);
@@ -145,7 +149,7 @@ public class App extends BorderPane {
 		logout.setPadding(new Insets(5, 0, 5, 20));
 		logout.setGraphicTextGap(30);
 		logout.setMinWidth(200);
-		logout.translateYProperty().bind(this.heightProperty().subtract(495));
+		logout.translateYProperty().bind(this.heightProperty().subtract(456));
 		logout.setAlignment(Pos.CENTER_LEFT);
 		logout.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
 		Rectangle logRec = new Rectangle(180, 34);
@@ -153,22 +157,29 @@ public class App extends BorderPane {
 		logRec.setArcWidth(12);
 		logout.setClip(logRec);
 		
-		leftPanelContents.getChildren().addAll(profileBox, navigation, settings, logout);
-		leftPanelContents.setPadding(new Insets(0, 0, 5, 10));
+		leftPanelContents.getChildren().addAll( navigation, settings, logout);
+		leftPanelContents.setPadding(new Insets(0, 5, 0, 5));
 		leftPanelContents.setSpacing(6);
-		leftPanelContents.setTranslateX(5);
+		//leftPanelContents.setTranslateX(5);
 		leftPanel.getChildren().add(leftPanelContents);
 		leftPanel.setMaxWidth(200);
 		leftPanel.setStyle("-fx-background-color: #232323");
 		
 		
-		centralPanel.maxWidthProperty().bind(this.widthProperty().subtract(230));
+		//generate random things
+		for(int i = 0; i < 200; i++) {
+			Student student = new Student("stud" + i, "Male", new Date(), "Malawian", new StringBuilder("nice boy"), new Parent());
+			list.add(student);
+		}
+		
+		
+		centralPanel.maxWidthProperty().bind(this.widthProperty().subtract(220));
 		centralPanel.maxHeightProperty().bind(this.heightProperty().subtract(10));
 		centralPanel.setPadding(new Insets(15, 5, 5, 5));
 		centralPanel.setStyle("-fx-background-color: #232323");
-		centralPanel.setCenter(new ItemList(centralPanel));
-		centralPanel.setBottom(new ActionBar());
-		BorderPane.setAlignment(centralPanel.getBottom(), Pos.CENTER);
+		centralPanel.setCenter(new ItemList(list));
+		//centralPanel.setBottom(new ActionBar());
+		//BorderPane.setAlignment(centralPanel.getBottom(), Pos.CENTER);
 		Rectangle centRec = new Rectangle(centralPanel.getWidth(), centralPanel.getHeight());
 		centRec.widthProperty().bind(centralPanel.widthProperty());
 		centRec.heightProperty().bind(centralPanel.heightProperty());
@@ -180,5 +191,6 @@ public class App extends BorderPane {
 		this.setLeft(leftPanel);
 		this.setCenter(centralPanel);
 		this.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
+		this.setPadding(new Insets(5, 0, 5, 0));
 	}
 }

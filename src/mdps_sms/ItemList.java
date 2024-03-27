@@ -1,8 +1,10 @@
 package mdps_sms;
 
 import java.util.LinkedList;
+import java.util.TreeSet;
 
 import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -10,84 +12,127 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-public class ItemList extends VBox{
-	private HBox columnHeads = new HBox();
+/**
+ * creates objest for listing students, teachers or staff members.
+ * <p>
+ * This class has 3 constructors that enables that facilitates creating an object
+ * for viewing a list of staff object or any of its sub classes.
+ * 
+ * @author matthews offen
+ * @see Staff
+ */
+public class ItemList extends BorderPane{
+	private GridPane columnHeads = new GridPane ();
 	private Separator separate = new Separator();
-	private ListView<HBox> list = new ListView<>();
+	private ListView<GridPane> list = new ListView<>();
+	private LinkedList<GridPane> containerList = new LinkedList<>();
 	
-	Label placeholder = new Label("loading..."); 
-	StackPane placeholderContainer = new StackPane(placeholder); 
-	
-	LinkedList<HBox> studentList = new LinkedList<>();
-	
-	ItemList(BorderPane s){
+	ItemList(TreeSet<Staff> item){
 		
-		columnHeads.getChildren().addAll(new Label("StudentID"), new Label("Name"), new Label("Gender") ,
-				new Label("Class room"), new Label ("Parent"), new Label ("Date addded"));
-		columnHeads.maxWidthProperty().bind(s.widthProperty().subtract(30));
-		columnHeads.setMinHeight(35);
-		columnHeads.setSpacing(160);
-		columnHeads.spacingProperty().bind(columnHeads.maxWidthProperty().divide(7.5));
-		columnHeads.setAlignment(Pos.CENTER_LEFT);
-		columnHeads.setPadding(new Insets(0, 0, 0, 15));
-		columnHeads.setStyle("-fx-background-color:" + UiComponents.backgroundcolor);
-		for( Node elem : columnHeads.getChildren()) {
-			((Label)elem).setFont(Font.font("ubuntu mono", FontWeight.BOLD, 16));
+		//Column Headers
+		if(item.pollFirst() instanceof Student) {
+			columnHeads.add(new Label("Name"), 0, 0);
+			columnHeads.add(new Label("Gender"), 1, 0);
+			columnHeads.add(new Label("Nationality"), 2, 0);
+			columnHeads.add(new Label("Class"), 3, 0);
+			columnHeads.add(new Label("Parent"), 4, 0);
+			columnHeads.add(new Label("Date joined"), 5, 0);
+		}else if(item.pollFirst() instanceof Teacher){
+			columnHeads.add(new Label("Name"), 0, 0);
+			columnHeads.add(new Label("Gender"), 1, 0);
+			columnHeads.add(new Label("Nationality"), 2, 0);
+			columnHeads.add(new Label("Class"), 3, 0);
+			columnHeads.add(new Label("Subjects"), 4, 0);
+			columnHeads.add(new Label("Date joined"), 5, 0);
+		}else {
+			columnHeads.add(new Label("Name"), 0, 0);
+			columnHeads.add(new Label("Gender"), 1, 0);
+			columnHeads.add(new Label("Nationality"), 2, 0);
+			columnHeads.add(new Label("Role"), 3, 0);
+			columnHeads.add(new Label("Location"), 4, 0);
+			columnHeads.add(new Label("Date joined"), 5, 0);
 		}
-		Rectangle colRec = new Rectangle(columnHeads.getMaxWidth(), 35);
-		colRec.widthProperty().bind(columnHeads.widthProperty());
-		colRec.setArcHeight(15);
-		colRec.setArcWidth(15);
-	//	columnHeads.setClip(colRec);
 		
-		separate.maxWidthProperty().bind(colRec.widthProperty().subtract(10));
+		for(Node elem : columnHeads.getChildren()) {
+			((Label)elem).setFont(Font.font("Inter SemiBold", 14));
+			((Label)elem).setTextFill(Color.WHITE);
+		}
 		
-		placeholder.setFont(Font.font("Outfit SemiBold", 16));
-		placeholderContainer.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
-		
-		//Dummy list for testing
-		for(int i = 0; i <= 250; i++) {
-			HBox entry = new HBox();
-			entry.setSpacing(160);
-			entry.spacingProperty().bind(columnHeads.maxWidthProperty().divide(6.7));
-			entry.maxWidthProperty().bind(s.widthProperty().subtract(30));
-			entry.setAlignment(Pos.CENTER_LEFT);
-			entry.setPadding(new Insets(0, 0, 0, 15));
-			entry.getChildren().addAll(new Label(Math.round(10000 + Math.random() * 10000) + ""), new Label(Math.round(10000 + Math.random() * 10000) + ""), 
-					new Label(Math.round(10000 + Math.random() * 10000) + "") , new Label(Math.round(10000 + Math.random() * 10000) + ""), 
-					new Label (Math.round(10000 + Math.random() * 10000) + ""), new Label (Math.round(10000 + Math.random() * 10000) + ""));
-			for( Node elem : entry.getChildren()) {
-				((Label)elem).setFont(Font.font("ubuntu mono", FontWeight.BOLD, 14));
+		//delete after done
+		for(Staff elem : item) {
+			GridPane list = new GridPane();
+			
+			list.add(new Label(elem.getName()), 0, 0);
+			list.add(new Label(elem.getGender()), 1, 0);
+			list.add(new Label(elem.getNationality()), 2, 0);
+			list.add(new Label(elem.getClass().toString()), 3, 0);
+			list.add(new Label("unknown"), 4, 0);
+			list.add(new Label(elem.getDateRegistered().toString().substring(0, 5)), 5, 0);
+			
+			for(Node node : list.getChildren()) {
+				((Label)node).setFont(Font.font("monospace", 14));
+				((Label)node).setMaxWidth(60);
+				
+				list.setHgap(180);
+				list.setAlignment(Pos.CENTER);
+				GridPane.setHalignment(list.getChildren().get(0), HPos.LEFT);
 			}
-			studentList.add(entry);
+			
+			containerList.add(list);
+				
 		}
 		
-		list.setItems(FXCollections.observableList(studentList));
-	//	list.setFixedCellSize(40);
-		list.setPlaceholder(placeholderContainer);
-		list.maxWidthProperty().bind(s.widthProperty().subtract(30));
-		/*list.minHeightProperty().bind(s.heightProperty().subtract(125));
-		Rectangle listRec = new Rectangle(list.getMaxWidth(), s.getMinHeight());
-		listRec.widthProperty().bind(list.maxWidthProperty());
-		listRec.heightProperty().bind(list.minHeightProperty());
-		listRec.setArcHeight(15);
-		listRec.setArcWidth(15);
-		list.setClip(listRec);*/
-		
-		StackPane stack = new StackPane(list);
-		stack.setMinHeight(700);
+		columnHeads.setHgap(180);
+		columnHeads.setPadding(new Insets(10, 0, 10, 0));
+		columnHeads.setStyle("-fx-background-color: #232323");
+		columnHeads.setAlignment(Pos.CENTER);
+		GridPane.setHalignment(columnHeads.getChildren().get(0), HPos.LEFT);
 		
 		
-		this.getChildren().addAll(columnHeads, stack);
-		this.maxWidthProperty().bind(s.maxWidthProperty().subtract(20));
-		this.setSpacing(20);
-		this.setAlignment(Pos.TOP_CENTER);
+		//list
+		Label noItems = new Label("nothing yet");
+		noItems.setFont(Font.font("Ubuntu", FontWeight.MEDIUM, 16));
+		noItems.setTextFill(Color.GRAY);
+		
+		list.setItems(FXCollections.observableList(containerList));
+		list.setPlaceholder(noItems);
+		
+		
+		ActionBar actionBar = new ActionBar();
+		
+		this.setTop(columnHeads);
+		this.setCenter(list);
+		this.setBottom(actionBar);
+		BorderPane.setAlignment(this.getBottom(), Pos.CENTER_RIGHT);
+		BorderPane.setMargin(actionBar, new Insets(5, 0, 0 , 0));
 	}
+	
+	/*ItemList(Teacher item){
+		columnHeads.add(new Label("Name"), 0, 0);
+		columnHeads.add(new Label("Gender"), 1, 0);
+		columnHeads.add(new Label("Nationality"), 2, 0);
+		columnHeads.add(new Label("Class"), 3, 0);
+		columnHeads.add(new Label("Subjects"), 4, 0);
+		columnHeads.add(new Label("Date joined"), 5, 0);
+		
+		
+	}*/
+	
+	/*ItemList(Staff item){
+		columnHeads.add(new Label("Name"), 0, 0);
+		columnHeads.add(new Label("Gender"), 1, 0);
+		columnHeads.add(new Label("Nationality"), 2, 0);
+		columnHeads.add(new Label("Role"), 3, 0);
+		columnHeads.add(new Label("Location"), 4, 0);
+		columnHeads.add(new Label("Date joined"), 5, 0);		
+	}*/
 }

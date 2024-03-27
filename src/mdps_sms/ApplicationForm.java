@@ -1,158 +1,156 @@
 package mdps_sms;
 
+import java.util.TreeSet;
+
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
-public class ApplicationForm extends VBox {
-	/*
-	 * The first part is to fill in student information, the
-	 * last part is for parents information.
-	 */
-	private VBox personalInforBox = new VBox();
-	private Label personalInformation = new Label();
-	//for name
-	private Label forName = new Label("Name");
-	private TextField firstName = new TextField();
-	private TextField surName = new TextField();
-	//for gender
-	private Label forGender = new Label("Gender");
-	private ComboBox<String> gender = new ComboBox<>();
-	//for date of birth
-	private Label forDateOfBirth = new Label("Date of birth");
-	private TextField dateOfBirth = new TextField();
-	//for nationality
-	private Label forNationality = new Label("Nationality");
-	private TextField nationality = new TextField();
+public class ApplicationForm extends BorderPane {
 	
-	//parent information
-	private VBox additioanContactlInforBox = new VBox();
-	private Label additionalContactInformation = new Label ();
-	//for optional parent input choice (either select from existing ones or create new one).
+	String[] genderChoice = {"Male", "Female"};
+	String[] roleChoice = {"STAFF", "STUDENT", "TEACHER", "PARENT"};
+	String[] classroomChoice = {"Standard 1", "standard 2", "standard 3", "standard4",
+			"standard 5", "standard 6", "standard 7", "standard 8"};
 	
-	//additional information
-	private VBox noteBox = new VBox();
-	private Label forNote = new Label("Additional remarks");
-	private TextArea note = new TextArea();
+	//Labels
+	Label forName = new Label("Name");
+	Label forSurname  = new Label("Surname");
+	Label forNationality  = new Label("Nationality");
+	Label forGender  = new Label("Gender");
+	Label forParents  = new Label("Parents");
+	Label forDateOfBirth  = new Label("Date of Birth");
+	Label forRole  = new Label("Role");
+	Label forEmail = new Label("Email");
+	Label forLocation  = new Label("Location");
+	Label forPrimaryPhone  = new Label("Primary phone number");
+	Label forSecondaryPhone  = new Label("Secondary phone number");
+	Label forNote  = new Label("Summary notes");
+	Label forClassroom  = new Label("Classroom");
 	
-	ApplicationForm(char l){
-		//decide who's being registered a student or Teacher?
-		switch(l) {
-			case 's':
-			case 'S':{
-					getPersonalInformation().setText("Student Information");
-					getAdditionalContactInformation().setText("Parent Information");
-					break;
-				 }
-			case 't':
-			case 'T':{
-					getPersonalInformation().setText("Teacher Information");
-					getAdditionalContactInformation().setText("Contact Information");
-					break;
-				 }
-			default: ;
+	//Fields
+	TextField name = new TextField();
+	TextField surname = new TextField();
+	TextField nationality = new TextField();
+	ComboBox<String> gender = new ComboBox<>();
+	TextField parents = new TextField();
+	TextField dateOfBirth = new TextField();
+	ComboBox<String> role = new ComboBox<>();
+	TextField email = new TextField();
+	TextField location = new TextField();
+	TextField primaryPhone = new TextField();
+	TextField secondaryPhone = new TextField();
+	TextArea note = new TextArea();
+	ComboBox<String> classroom = new ComboBox<>();
+	
+	//Containers for labels and fields
+	VBox namePair = new VBox(forName, name);
+	VBox surnamePair = new VBox(forSurname, surname) ;
+	VBox nationalityPair = new VBox(forNationality, nationality);
+	VBox genderPair = new VBox(forGender, gender);
+	VBox parentsPair = new VBox(forParents, parents);
+	VBox dateOfBirthPair = new VBox(forDateOfBirth, dateOfBirth);
+	VBox rolePair = new VBox(forRole, role);
+	VBox emailPair = new VBox(forEmail, email) ;
+	VBox locationPair = new VBox(forLocation, location);
+	VBox primaryPhonePair = new VBox(forPrimaryPhone, primaryPhone);
+	VBox secondaryPhonePair = new VBox(forSecondaryPhone, secondaryPhone);
+	VBox notePair = new VBox(forNote, note) ;
+	VBox classroomPair = new VBox(forClassroom, classroom);
+	
+	//no-arg constructor
+	ApplicationForm(){}
+	
+	//constructor
+	ApplicationForm(char type){
+		
+		//styles all labels
+		for(Label elem : new Label[]{forName, forSurname, forNationality, forGender,
+		forParents, forDateOfBirth, forRole, forEmail, forLocation, forPrimaryPhone, 
+		forSecondaryPhone, forNote, forClassroom}) {
+			
+			elem.setFont(Font.font("Outfit", 16));
+			elem.setTextFill(Color.WHITE);
 		}
-		//set prompts and place fields
-		getFirstName().setPromptText("Name");
-		getSurName().setPromptText("Surname");
-		GridPane gridForName = new GridPane();
-		gridForName.add(forName, 0, 0);
-		gridForName.add(getFirstName(), 0, 1);
-		gridForName.add(getSurName(), 1, 1);
 		
-		getGender().setItems(FXCollections.observableArrayList("Male","Female"));
-		getGender().setValue("None");
-		GridPane gridForGender = new GridPane();
-		gridForGender.add(forGender, 0, 0);
-		gridForGender.add(getGender(), 0, 1);
+		//styles all text fields
+		for(TextField elem : new TextField[]{name, surname, nationality,parents, dateOfBirth, 
+		email, location, primaryPhone, secondaryPhone}) {
+			
+			elem.setFont(Font.font("inter", 14));
+			elem.setMinWidth(250);
+			elem.setMinHeight(40);
+			elem.setStyle("-fx-background-color: #484848; -fx-text-fill: white");
+		}
 		
-		getDateOfBirth().setPromptText("DD-MM-YYYY");
-		GridPane gridForDateOfBirth = new GridPane();
-		gridForDateOfBirth.add(forDateOfBirth, 0, 0);
-		gridForDateOfBirth.add(getDateOfBirth(), 0, 1);
+		//styles all containers
+		for(VBox elem : new VBox[]{namePair, surnamePair, nationalityPair, genderPair, parentsPair, 
+		dateOfBirthPair, rolePair, emailPair, locationPair, primaryPhonePair, secondaryPhonePair, 
+		notePair, classroomPair}) {
+			
+			elem.setSpacing(5);
+			elem.setStyle("-fx-background-color: transparent;");
+		}
 		
-		getNationality().setPromptText("Nationality");
-		GridPane gridForNationality = new GridPane();
-		gridForNationality.add(forNationality, 0, 0);
-		gridForNationality.add(getNationality(), 0, 1);
+		//combos
+		gender.setMinWidth(250);
+		gender.setMinHeight(40);
+		gender.setItems(FXCollections.observableArrayList(genderChoice));
+		gender.setValue("none");
+		gender.setBlendMode(BlendMode.DIFFERENCE);
 		
-		getNote().setPromptText("Description remarks ...");
-		GridPane gridForNote = new GridPane();
-		gridForNote.add(forNote, 0, 0);
-		gridForNote.add(getNote(), 0, 1);
+		role.setMinWidth(250);
+		role.setMinHeight(40);
+		role.setItems(FXCollections.observableArrayList(roleChoice));
+		role.setValue("none");
 		
-		personalInforBox.getChildren().addAll(getPersonalInformation(),gridForName, gridForGender, 
-				gridForDateOfBirth, gridForNationality);
+		classroom.setMinWidth(250);
+		classroom.setMinHeight(40);
+		classroom.setItems(FXCollections.observableArrayList(classroomChoice));
+		classroom.setValue("none");
 		
 		
-		this.getChildren().addAll(personalInforBox, additioanContactlInforBox, gridForNote);
-	}
-
-	public TextField getFirstName() {
-		return firstName;
+		note.setMaxWidth(650);
+		
+		GridPane container = new GridPane();
+		
+		container.add(namePair, 0, 0);
+		container.add(surnamePair, 1, 0);
+		container.add(nationalityPair, 0, 1);
+		container.add(genderPair, 0, 2);
+		container.add(parentsPair, 0, 3);
+		container.add(dateOfBirthPair, 0, 4);
+		container.add(rolePair, 0, 5);
+		container.add(emailPair, 0, 6);
+		container.add(locationPair, 0, 7);
+		container.add(primaryPhonePair, 0, 8);
+		container.add(secondaryPhonePair, 1, 8);
+		container.add(notePair, 0, 9);
+		container.add(classroomPair, 0, 10);
+		container.setAlignment(Pos.CENTER);
+		container.setHgap(150);
+		container.setVgap(10);
+		container.setMinWidth(660);
+		//container.setGridLinesVisible(true);
+		GridPane.setColumnSpan(notePair, 2);
+		
+		this.setCenter(new StackPane(container));
+		this.setMaxWidth(700);
+		this.setPadding(new Insets(5));
+		BorderPane.setAlignment(container, Pos.CENTER);
+		this.setStyle("-fx-background-color: #232323");
 	}
 	
-	public void setFirstName(TextField firstName) {
-		this.firstName = firstName;
-	}
-
-	public TextField getSurName() {
-		return surName;
-	}
-
-	public void setSurName(TextField surName) {
-		this.surName = surName;
-	}
-
-	public ComboBox<String> getGender() {
-		return gender;
-	}
-
-	public void setGender(ComboBox gender) {
-		this.gender = gender;
-	}
-
-	public TextField getDateOfBirth() {
-		return dateOfBirth;
-	}
-
-	public void setDateOfBirth(TextField dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
-	public TextField getNationality() {
-		return nationality;
-	}
-
-	public void setNationality(TextField nationality) {
-		this.nationality = nationality;
-	}
-
-	public TextArea getNote() {
-		return note;
-	}
-
-	public void setNote(TextArea note) {
-		this.note = note;
-	}
-
-	public Label getPersonalInformation() {
-		return personalInformation;
-	}
-
-	public void setPersonalInformation(Label personalInformation) {
-		this.personalInformation = personalInformation;
-	}
-
-	public Label getAdditionalContactInformation() {
-		return additionalContactInformation;
-	}
-
-	public void setAdditionalContactInformation(Label additionalContactInformation) {
-		this.additionalContactInformation = additionalContactInformation;
-	}
 }
