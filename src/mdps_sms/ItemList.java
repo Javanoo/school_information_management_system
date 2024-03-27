@@ -45,7 +45,7 @@ public class ItemList extends VBox{
 		colRec.widthProperty().bind(columnHeads.widthProperty());
 		colRec.setArcHeight(15);
 		colRec.setArcWidth(15);
-		columnHeads.setClip(colRec);
+	//	columnHeads.setClip(colRec);
 		
 		separate.maxWidthProperty().bind(colRec.widthProperty().subtract(10));
 		
@@ -70,7 +70,7 @@ public class ItemList extends VBox{
 		}
 		
 		list.setItems(FXCollections.observableList(studentList));
-		list.setFixedCellSize(40);
+	//	list.setFixedCellSize(40);
 		list.setPlaceholder(placeholderContainer);
 		list.maxWidthProperty().bind(s.widthProperty().subtract(30));
 		/*list.minHeightProperty().bind(s.heightProperty().subtract(125));
@@ -89,6 +89,5 @@ public class ItemList extends VBox{
 		this.maxWidthProperty().bind(s.maxWidthProperty().subtract(20));
 		this.setSpacing(20);
 		this.setAlignment(Pos.TOP_CENTER);
-		this.setScaleShape(false);
 	}
 }

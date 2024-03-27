@@ -9,7 +9,7 @@ import java.util.LinkedList;
 /**
  * 
  */
-public class Teacher extends AbstractPerson {
+public class Teacher extends Staff {
 	private static final long serialVersionUID = -168455056110625037L;
 	private LinkedList<String> subjects = new LinkedList<>();
 	private LinkedList<SchoolClass> classRoom = new LinkedList<>();

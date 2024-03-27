@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * This is for the student module
  */
-public class Student extends AbstractPerson {
+public class Student extends Staff {
 	private static final long serialVersionUID = -4057680552881492210L;
 	private SchoolClass classroom = new SchoolClass();
 	private Parent[] parents = new Parent[2];

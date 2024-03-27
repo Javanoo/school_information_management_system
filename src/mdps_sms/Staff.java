@@ -3,7 +3,7 @@ package mdps_sms;
 import java.io.Serializable;
 import java.util.Date;
 
-public abstract class AbstractPerson implements Cloneable, Comparable<AbstractPerson>, Serializable {
+public abstract class Staff implements Cloneable, Comparable<Staff>, Serializable {
 	private static final long serialVersionUID = 1814959407778504394L;
 	final transient String STUDENT_ROLE = "Student";
 	final transient String PARENT_ROLE = "Parent";
@@ -28,11 +28,11 @@ public abstract class AbstractPerson implements Cloneable, Comparable<AbstractPe
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return getName() + "\n" + getRole();
+		return getName() + " " + getRole();
 	}
 	
 	@Override
-	public int compareTo(AbstractPerson o) {
+	public int compareTo(Staff o) {
 		// TODO Auto-generated method stub
 		return getName().compareToIgnoreCase(o.getName());
 	}

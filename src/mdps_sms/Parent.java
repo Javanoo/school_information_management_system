@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * 
  */
-public class Parent extends AbstractPerson {
+public class Parent extends Staff {
 	private static final long serialVersionUID = -4414380891539446068L;
 	private ArrayList<Student> children = new ArrayList<>();
 	private Contact contact = new Contact();

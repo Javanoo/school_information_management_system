@@ -1,6 +1,6 @@
 package mdps_sms;
 
-public class Administrator extends AbstractPerson {
+public class Administrator extends Staff {
 	
 	private static final long serialVersionUID = 803976636899220758L;
 	private String password;
@@ -24,17 +24,17 @@ public class Administrator extends AbstractPerson {
 	
 	//------------------------- personnel management -----------------//
 	//generic add functionality
-	protected <E extends AbstractPerson> void addPerson(E object) {
+	protected <E extends Staff> void addPerson(E object) {
 		//implementation later on
 	}
 	
 	//generic add functionality
-	protected <E extends AbstractPerson> void removePerson(E object) {
+	protected <E extends Staff> void removePerson(E object) {
 		//implementation later on
 	}
 	
 	//generic add functionality
-	protected <E extends AbstractPerson> void editPerson(E object) {
+	protected <E extends Staff> void editPerson(E object) {
 		//implementation later on
 	}
 	
