@@ -3,44 +3,76 @@
  */
 package mdps_sms;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.TreeSet;
 
 /**
  * 
  */
-public class Teacher extends Staff {
+public class Teacher extends Person {
 	private static final long serialVersionUID = -168455056110625037L;
-	private LinkedList<String> subjects = new LinkedList<>();
-	private LinkedList<SchoolClass> classRoom = new LinkedList<>();
+	private TreeSet<String> subjects = new TreeSet<>();
+	private TreeSet<SchoolClass> classroom = new TreeSet<>();
 	
 	Teacher(){}
 	
-	Teacher(String name, String Gender, Date dob, String nationality, Contact contact, StringBuilder note){
-		//inherited methods
-		setName(name);
-		setGender(Gender);
-		setDateOfBirth(dob);
-		setNationality(nationality);
-		setRole(STUDENT_ROLE);
-		setContact(contact);
-		setDateRegistered(new Date());
-		setNote(note);
+	Teacher(String name, String[] subjects, String qualification, SchoolClass[] classroom, 
+			String location, String[] phone, String[] email, String salary, String description){
+		this.setName(name);
+		this.setSubjects(new TreeSet<>(Arrays.asList(subjects)));
+		this.setQualification(qualification);
+		this.setClassroom(new TreeSet<>(Arrays.asList(classroom)));
+		this.setLocation(location);
+		this.setSalary(salary);
+		this.setPhone(phone);
+		this.setEmail(email);
+		this.setSalary(salary);
+		this.setDescription(description);
+		this.setDateRegistered(new Date());
 	}
 	
-	public LinkedList<String> getSubjects() {
+	public synchronized void addSubject(String subject) {
+		getSubjects().add(subject);
+	}
+	public synchronized void removeSubject(String subject) {
+		getSubjects().remove(subject);
+	}
+	
+	public synchronized void addClassroom(SchoolClass classroom) {
+		getClassroom().add(classroom);
+	}
+	public synchronized void removeClassroom(SchoolClass classroom) {
+		classroom.getTeachers().remove(this);
+		getClassroom().remove(classroom);
+	}
+
+	/**
+	 * @return the subjects
+	 */
+	public TreeSet<String> getSubjects() {
 		return subjects;
 	}
 
-	public void setSubjects(LinkedList<String> subjects) {
+	/**
+	 * @param subjects the subjects to set
+	 */
+	public void setSubjects(TreeSet<String> subjects) {
 		this.subjects = subjects;
 	}
 
-	public LinkedList<SchoolClass> getClassRoom() {
-		return classRoom;
+	/**
+	 * @return the classRoom
+	 */
+	public TreeSet<SchoolClass> getClassroom() {
+		return classroom;
 	}
 
-	public void setClassRoom(LinkedList<SchoolClass> classRoom) {
-		this.classRoom = classRoom;
+	/**
+	 * @param classRoom the classRoom to set
+	 */
+	public void setClassroom(TreeSet<SchoolClass> classRoom) {
+		this.classroom = classRoom;
 	}
 }

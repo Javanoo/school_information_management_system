@@ -4,6 +4,9 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
+import javafx.stage.Window;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 
@@ -28,11 +31,11 @@ public class ActionBar extends HBox {
 		separator3.setMaxHeight(20);
 		
 		
-		add.setOnAction(e -> new ApplicationForm('s'));
+		add.setOnAction(e -> new Popup().show(new ApplicationForm('s'), 700, 900));
 		
 		
 		
-		this.getChildren().addAll(search,separator, add, separator2, edit,  
+		this.getChildren().addAll(search,separator, add, edit,  
 				separator3, delete);
 		this.setAlignment(Pos.CENTER);
 		this.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);

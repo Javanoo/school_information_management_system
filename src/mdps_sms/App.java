@@ -14,6 +14,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
+import javafx.scene.effect.Effect;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -51,7 +52,7 @@ public class App extends BorderPane {
 	private VBox leftPanelContents = new VBox();
 	
 	//testing
-	TreeSet<Staff> list = new TreeSet<>();
+	TreeSet<Person> list = new TreeSet<>();
 	
 	public App(Scene scene) {
 		//user profile
@@ -168,8 +169,8 @@ public class App extends BorderPane {
 		
 		//generate random things
 		for(int i = 0; i < 200; i++) {
-			Student student = new Student("stud" + i, "Male", new Date(), "Malawian", new StringBuilder("nice boy"), new Parent());
-			list.add(student);
+	//		Student student = new Student("stud" + i, "Male", new Date(), "Malawian", new StringBuilder("nice boy"), new Parent());
+	//		list.add(student);
 		}
 		
 		
@@ -191,6 +192,6 @@ public class App extends BorderPane {
 		this.setLeft(leftPanel);
 		this.setCenter(centralPanel);
 		this.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
-		this.setPadding(new Insets(5, 0, 5, 0));
+		this.setPadding(new Insets(0, 0, 5, 0));
 	}
 }

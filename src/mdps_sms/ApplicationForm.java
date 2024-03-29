@@ -26,13 +26,13 @@ public class ApplicationForm extends BorderPane {
 			"standard 5", "standard 6", "standard 7", "standard 8"};
 	
 	//Labels
+	Label forRole  = new Label("Role");
 	Label forName = new Label("Name");
 	Label forSurname  = new Label("Surname");
-	Label forNationality  = new Label("Nationality");
 	Label forGender  = new Label("Gender");
-	Label forParents  = new Label("Parents");
 	Label forDateOfBirth  = new Label("Date of Birth");
-	Label forRole  = new Label("Role");
+	Label forNationality  = new Label("Nationality");
+	Label forParents  = new Label("Parents");
 	Label forEmail = new Label("Email");
 	Label forLocation  = new Label("Location");
 	Label forPrimaryPhone  = new Label("Primary phone number");

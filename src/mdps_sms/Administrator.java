@@ -1,51 +1,27 @@
 package mdps_sms;
 
-public class Administrator extends Staff {
+import java.util.Date;
+
+public class Administrator extends Person {
 	
 	private static final long serialVersionUID = 803976636899220758L;
 	private String password;
 	
 	Administrator(){}
 	
-	Administrator(String name, String number, String email, String password){
+	Administrator(String name, String phone, String email, String password){
 		this.setName(name);
-		this.setContact(new Contact(email, number, null, null));
-		this.setRole(ADMINISTRATOR_ROLE);
+		this.setPhone(new String[]{phone});
+		this.setEmail(new String[]{email});
 		setPassword(password);
+		this.setRole("Administrator");
+		this.setDateRegistered(new Date());
 	}
 	
-	protected String getPassword() {
-		return password;
-	}
-
-	protected void setPassword(String password) {
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
 		this.password = password;
-	}
-	
-	//------------------------- personnel management -----------------//
-	//generic add functionality
-	protected <E extends Staff> void addPerson(E object) {
-		//implementation later on
-	}
-	
-	//generic add functionality
-	protected <E extends Staff> void removePerson(E object) {
-		//implementation later on
-	}
-	
-	//generic add functionality
-	protected <E extends Staff> void editPerson(E object) {
-		//implementation later on
-	}
-	
-	//---------------------------classes management -----------------//
-	// classroom creation
-	protected SchoolClass createClass() {
-		//implementation later on
-		return null;
-	}
-	
-	protected void editClass(SchoolClass classRoom) {
-		//implementation later on
 	}
 }

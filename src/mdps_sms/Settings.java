@@ -197,6 +197,8 @@ public class Settings extends BorderPane {
 		appRec.setArcHeight(30);
 		appRec.setArcWidth(30);
 		appearanceSettings.board.setClip(appRec);
+		appearanceSettings.setDisable(true);
+	
 		
 		
 		buffer.setPromptText("enter size ...");

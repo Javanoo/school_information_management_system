@@ -3,6 +3,7 @@ package mdps_sms;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
+import javafx.animation.Animation;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -11,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -20,6 +22,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.effect.BlurType;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 /**
  * creates objest for listing students, teachers or staff members.
@@ -28,7 +34,7 @@ import javafx.scene.text.FontWeight;
  * for viewing a list of staff object or any of its sub classes.
  * 
  * @author matthews offen
- * @see Staff
+ * @see Person
  */
 public class ItemList extends BorderPane{
 	private GridPane columnHeads = new GridPane ();
@@ -36,7 +42,7 @@ public class ItemList extends BorderPane{
 	private ListView<GridPane> list = new ListView<>();
 	private LinkedList<GridPane> containerList = new LinkedList<>();
 	
-	ItemList(TreeSet<Staff> item){
+	ItemList(TreeSet<Person> item){
 		
 		//Column Headers
 		if(item.pollFirst() instanceof Student) {
@@ -68,15 +74,16 @@ public class ItemList extends BorderPane{
 		}
 		
 		//delete after done
-		for(Staff elem : item) {
+		for(Person elem : item) {
 			GridPane list = new GridPane();
 			
 			list.add(new Label(elem.getName()), 0, 0);
 			list.add(new Label(elem.getGender()), 1, 0);
-			list.add(new Label(elem.getNationality()), 2, 0);
+	//		list.add(new Label(elem.getNationality()), 2, 0);
 			list.add(new Label(elem.getClass().toString()), 3, 0);
 			list.add(new Label("unknown"), 4, 0);
 			list.add(new Label(elem.getDateRegistered().toString().substring(0, 5)), 5, 0);
+			((Label)list.getChildren().get(0)).setTooltip(new Tooltip(elem.getName()));;
 			
 			for(Node node : list.getChildren()) {
 				((Label)node).setFont(Font.font("monospace", 14));
@@ -86,7 +93,6 @@ public class ItemList extends BorderPane{
 				list.setAlignment(Pos.CENTER);
 				GridPane.setHalignment(list.getChildren().get(0), HPos.LEFT);
 			}
-			
 			containerList.add(list);
 				
 		}
