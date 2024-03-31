@@ -1,4 +1,4 @@
-package mdps_sms;
+package mdps_sms.gui;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;

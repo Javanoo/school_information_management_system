@@ -1,4 +1,4 @@
-package mdps_sms;
+package mdps_sms.gui;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import mdps_sms.Main;
 
 /**
  * This class is used for making instances of the Gui settings object.

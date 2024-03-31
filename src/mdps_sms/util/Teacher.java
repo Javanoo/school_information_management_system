@@ -1,7 +1,7 @@
 /**
  * 
  */
-package mdps_sms;
+package mdps_sms.util;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -18,9 +18,11 @@ public class Teacher extends Person {
 	
 	Teacher(){}
 	
-	Teacher(String name, String[] subjects, String qualification, SchoolClass[] classroom, 
+	Teacher(String name, String gender, String[] subjects, String qualification, SchoolClass[] classroom, 
 			String location, String[] phone, String[] email, String salary, String description){
 		this.setName(name);
+		this.setGender(gender);
+		this.setRole("Teacher");
 		this.setSubjects(new TreeSet<>(Arrays.asList(subjects)));
 		this.setQualification(qualification);
 		this.setClassroom(new TreeSet<>(Arrays.asList(classroom)));

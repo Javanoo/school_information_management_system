@@ -1,4 +1,4 @@
-package mdps_sms;
+package mdps_sms.gui;
 
 import java.util.LinkedList;
 import java.util.TreeSet;
@@ -22,6 +22,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import mdps_sms.util.Person;
+import mdps_sms.util.Student;
+import mdps_sms.util.Teacher;
 import javafx.scene.effect.BlurType;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;

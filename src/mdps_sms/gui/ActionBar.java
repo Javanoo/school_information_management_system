@@ -1,4 +1,4 @@
-package mdps_sms;
+package mdps_sms.gui;
 
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -29,10 +29,6 @@ public class ActionBar extends HBox {
 		separator2.setMaxHeight(20);
 		separator3.setOrientation(Orientation.VERTICAL);
 		separator3.setMaxHeight(20);
-		
-		
-		add.setOnAction(e -> new Popup().show(new ApplicationForm('s'), 700, 900));
-		
 		
 		
 		this.getChildren().addAll(search,separator, add, edit,  

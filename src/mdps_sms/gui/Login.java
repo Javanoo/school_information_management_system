@@ -1,4 +1,4 @@
-package mdps_sms;
+package mdps_sms.gui;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import mdps_sms.Main;
 
 /**
  * This class creates a form. The type of form created is dependent on the character passed to  the class's

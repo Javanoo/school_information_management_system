@@ -1,4 +1,4 @@
-package mdps_sms;
+package mdps_sms.gui;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -26,6 +26,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import mdps_sms.Main;
+import mdps_sms.util.Person;
 
 public class App extends BorderPane {
 	private StackPane leftPanel = new StackPane();

@@ -1,4 +1,4 @@
-package mdps_sms;
+package mdps_sms.util;
 
 import java.util.Date;
 

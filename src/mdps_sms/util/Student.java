@@ -1,7 +1,7 @@
 /**
  * 
  */
-package mdps_sms;
+package mdps_sms.util;
 
 import java.util.Date;
 
@@ -35,6 +35,7 @@ public class Student extends Person {
 		super();
 		this.setName(name);
 		this.setGender(gender);
+		this.setRole("Student");
 		this.setParents(parents);
 		this.setClassroom(classroom);
 		this.setDescription(description);
@@ -53,7 +54,7 @@ public class Student extends Person {
 	
 	public synchronized void removeParent(Parent parent) {
 		for(Parent elem : getParents()) {
-			if(elem == parent) {
+			if(elem.equals(parent)) {
 				elem.removeChild(this);
 				elem = null;
 				break;
@@ -113,75 +114,109 @@ public class Student extends Person {
 		this.setParents(parents);
 	}
 
-
+	/**
+	 * This method is disabled for this object, hence throws an exception when called.
+	 * @exception UnsupportedOPerationExcepton
+	 */
 	@Override
 	public String toString() {
 		return this.getName() + " from " + this.getClassroom().getName();
 	}
-
+	
+	/**
+	 * This method is disabled for this object, hence throws an exception when called.
+	 * @exception UnsupportedOPerationExcepton
+	 */
 	@Override
 	public String getQualification() throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Students don't have qualifications yet.");
 	}
 	
-
+	/**
+	 * This method is disabled for this object, hence throws an exception when called.
+	 * @exception UnsupportedOPerationExcepton
+	 */
 	@Override
 	public void setQualification(String qualification) throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Students don't have qualifications yet.");
 	}
 	
-
+	/**
+	 * This method is disabled for this object, hence throws an exception when called.
+	 * @exception UnsupportedOPerationExcepton
+	 */
 	@Override
 	public String getSalary() throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Student doesn't have salary.");
 	}
 	
-
+	/**
+	 * This method is disabled for this object, hence throws an exception when called.
+	 * @exception UnsupportedOPerationExcepton
+	 */
 	@Override
 	public void setSalary(String salary)throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Students doesn't have salary.");
 	}
 	
-
+	/**
+	 * This method is disabled for this object, hence throws an exception when called.
+	 * @exception UnsupportedOPerationExcepton
+	 */
 	@Override
 	public String getLocation() throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Students doesn't have locations.");
 	}
 	
-
+	/**
+	 * This method is disabled for this object, hence throws an exception when called.
+	 * @exception UnsupportedOPerationExcepton
+	 */
 	@Override
 	public void setLocation(String location) throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Students don't have locations, instead set their parent's location");
 	}
 	
-
+	/**
+	 * This method is disabled for this object, hence throws an exception when called.
+	 * @exception UnsupportedOPerationExcepton
+	 */
 	@Override
 	public String[] getPhone()throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Students doesn't have phones.");
 	}
 	
-
+	/**
+	 * This method is disabled for this object, hence throws an exception when called.
+	 * @exception UnsupportedOPerationExcepton
+	 */
 	@Override
 	public void setPhone(String[] phone) throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Students doesn't have phones, instead set their parent's phone.");
 	}
 	
-
+	/**
+	 * This method is disabled for this object, hence throws an exception when called.
+	 * @exception UnsupportedOPerationExcepton
+	 */
 	@Override
 	public String[] getEmail() throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Students don't have emails");
 	}
 	
-
+	/**
+	 * This method is disabled for this object, hence throws an exception when called.
+	 * @exception UnsupportedOPerationExcepton
+	 */
 	@Override
 	public void setEmail(String[] email) throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
