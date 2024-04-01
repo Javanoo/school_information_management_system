@@ -3,7 +3,6 @@ package mdps_sms.gui;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -119,24 +118,11 @@ public class Login extends GridPane {
 		errorInfor.setFont(Font.font("inter SemiBold", 18));
 		errorInfor.setFill(Color.WHITE);
 		
-		//buttons and icons
-		StackPane lockContainer = new StackPane(UiComponents.createIcon("lockWhite.png", 24));
-		lockContainer.setMinSize(700, 100);
-		
 		login = new Button("Go");
 		login.setFont(Font.font("inter SemiBold", 15));
 		login.setMinSize(100, 20);
 		login.setTextFill(Color.BLACK);
 		login.setStyle("-fx-background-color: #ADADAD");
-		login.setOnAction(e -> {
-			if(authenticate()) {
-				//save admin details and register session
-				Administrator savedAdmin = new Administrator(nameString, emailString, passwordString);
-				savedAdmin.setSession(savedAdmin.getSession() + 1);
-				Main.saveAdmin(savedAdmin);
-				Main.switchScene(new App(savedAdmin));
-			};
-		});
 		
 		
 		settings = UiComponents.createButton("settingsWhite.png", 24, "settings");
@@ -156,19 +142,38 @@ public class Login extends GridPane {
 		if(admin != null) {
 			credentialsField.getChildren().addAll(nameField, passwordField);
 			credentialsField.setMinSize(300, 200);
-			this.add(lockContainer, 0, 0);
-			GridPane.setColumnSpan(this.getChildren().get(0), 3);
-			this.add(settingsContainer, 0, 1);
-			this.add(credentialsField, 1, 1);
-			this.add(login, 2, 1);
+			this.add(UiComponents.createIcon("lockWhite.png", 28), 0, 0);
+			this.add(errorInfor, 0, 1);
+			this.add(credentialsField, 0, 2);
+			this.add(cancel, 0, 3);
+			this.add(login, 1, 3);
+			cancel.setText("Forgot Password");
+			GridPane.setColumnSpan(this.getChildren().get(0), 2);
+			GridPane.setHalignment(this.getChildren().get(0), HPos.CENTER);
+			login.setOnAction(e -> {
+				if(authenticate(admin)) {
+					//register session
+					admin.setSession(admin.getSession() + 1);
+					Main.saveAdmin(admin);
+					Main.switchScene(new App());
+				};
+			});
 		}else {
-			credentialsField.getChildren().addAll(nameField, emailField, passwordField, 
-							confirmPasswordField);
+			credentialsField.getChildren().addAll(nameField, emailField, passwordField, confirmPasswordField);
 			credentialsField.setMinSize(300, 300);
 			this.add(errorInfor, 0, 0);
 			this.add(credentialsField, 0, 1);
 			this.add(cancel, 0, 2);
 			this.add(login, 1, 2);
+			login.setOnAction(e -> {
+				if(authenticate()) {
+					//save admin details and register session
+					Administrator savedAdmin = new Administrator(nameString, emailString, passwordString);
+					savedAdmin.setSession(savedAdmin.getSession() + 1);
+					Main.saveAdmin(savedAdmin);
+					Main.switchScene(new App(savedAdmin));
+				};
+			});
 		}
 	//	credentialsField.setAlignment(Pos.CENTER);
 		credentialsField.setSpacing(15);
@@ -209,6 +214,21 @@ public class Login extends GridPane {
 			}
 		}else {
 			errorInfor.setText(name.getText().isBlank() ? "Please enter name." : "Please enter a valid name.");
+		}
+		return false;
+	}
+	
+	protected boolean authenticate(Administrator admin) {
+		String requiredName = admin.getName();
+		String requiredPassword = admin.getPassword();
+		if(!name.getText().isBlank() && name.getText().equals(requiredName)) {
+			if(!password.getText().isBlank() && password.getText().equals(requiredPassword)) {
+				return true;
+			}else {
+				errorInfor.setText(password.getText().isBlank() ? "Please enter password." : "Not authorised");
+			}
+		}else {
+			errorInfor.setText(name.getText().isBlank() ? "Please enter name." : "Not authorised");
 		}
 		return false;
 	}
