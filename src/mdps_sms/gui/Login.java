@@ -1,5 +1,7 @@
 package mdps_sms.gui;
 
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,6 +16,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import mdps_sms.Main;
+import mdps_sms.util.Administrator;
 
 /**
  * This class creates a form. The type of form created is dependent on the character passed to  the class's
@@ -23,6 +26,9 @@ import mdps_sms.Main;
  * each attempted login.
  */
 public class Login extends GridPane {
+	
+	private String nameString, emailString, passwordString;
+	
 	private Label forName  = new Label("Name");
 	private TextField name = new TextField();
 	private VBox nameField = new VBox();
@@ -51,54 +57,57 @@ public class Login extends GridPane {
 	private Button settings = null;
 	private Button cancel = null;
 	
-	public Login(char formType) {
+	public Login() {};
+	
+	public Login(Administrator admin) {
 		//fields
 		forName.setFont(Font.font("inter SemiBold", 15));
 		forName.setTextFill(Color.WHITE);
-		name.setMaxWidth(250);
+		name.setMaxWidth(450);
 		name.setMinHeight(40);
-		name.setPromptText("Enter name");
-		name.setFont(Font.font("Outfit", 16));
-		name.setStyle("-fx-background-color: #F3F3F3");
+		name.setPromptText("Enter name...");
+		name.setFont(Font.font("inter SemiBold", 15));
+		name.setStyle("-fx-background-color: #484848; -fx-text-fill: white");
 		name.focusedProperty().addListener(e -> {if(!errorInfor.getText().isEmpty()) errorInfor.setText("");});
 		nameField.getChildren().addAll(forName, name);
 		nameField.setSpacing(2);
 		
 		forEmail.setFont(Font.font("inter SemiBold", 15));
 		forEmail.setTextFill(Color.WHITE);
-		email.setMaxWidth(250);
+		email.setMaxWidth(450);
 		email.setMinHeight(40);
-		email.setPromptText("Enter name");
-		email.setFont(Font.font("Outfit", 16));
-		email.setStyle("-fx-background-color: #F3F3F3");
+		email.setPromptText("Enter name...");
+		email.setFont(Font.font("inter SemiBold", 15));
+		email.setStyle("-fx-background-color: #484848; -fx-text-fill: white");
+		email.focusedProperty().addListener(e -> {if(!errorInfor.getText().isEmpty()) errorInfor.setText("");});
 		emailField.getChildren().addAll(forEmail, email);
 		emailField.setSpacing(2);
 		
 		forPassword.setFont(Font.font("inter SemiBold", 15));
 		forPassword.setTextFill(Color.WHITE);
-		password.setMaxWidth(250);
+		password.setMaxWidth(450);
 		password.setMinHeight(40);
-		password.setPromptText("Enter password");
-		password.setFont(Font.font("Outfit", 14));
-		password.setStyle("-fx-background-color: #F3F3F3");
+		password.setPromptText("Enter password...");
+		password.setFont(Font.font("inter SemiBold", 15));
+		password.setStyle("-fx-background-color: #484848; -fx-text-fill: white");
 		password.focusedProperty().addListener(e -> {if(!errorInfor.getText().isEmpty()) errorInfor.setText("");});
 		passwordField.getChildren().addAll(forPassword, password);
 		passwordField.setSpacing(2);
 		
 		forConfirmPassword.setFont(Font.font("inter SemiBold", 15));
 		forConfirmPassword.setTextFill(Color.WHITE);
-		confirmPassword.setMaxWidth(250);
+		confirmPassword.setMinWidth(350);
 		confirmPassword.setMinHeight(40);
-		confirmPassword.setPromptText("Re-enter password");
-		confirmPassword.setFont(Font.font("Outfit", 14));
-		confirmPassword.setStyle("-fx-background-color: #F3F3F3");
+		confirmPassword.setPromptText("Re-enter password...");
+		confirmPassword.setFont(Font.font("inter SemiBold", 15));
+		confirmPassword.setStyle("-fx-background-color: #484848; -fx-text-fill: white");
 		confirmPassword.focusedProperty().addListener(e -> {if(!errorInfor.getText().isEmpty()) errorInfor.setText("");});
 		confirmPasswordField.getChildren().addAll(forConfirmPassword, confirmPassword);
 		confirmPasswordField.setSpacing(2);
 		
 		forToken.setFont(Font.font("inter SemiBold", 15));
 		forToken.setTextFill(Color.WHITE);
-		token.setMaxWidth(350);
+		token.setMaxWidth(450);
 		token.setMinHeight(40);
 		token.setPromptText("Enter the token sent to your email...");
 		token.setFont(Font.font("Outfit", 16));
@@ -107,60 +116,72 @@ public class Login extends GridPane {
 		tokenField.getChildren().addAll(forToken, token);
 		tokenField.setSpacing(2);
 		
-		errorInfor.setFont(Font.font("inter SemiBold", 16));
+		errorInfor.setFont(Font.font("inter SemiBold", 18));
 		errorInfor.setFill(Color.WHITE);
-		
-		//show fields for the specific form type
-		if(formType == 'L' || formType == 'l') {
-			credentialsField.getChildren().addAll(nameField, passwordField);
-		}else {
-			credentialsField.getChildren().addAll(nameField, emailField, passwordField, 
-					confirmPasswordField,new VBox(errorInfor));
-		}
-		credentialsField.setAlignment(Pos.CENTER);
-		credentialsField.setSpacing(15);
 		
 		//buttons and icons
 		StackPane lockContainer = new StackPane(UiComponents.createIcon("lockWhite.png", 24));
 		lockContainer.setMinSize(700, 100);
 		
-		login = UiComponents.createButton("logInWhite.png", 24, "login");
-		StackPane loginContainer = new StackPane(login);
-		login.setOnAction(e -> verify());
+		login = new Button("Go");
+		login.setFont(Font.font("inter SemiBold", 15));
+		login.setMinSize(100, 20);
+		login.setTextFill(Color.BLACK);
+		login.setStyle("-fx-background-color: #ADADAD");
+		login.setOnAction(e -> {
+			if(authenticate()) {
+				//save admin details and register session
+				Administrator savedAdmin = new Administrator(nameString, emailString, passwordString);
+				savedAdmin.setSession(savedAdmin.getSession() + 1);
+				Main.saveAdmin(savedAdmin);
+				Main.switchScene(new App(savedAdmin));
+			};
+		});
+		
 		
 		settings = UiComponents.createButton("settingsWhite.png", 24, "settings");
 		StackPane settingsContainer = new StackPane(settings);
 		settingsContainer.setMinSize(200, 200);
 		
-		cancel = UiComponents.createButton("cancelWhite.png", 24, "cancel[esc]");
+		cancel = new Button("Clear");
+		cancel.setFont(Font.font("inter SemiBold", 15));
+		cancel.setMinSize(100, 20);
+		cancel.setTextFill(Color.BLACK);
+		cancel.setStyle("-fx-background-color: #ADADAD");
 		StackPane cancelContainer = new StackPane(cancel);
-		cancelContainer.setMinSize(200, 200);
+		cancelContainer.setMinWidth(150);
 		cancel.setOnAction(e -> clearFields());
 		
-		Rectangle rect = new Rectangle(700, 400);
-		rect.setArcHeight(30);
-		rect.setArcWidth(30);
-		
-		if(formType == 'L' || formType == 'l') {
+		//show fields for the specific form type
+		if(admin != null) {
+			credentialsField.getChildren().addAll(nameField, passwordField);
 			credentialsField.setMinSize(300, 200);
-			loginContainer.setMinSize(200, 200);
 			this.add(lockContainer, 0, 0);
 			GridPane.setColumnSpan(this.getChildren().get(0), 3);
 			this.add(settingsContainer, 0, 1);
 			this.add(credentialsField, 1, 1);
-			this.add(loginContainer, 2, 1);
+			this.add(login, 2, 1);
 		}else {
-			credentialsField.setMinSize(300, 400);
-			loginContainer.setMinSize(200, 400);
-			this.add(cancelContainer, 0, 0);
-			this.add(credentialsField, 1, 0);
-			this.add(loginContainer, 2, 0);
+			credentialsField.getChildren().addAll(nameField, emailField, passwordField, 
+							confirmPasswordField);
+			credentialsField.setMinSize(300, 300);
+			this.add(errorInfor, 0, 0);
+			this.add(credentialsField, 0, 1);
+			this.add(cancel, 0, 2);
+			this.add(login, 1, 2);
 		}
+	//	credentialsField.setAlignment(Pos.CENTER);
+		credentialsField.setSpacing(15);
 		
-		this.setMaxHeight(400);
-		this.setMaxWidth(700);
-		this.setClip(rect);
 		this.setStyle("-fx-background-color:  #232323");
+		GridPane.setColumnSpan(credentialsField, 2);
+		GridPane.setColumnSpan(errorInfor, 2);
+		GridPane.setHalignment(login, HPos.RIGHT);
+		GridPane.setHalignment(errorInfor, HPos.CENTER);
+		this.setVgap(20);
+		this.setAlignment(Pos.CENTER);
+		this.setPadding(new Insets(20));
+	//	this.setGridLinesVisible(true);
 	}
 	
 	public void clearFields() {
@@ -171,59 +192,78 @@ public class Login extends GridPane {
 		errorInfor.setText("");
 	}
 	
-	public void verify() {
-		if((name.getText()).matches("[A-Z][a-zA-Z]{1,20}")) {
-			if(password.getText().equals(confirmPassword.getText()) && !password.getText().isBlank()) {
-				verifyEmail(email.getText());
+	
+	protected boolean authenticate() {
+		if(!name.getText().isBlank() && name.getText().matches("\\w{5,}")) {
+			if(verifyEmail(email.getText())) {
+				if(verifyPassword(password.getText(), confirmPassword.getText())) {
+					nameString = name.getText();
+					emailString = email.getText();
+					passwordString = password.getText();
+					return true;
+				}
+				errorInfor.setText(password.getText().isBlank() || confirmPassword.getText().isBlank() ? "Please enter passwords." : 
+							password.getText().length() < 8 || confirmPassword.getText().length() < 8 ? "Passwords too short" : "Password does not match." );
+			}else {
+				errorInfor.setText(email.getText().isBlank() ? "Please enter email." : "Please enter a valid email.");
 			}
-			else{
-				errorInfor.setText(((password.getText().isBlank() && confirmPassword.getText().isBlank() ) ? "Blank Password" : "The passwords did not match."));
-				password.clear();
-				confirmPassword.clear();
-			}
-		}else{
-			name.clear();
-			errorInfor.setText("Please enter a valid name");
+		}else {
+			errorInfor.setText(name.getText().isBlank() ? "Please enter name." : "Please enter a valid name.");
+		}
+		return false;
+	}
+	
+	protected boolean verifyPassword(String password) {
+		if(passwordLength(password) && passwordComposition(password)
+				&& _2digits(password)) {
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
 	
-	public boolean verifyEmail(String email) {
-		if(!email.isBlank() && email.matches(".*")) {
-			
-			//generate token to send to email
-			String generatedToken = ((int)(1000 + Math.random() * 1000)) + "";
-			System.out.println(generatedToken); //dummy for testing
-			
-			//request token
-			credentialsField.getChildren().clear();
-			credentialsField.getChildren().addAll(tokenField, new VBox(errorInfor));
-			Main.fadeIn(credentialsField);
-			
-			//on login toggle, verify, if yes proceed
-			//otherwise show error.
-			login.setOnAction(e -> {
-				if(token.getText().equals(generatedToken)) {
-					Main.holder.getChildren().clear();
-					Main.switchScene(new App(Main.scene));
-				}else {
-					token.clear();
-					errorInfor.setText("Wrong Token.\nCancel to go back or Re-enter.");
-				}
-			});
-			
-			//option for going back, to start again.
-			cancel.setOnAction(e -> {
-				errorInfor.setText("");
-				credentialsField.getChildren().clear();
-				clearFields();
-				credentialsField.getChildren().addAll(nameField, emailField, passwordField, 
-						confirmPasswordField,new VBox(errorInfor));
-				errorInfor.setText("Make sure the email is correct.");
-				Main.fadeIn(credentialsField);
-				login.setOnAction(a -> verify());
-				cancel.setOnAction(a -> clearFields());
-			});
+	public boolean verifyPassword(String password, String copyPassword) {
+		if(verifyPassword(password) && verifyPassword(copyPassword)) {
+			return password.equals(copyPassword);
 		}
 		return false;
+	}
+	
+	protected boolean verifyEmail(String email) {
+		if(!email.isBlank() && email.matches("\\w+@\\w+\\.\\w+")) {
+			return true;
+		}
+		return false;
+	}
+
+	//These methods are helper methods for verifyPassword method
+
+	//check password length
+	protected boolean passwordLength(String password){
+		int length = password.length();
+		if (length < 8) return false;
+		else return true;
+	}
+	//Check if password only consists of letters and digits
+	protected boolean passwordComposition(String password){
+		boolean result = false;
+		for (int i = 0; i < password.length() - 1 ; i++){
+			if (Character.isDigit(password.charAt(i)) || 
+			    Character.isLetter(password.charAt(i)))
+				result = true;
+			else result = false;
+		}
+		return result;
+	}
+	//check if password contains atleast two digits.
+	protected boolean _2digits(String password){
+		int count = 0;
+		for (int i = 0; i < password.length() - 1; i++){
+			if (Character.isDigit(password.charAt(i)))
+				count++;
+		}
+		if (count >= 2) return true;
+		else return false;
 	}
 }

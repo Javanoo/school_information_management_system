@@ -6,12 +6,12 @@ public class Administrator extends Person {
 	
 	private static final long serialVersionUID = 803976636899220758L;
 	private String password;
+	private int session = 0;
 	
-	Administrator(){}
+	public Administrator(){}
 	
-	Administrator(String name, String phone, String email, String password){
+	public Administrator(String name, String email, String password){
 		this.setName(name);
-		this.setPhone(new String[]{phone});
 		this.setEmail(new String[]{email});
 		setPassword(password);
 		this.setRole("Administrator");
@@ -24,4 +24,8 @@ public class Administrator extends Person {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public int getSession() {return session;}
+	
+	public void setSession(int session) {this.session = session;}
 }
