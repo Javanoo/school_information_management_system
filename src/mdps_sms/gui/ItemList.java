@@ -45,6 +45,8 @@ public class ItemList extends BorderPane{
 	private ListView<GridPane> list = new ListView<>();
 	private LinkedList<GridPane> containerList = new LinkedList<>();
 	
+	ItemList(){}
+	
 	ItemList(TreeSet<Person> item){
 		
 		//Column Headers
@@ -74,6 +76,7 @@ public class ItemList extends BorderPane{
 		for(Node elem : columnHeads.getChildren()) {
 			((Label)elem).setFont(Font.font("Inter SemiBold", 14));
 			((Label)elem).setTextFill(Color.WHITE);
+			((Label)elem).setPadding(new Insets(5, 0, 5, 0));
 		}
 		
 		//delete after done
@@ -82,7 +85,6 @@ public class ItemList extends BorderPane{
 			
 			list.add(new Label(elem.getName()), 0, 0);
 			list.add(new Label(elem.getGender()), 1, 0);
-	//		list.add(new Label(elem.getNationality()), 2, 0);
 			list.add(new Label(elem.getClass().toString()), 3, 0);
 			list.add(new Label("unknown"), 4, 0);
 			list.add(new Label(elem.getDateRegistered().toString().substring(0, 5)), 5, 0);
@@ -92,7 +94,7 @@ public class ItemList extends BorderPane{
 				((Label)node).setFont(Font.font("monospace", 14));
 				((Label)node).setMaxWidth(60);
 				
-				list.setHgap(180);
+				//list.setHgap(180);
 				list.setAlignment(Pos.CENTER);
 				GridPane.setHalignment(list.getChildren().get(0), HPos.LEFT);
 			}
@@ -100,7 +102,7 @@ public class ItemList extends BorderPane{
 				
 		}
 		
-		columnHeads.setHgap(180);
+		//columnHeads.setHgap(180);
 		columnHeads.setPadding(new Insets(10, 0, 10, 0));
 		columnHeads.setStyle("-fx-background-color: #232323");
 		columnHeads.setAlignment(Pos.CENTER);
@@ -109,7 +111,7 @@ public class ItemList extends BorderPane{
 		
 		//list
 		Label noItems = new Label("nothing yet");
-		noItems.setFont(Font.font("Ubuntu", FontWeight.MEDIUM, 16));
+		noItems.setFont(Font.font("Ubuntu", FontWeight.BOLD, 18));
 		noItems.setTextFill(Color.GRAY);
 		
 		list.setItems(FXCollections.observableList(containerList));
@@ -121,27 +123,8 @@ public class ItemList extends BorderPane{
 		this.setTop(columnHeads);
 		this.setCenter(list);
 		this.setBottom(actionBar);
+		this.setStyle("-fx-background-color: #232323");
 		BorderPane.setAlignment(this.getBottom(), Pos.CENTER_RIGHT);
-		BorderPane.setMargin(actionBar, new Insets(5, 0, 0 , 0));
+		BorderPane.setMargin(actionBar, new Insets(5, 5, 5 , 0));
 	}
-	
-	/*ItemList(Teacher item){
-		columnHeads.add(new Label("Name"), 0, 0);
-		columnHeads.add(new Label("Gender"), 1, 0);
-		columnHeads.add(new Label("Nationality"), 2, 0);
-		columnHeads.add(new Label("Class"), 3, 0);
-		columnHeads.add(new Label("Subjects"), 4, 0);
-		columnHeads.add(new Label("Date joined"), 5, 0);
-		
-		
-	}*/
-	
-	/*ItemList(Staff item){
-		columnHeads.add(new Label("Name"), 0, 0);
-		columnHeads.add(new Label("Gender"), 1, 0);
-		columnHeads.add(new Label("Nationality"), 2, 0);
-		columnHeads.add(new Label("Role"), 3, 0);
-		columnHeads.add(new Label("Location"), 4, 0);
-		columnHeads.add(new Label("Date joined"), 5, 0);		
-	}*/
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
+import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,9 +13,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.effect.Effect;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -26,12 +29,17 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
+import javafx.util.Callback;
+import javafx.util.Duration;
 import mdps_sms.Main;
+import mdps_sms.util.Administrator;
 import mdps_sms.util.Person;
 
 public class App extends BorderPane {
-	private StackPane leftPanel = new StackPane();
-	private BorderPane centralPanel = new BorderPane();
+	Administrator admin = null;
+	
+	private static BorderPane centralPanel = new BorderPane();
 	
 	private HBox profileBox = new HBox();
 	private Label loggedUser = new Label("Admin");
@@ -51,12 +59,20 @@ public class App extends BorderPane {
 	
 	private ContextMenu conMenu = new ContextMenu();
 	
-	private VBox leftPanelContents = new VBox();
+	private VBox utilButtons = new VBox();
+	public static BorderPane leftPanelContents = new BorderPane();
 	
 	//testing
 	TreeSet<Person> list = new TreeSet<>();
 	
-	public App(Scene scene) {
+	public App() {}
+	
+	public App(Administrator admin) {
+		
+		this.admin = admin;
+		
+		DirectoryChooser dir = new DirectoryChooser();
+		
 		//user profile
 		loggedUser.setGraphic(UiComponents.createIcon("userBlack.png", 24));
 		loggedUser.setFont(Font.font("Outfit SemiBold", 15));
@@ -74,99 +90,124 @@ public class App extends BorderPane {
 		//navigation tabs
 		dashboard.setGraphic(UiComponents.createIcon("comboChartBlack.png", 24));
 		dashboard.setTextFill(Color.BLACK);
-		dashboard.setFont(Font.font("Outfit SemiBold", 15));
-		dashboard.setPadding(new Insets(10));
-		dashboard.setGraphicTextGap(30);
+		dashboard.setFont(Font.font("Inter SemiBold", 15));
+		dashboard.setPadding(new Insets(5, 0, 5, 0));
+		dashboard.setGraphicTextGap(10);
 		
 		students.setGraphic(UiComponents.createIcon("studentBlack.png", 24));
 		students.setTextFill(Color.BLACK);
-		students.setFont(Font.font("Outfit SemiBold", 15));
-		students.setPadding(new Insets(10));
-		students.setGraphicTextGap(30);
+		students.setFont(Font.font("Inter SemiBold", 15));
+		students.setPadding(new Insets(5, 0, 5, 0));
+		students.setGraphicTextGap(10);
 		
 		teachers.setGraphic(UiComponents.createIcon("teacherBlack.png", 24));
 		teachers.setTextFill(Color.BLACK);
-		teachers.setFont(Font.font("Outfit SemiBold", 15));
-		teachers.setPadding(new Insets(10));
-		teachers.setGraphicTextGap(30);
+		teachers.setFont(Font.font("Inter SemiBold", 15));
+		teachers.setPadding(new Insets(5, 0, 5, 0));
+		teachers.setGraphicTextGap(10);
 		
 		staff.setGraphic(UiComponents.createIcon("staffBlack.png", 24));
 		staff.setTextFill(Color.BLACK);
-		staff.setFont(Font.font("Outfit SemiBold", 15));
-		staff.setPadding(new Insets(10));
-		staff.setGraphicTextGap(30);
+		staff.setFont(Font.font("Inter SemiBold", 15));
+		staff.setPadding(new Insets(5, 0, 5, 0));
+		staff.setGraphicTextGap(10);
 		
 		calendar.setGraphic(UiComponents.createIcon("calendarBlack.png", 24));
 		calendar.setTextFill(Color.BLACK);
-		calendar.setFont(Font.font("Outfit SemiBold", 15));
-		calendar.setPadding(new Insets(10));
-		calendar.setGraphicTextGap(30);
+		calendar.setFont(Font.font("Inter SemiBold", 15));
+		calendar.setPadding(new Insets(5, 0, 5, 0));
+		calendar.setGraphicTextGap(10);
 		
 		exams.setGraphic(UiComponents.createIcon("courseAssignBlack.png", 24));
 		exams.setTextFill(Color.BLACK);
-		exams.setFont(Font.font("Outfit SemiBold", 15));
-		exams.setPadding(new Insets(10));
-		exams.setGraphicTextGap(30);
+		exams.setFont(Font.font("Inter SemiBold", 15));
+		exams.setPadding(new Insets(5, 0, 5, 0));
+		exams.setGraphicTextGap(10);
 		
 		fees.setGraphic(UiComponents.createIcon("cashBlack.png", 24));
 		fees.setTextFill(Color.BLACK);
-		fees.setFont(Font.font("Outfit SemiBold", 15));
-		fees.setPadding(new Insets(10));
-		fees.setGraphicTextGap(30);
+		fees.setFont(Font.font("Inter SemiBold", 15));
+		fees.setPadding(new Insets(5, 0, 5, 0));
+		fees.setGraphicTextGap(10);
 		
 		fleet.setGraphic(UiComponents.createIcon("shuttleBusBlack.png", 24));
 		fleet.setTextFill(Color.BLACK);
-		fleet.setFont(Font.font("Outfit SemiBold", 15));
-		fleet.setPadding(new Insets(10));
-		fleet.setGraphicTextGap(30);
+		fleet.setFont(Font.font("Inter SemiBold", 15));
+		fleet.setPadding(new Insets(5, 0, 5, 0));
+		fleet.setGraphicTextGap(10);
+		
 		
 		navigation.setItems(FXCollections.observableArrayList(dashboard, students,
-				teachers, staff, calendar, exams, fees, fleet));
-		navigation.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
-		navigation.setMaxHeight(362);
-		navigation.setFixedCellSize(40);
-		Rectangle navRec = new Rectangle(200, 362);
-		navRec.setArcHeight(15);
-		navRec.setArcWidth(15);
-		navigation.setClip(navRec);
+				teachers, calendar, exams, staff, fees, fleet));
+	//	navigation.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
+		navigation.setMaxHeight(360);
+		navigation.setFixedCellSize(44);
+		navigation.setMaxWidth(200);
+		navigation.getSelectionModel().selectedItemProperty().addListener(e -> 
+			{
+				switch(navigation.getSelectionModel().selectedItemProperty().get().getText()) {
+					case "Dashboard" : {
+						switchView(null);
+						break;
+					}
+					case "Students" : { 
+						switchView(new ItemList());
+						break;
+					}
+					case "Teachers" : {
+						switchView(new TeacherForm());
+						break;
+					}
+					case "Staff" : { 
+						switchView(new Form());
+						break;
+					}
+					case "Fees" : { 
+						switchView(null);
+						break;
+					}
+					case "Fleet" : {
+						switchView(new FleetForm());
+						break;
+					}
+					default: break;
+				}
+			}
+		);
+		
 		
 		//bottom action buttons
 		settings.setGraphic(UiComponents.createIcon("settingsBlack.png", 24));
-		settings.setFont(Font.font("Outfit SemiBold", 14));
+		settings.setFont(Font.font("Inter SemiBold", 15));
 		settings.setTextFill(Color.BLACK);
-		settings.setPadding(new Insets(5, 0, 5, 13));
-		settings.setGraphicTextGap(30);
-		settings.setMinWidth(170);
-		settings.setTranslateX(6);
+		settings.setGraphicTextGap(10);
+		settings.setMinWidth(200);
+		settings.setPadding(new Insets(5));
 		settings.setAlignment(Pos.CENTER_LEFT);
-		settings.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
-		settings.setOnAction(e -> Main.switchScene(new Settings()));
-		Rectangle setRec = new Rectangle(160, 34);
-		setRec.setArcHeight(30);
-		setRec.setArcWidth(30);
-		settings.setClip(setRec);
+		settings.setStyle("-fx-background-color: white");
+		settings.setOnAction(e -> {
+			switchView(new Settings(list));
+			leftPanelContents.setDisable(true);
+		});
 		
 		logout.setGraphic(UiComponents.createIcon("logOutBlack.png", 24));
-		logout.setFont(Font.font("Outfit SemiBold", 14));
+		logout.setFont(Font.font("Inter SemiBold", 15));
 		logout.setTextFill(Color.BLACK);
-		logout.setPadding(new Insets(5, 0, 5, 20));
-		logout.setGraphicTextGap(30);
+		logout.setGraphicTextGap(10);
 		logout.setMinWidth(200);
-		logout.translateYProperty().bind(this.heightProperty().subtract(456));
+		logout.setPadding(new Insets(5));
 		logout.setAlignment(Pos.CENTER_LEFT);
-		logout.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
-		Rectangle logRec = new Rectangle(180, 34);
-		logRec.setArcHeight(12);
-		logRec.setArcWidth(12);
-		logout.setClip(logRec);
+		logout.setStyle("-fx-background-color: white");
+		logout.setOnAction(e -> logout());
 		
-		leftPanelContents.getChildren().addAll( navigation, settings, logout);
-		leftPanelContents.setPadding(new Insets(0, 5, 0, 5));
-		leftPanelContents.setSpacing(6);
-		//leftPanelContents.setTranslateX(5);
-		leftPanel.getChildren().add(leftPanelContents);
-		leftPanel.setMaxWidth(200);
-		leftPanel.setStyle("-fx-background-color: #232323");
+		utilButtons.getChildren().addAll(settings, logout);
+		utilButtons.setSpacing(10);
+		
+		leftPanelContents.setTop(navigation);
+		leftPanelContents.setBottom(utilButtons);
+		BorderPane.setAlignment(navigation, Pos.CENTER);
+		leftPanelContents.setPadding(new Insets(5,10,5,10));
+		leftPanelContents.setStyle("-fx-background-color: #232323");
 		
 		
 		//generate random things
@@ -175,25 +216,64 @@ public class App extends BorderPane {
 	//		list.add(student);
 		}
 		
-		
-		centralPanel.maxWidthProperty().bind(this.widthProperty().subtract(220));
-		centralPanel.maxHeightProperty().bind(this.heightProperty().subtract(10));
-		centralPanel.setPadding(new Insets(15, 5, 5, 5));
-		centralPanel.setStyle("-fx-background-color: #232323");
+		centralPanel.setPadding(new Insets(5, 5, 0, 5));
+	//	centralPanel.setMaxWidth(1200);
 		centralPanel.setCenter(new ItemList(list));
-		//centralPanel.setBottom(new ActionBar());
-		//BorderPane.setAlignment(centralPanel.getBottom(), Pos.CENTER);
-		Rectangle centRec = new Rectangle(centralPanel.getWidth(), centralPanel.getHeight());
-		centRec.widthProperty().bind(centralPanel.widthProperty());
-		centRec.heightProperty().bind(centralPanel.heightProperty());
-		centRec.setArcHeight(15);
-		centRec.setArcWidth(15);
-		centralPanel.setClip(centRec);
 		
 		
-		this.setLeft(leftPanel);
+		this.setLeft(leftPanelContents);
 		this.setCenter(centralPanel);
-		this.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
-		this.setPadding(new Insets(0, 0, 5, 0));
+		this.setStyle("-fx-background-color: white");
+		//this.setPadding(new Insets(0, 0, 5, 0));
 	}
+	
+	public void logout() {
+		admin.setSession(0);
+		Main.saveAdmin(admin);
+		System.exit(0);
+	}
+	
+	public void sleep(double m) {
+		long time  = System.currentTimeMillis();
+		while(true) {
+			long stopTime = System.currentTimeMillis();
+			if((stopTime - time)/1000 > m) {
+				break;
+			}
+		}
+	}
+	
+	public static void switchView(Node s) {
+		centralPanel.getChildren().clear();
+		centralPanel.setRight(s);
+		fadeIn(centralPanel);
+	}
+	
+	public static void fadeIn(Node E) {
+		FadeTransition fade = new FadeTransition(new Duration(350), E);
+		fade.setAutoReverse(true);
+		fade.setCycleCount(1);
+		fade.setFromValue(0.2);
+		fade.setToValue(1);
+		fade.play();
+	}
+}
+
+class CustomCell extends ListCell<Label>{
+	
+	public CustomCell() {
+		
+	}
+	
+	@Override
+	protected void updateItem(Label item, boolean empty) {
+		super.updateItem(item, empty);
+		if(item != null) {
+			if(isSelected()) {
+				item.setTextFill(Color.WHITE);
+				item.setStyle("-fx-background-color: gray");
+			}
+		}
+	}
+	
 }

@@ -25,6 +25,10 @@ public class Administrator extends Person {
 		this.password = password;
 	}
 	
+	public String getPassword() {
+		return this.password;
+	}
+	
 	public int getSession() {return session;}
 	
 	public void setSession(int session) {this.session = session;}

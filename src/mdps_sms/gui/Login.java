@@ -155,7 +155,7 @@ public class Login extends GridPane {
 					//register session
 					admin.setSession(admin.getSession() + 1);
 					Main.saveAdmin(admin);
-					Main.switchScene(new App());
+					Main.switchScene(new App(admin));
 				};
 			});
 		}else {

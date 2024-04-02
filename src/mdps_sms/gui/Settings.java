@@ -1,5 +1,7 @@
 package mdps_sms.gui;
 
+import java.util.TreeSet;
+
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,6 +21,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import mdps_sms.Main;
+import mdps_sms.util.Administrator;
+import mdps_sms.util.Person;
+import mdps_sms.util.Student;
 
 /**
  * This class is used for making instances of the Gui settings object.
@@ -29,10 +34,12 @@ import mdps_sms.Main;
  */
 public class Settings extends BorderPane {
 	
+	Administrator admin = new Administrator();
+	
 	//top header
 	Label forSettings =  new Label("Settings");
 	Button restore = new Button("Restore");
-	Button cancel = UiComponents.createButton("cancelBlack.png", 28, "cancel");
+//	Button cancel = UiComponents.createButton("cancelBlack.png", 28, "cancel");
 	Separator separate = new Separator();
 	HBox liner = new HBox(forSettings, restore);
 	
@@ -107,10 +114,12 @@ public class Settings extends BorderPane {
 		
 	Card securitySettings = new Card("Security and Performance");
 	
-	Button delete = new Button("Delete Account");
+	Button cancel = new Button("Cancel");
 	Button save = new Button("Save");
 	
-	Settings(){
+	Settings(TreeSet<Person> list){
+		
+		this.admin = admin;
 		
 		forSettings.setFont(Font.font("Outfit SemiBold", 24));
 		forSettings.setTextFill(Color.web("#232323"));
@@ -118,10 +127,11 @@ public class Settings extends BorderPane {
 		restore.setFont(Font.font("Outfit SemiBold", 16));
 		restore.setTextFill(Color.WHITE);
 		restore.setMinWidth(100);
-		cancel.setOnAction(e -> Main.switchScene(new App(Main.scene)));
+		cancel.setOnAction(e -> {
+			App.switchView(new ItemList(list));
+			App.leftPanelContents.setDisable(false);
+		});
 		restore.setStyle("-fx-background-color: #232323");
-		separate.setBorder(null);
-		separate.setMinHeight(5);
 		separate.setStyle("-fx-background-color: black");
 		liner.setPadding(new Insets(15, 0, 15, 0));
 		liner.setMaxWidth(720);
@@ -232,7 +242,6 @@ public class Settings extends BorderPane {
 		
 		ScrollPane scrl= new ScrollPane(cards);
 		scrl.setMinViewportWidth(710);
-		scrl.setBlendMode(BlendMode.DARKEN);
 		scrl.setStyle("-fx-background-color: none");
 		
 		GridPane center = new GridPane();
@@ -249,28 +258,28 @@ public class Settings extends BorderPane {
 		
 		GridPane bottom = new GridPane();
 		
-		delete.setFont(Font.font("Outfit SemiBold", 16));
-		delete.setTextFill(Color.WHITE);
-		delete.setMaxWidth(150);
-		delete.setStyle("-fx-background-color: #232323");
-		delete.setOnMouseEntered(e -> {
-			delete.setStyle("-fx-background-color: red");
+		cancel.setFont(Font.font("Outfit SemiBold", 16));
+		cancel.setTextFill(Color.WHITE);
+		cancel.setMinWidth(100);
+		cancel.setStyle("-fx-background-color: #232323");
+		cancel.setOnMouseEntered(e -> {
+			cancel.setStyle("-fx-background-color: red");
 		});
-		delete.setOnMouseExited( e -> {
-			delete.setStyle("-fx-background-color: #232323");
+		cancel.setOnMouseExited( e -> {
+			cancel.setStyle("-fx-background-color: #232323");
 		});
 		save.setFont(Font.font("Outfit SemiBold", 16));
 		save.setTextFill(Color.WHITE);
 		save.setMinWidth(100);
 		save.setStyle("-fx-background-color: #232323");
 		
-		bottom.add(delete, 0, 0);
+		bottom.add(cancel, 0, 0);
 		bottom.add(save, 1, 0);
 		bottom.setAlignment(Pos.CENTER);
 		bottom.setHgap(500);
 		bottom.setMaxWidth(720);
 		bottom.setPadding(new Insets(20, 0, 10, 0));
-		GridPane.setHalignment(delete, HPos.LEFT);
+		GridPane.setHalignment(cancel, HPos.LEFT);
 		
 		this.setCenter(center);
 		this.setBottom(bottom);

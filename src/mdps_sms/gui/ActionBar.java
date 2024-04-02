@@ -34,7 +34,7 @@ public class ActionBar extends HBox {
 		this.getChildren().addAll(search,separator, add, edit,  
 				separator3, delete);
 		this.setAlignment(Pos.CENTER);
-		this.setStyle("-fx-background-color: " + UiComponents.backgroundcolor);
+		this.setStyle("-fx-background-color: white");
 		this.setMinHeight(35);
 		this.setMaxWidth(180);
 		this.setSpacing(2);
