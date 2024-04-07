@@ -12,8 +12,8 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 	private String qualification = "unknown";
 	private String salary = "unknown";
 	private String location = "unknown";
-	private String[] phone = new String[2];
-	private String[] email = new String[2];
+	private String[] phone = {"none", "none"};
+	private String[] email = {"none", "none"};
 	private Date dateRegistered = new Date();
 	private String description = "no description";
 	
@@ -122,8 +122,8 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 	 * These values are phone numbers assigned to this object.
 	 * @return the phone array
 	 */
-	public String[] getPhone() {
-		return phone;
+	public String getPhone() {
+		return phone[0];
 	}
 	
 	/**
@@ -145,8 +145,8 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 	 * 
 	 * @return the email array
 	 */
-	public String[] getEmail() {
-		return email;
+	public String getEmail() {
+		return email == null ? "none" : email[0];
 	}
 	
 	/**

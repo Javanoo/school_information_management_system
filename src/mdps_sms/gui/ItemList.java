@@ -1,130 +1,221 @@
 package mdps_sms.gui;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.TreeSet;
 
-import javafx.animation.Animation;
 import javafx.collections.FXCollections;
-import javafx.geometry.HPos;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Separator;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.control.Button;
+import mdps_sms.util.Fleet;
 import mdps_sms.util.Person;
+import mdps_sms.util.SchoolClass;
+import mdps_sms.util.Staff;
 import mdps_sms.util.Student;
 import mdps_sms.util.Teacher;
-import javafx.scene.effect.BlurType;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 
 /**
  * creates objest for listing students, teachers or staff members.
  * <p>
  * This class has 3 constructors that enables that facilitates creating an object
  * for viewing a list of staff object or any of its sub classes.
- * 
+ *
  * @author matthews offen
  * @see Person
  */
-public class ItemList extends BorderPane{
-	private GridPane columnHeads = new GridPane ();
-	private Separator separate = new Separator();
-	private ListView<GridPane> list = new ListView<>();
-	private LinkedList<GridPane> containerList = new LinkedList<>();
-	
+public class ItemList<E extends Person> extends BorderPane{
+	private Form staffForm = new Form();
+	private StudentForm studentForm = new StudentForm();
+	private TeacherForm teacherForm = new TeacherForm();
+	private FleetForm fleetForm = new FleetForm();
+
+	private ActionBar actionBar = new ActionBar(null);
+
+	TableView<E> table = new TableView<>();
+	TableColumn<E, String> name = new TableColumn<>("Name");
+	TableColumn<E, String> gender = new TableColumn<>("Gender");
+	TableColumn<E, String> role = new TableColumn<>("Role");
+	TableColumn<E, String> parent = new TableColumn<>("Parent");
+	TableColumn<E, String> phone = new TableColumn<>("Phone");
+	TableColumn<E, String> email = new TableColumn<>("Email");
+	TableColumn<E, String> salary = new TableColumn<>("Salary");
+	TableColumn<E, String> qualification = new TableColumn<>("Qualification");
+	TableColumn<E, String> classroom = new TableColumn<>("Classroom");
+	TableColumn<E, String> car = new TableColumn<>("Car");
+	TableColumn<E, String> carNumberPlate = new TableColumn<>("Number Plate");
+	TableColumn<E, String> route = new TableColumn<>("Route");
+
 	ItemList(){}
-	
-	ItemList(TreeSet<Person> item){
-		
-		//Column Headers
-		if(item.pollFirst() instanceof Student) {
-			columnHeads.add(new Label("Name"), 0, 0);
-			columnHeads.add(new Label("Gender"), 1, 0);
-			columnHeads.add(new Label("Nationality"), 2, 0);
-			columnHeads.add(new Label("Class"), 3, 0);
-			columnHeads.add(new Label("Parent"), 4, 0);
-			columnHeads.add(new Label("Date joined"), 5, 0);
-		}else if(item.pollFirst() instanceof Teacher){
-			columnHeads.add(new Label("Name"), 0, 0);
-			columnHeads.add(new Label("Gender"), 1, 0);
-			columnHeads.add(new Label("Nationality"), 2, 0);
-			columnHeads.add(new Label("Class"), 3, 0);
-			columnHeads.add(new Label("Subjects"), 4, 0);
-			columnHeads.add(new Label("Date joined"), 5, 0);
-		}else {
-			columnHeads.add(new Label("Name"), 0, 0);
-			columnHeads.add(new Label("Gender"), 1, 0);
-			columnHeads.add(new Label("Nationality"), 2, 0);
-			columnHeads.add(new Label("Role"), 3, 0);
-			columnHeads.add(new Label("Location"), 4, 0);
-			columnHeads.add(new Label("Date joined"), 5, 0);
-		}
-		
-		for(Node elem : columnHeads.getChildren()) {
-			((Label)elem).setFont(Font.font("Inter SemiBold", 14));
-			((Label)elem).setTextFill(Color.WHITE);
-			((Label)elem).setPadding(new Insets(5, 0, 5, 0));
-		}
-		
-		//delete after done
-		for(Person elem : item) {
-			GridPane list = new GridPane();
-			
-			list.add(new Label(elem.getName()), 0, 0);
-			list.add(new Label(elem.getGender()), 1, 0);
-			list.add(new Label(elem.getClass().toString()), 3, 0);
-			list.add(new Label("unknown"), 4, 0);
-			list.add(new Label(elem.getDateRegistered().toString().substring(0, 5)), 5, 0);
-			((Label)list.getChildren().get(0)).setTooltip(new Tooltip(elem.getName()));;
-			
-			for(Node node : list.getChildren()) {
-				((Label)node).setFont(Font.font("monospace", 14));
-				((Label)node).setMaxWidth(60);
-				
-				//list.setHgap(180);
-				list.setAlignment(Pos.CENTER);
-				GridPane.setHalignment(list.getChildren().get(0), HPos.LEFT);
-			}
-			containerList.add(list);
-				
-		}
-		
-		//columnHeads.setHgap(180);
-		columnHeads.setPadding(new Insets(10, 0, 10, 0));
-		columnHeads.setStyle("-fx-background-color: #232323");
-		columnHeads.setAlignment(Pos.CENTER);
-		GridPane.setHalignment(columnHeads.getChildren().get(0), HPos.LEFT);
-		
-		
+
+
+	ItemList(Person type, TreeSet<E> itemList){
+
 		//list
-		Label noItems = new Label("nothing yet");
-		noItems.setFont(Font.font("Ubuntu", FontWeight.BOLD, 18));
+		Label noItems = new Label("nothing");
+		noItems.setFont(Font.font("Ubuntu", FontWeight.BOLD, 16));
 		noItems.setTextFill(Color.GRAY);
+
+		name.setMinWidth(220);
+		gender.setMinWidth(220);
+		role.setMinWidth(220);
+		phone.setMinWidth(220);
+		email.setMinWidth(220);
+		salary.setMinWidth(220);
 		
-		list.setItems(FXCollections.observableList(containerList));
-		list.setPlaceholder(noItems);
+		name.setCellValueFactory(new PropertyValueFactory<>("name"));
+		gender.setCellValueFactory(new PropertyValueFactory<>("gender"));
+		role.setCellValueFactory(new PropertyValueFactory<>("role"));
+		phone.setCellValueFactory(new PropertyValueFactory<>("phone"));
+		email.setCellValueFactory(new PropertyValueFactory<>("email"));
+		salary.setCellValueFactory(new PropertyValueFactory<>("salary"));
+		qualification.setCellValueFactory(new PropertyValueFactory<>("qualification"));
+		classroom.setCellValueFactory(new PropertyValueFactory<>("classroom"));
+		car.setCellValueFactory(new PropertyValueFactory<>("car"));
+		carNumberPlate.setCellValueFactory(new PropertyValueFactory<>("carNumberPlate"));
+		route.setCellValueFactory(new PropertyValueFactory<>("route"));
+		
+		table.getColumns().add(name);
+		table.getColumns().add(gender);
+		
+		if(type instanceof Staff) {
+			table.getColumns().add(role);
+			table.getColumns().add(phone);
+			table.getColumns().add(email);
+			table.getColumns().add(salary);
+			actionBar.getDelete().setOnAction(e -> {
+				itemList.remove(table.getSelectionModel().getSelectedItem());
+				table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+			});
+		}else if(type instanceof Student) {
+			table.getColumns().add(classroom);
+			table.getColumns().add(parent);
+			table.getColumns().add(phone);
+			table.getColumns().add(email);
+			if(itemList.isEmpty()) {
+				noItems = new Label("Add classes first, to add students");
+				actionBar.setDisable(true);
+			}
+			actionBar.getDelete().setOnAction(e -> {
+				//remove student from classroom first
+				((Student)table.getSelectionModel().getSelectedItem()).getClassroom().getStudents().remove((Student)table.getSelectionModel().getSelectedItem());
+				//then delete the student
+				itemList.remove(table.getSelectionModel().getSelectedItem());
+				table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+			});
+		}else if(type instanceof Teacher) {
+			table.getColumns().add(classroom);
+			table.getColumns().add(qualification);
+			table.getColumns().add(phone);
+			table.getColumns().add(email);
+			table.getColumns().add(salary);
+			
+			actionBar.getDelete().setOnAction( e -> {
+				//remove Teacher from classroom first
+				for (SchoolClass elem : ((Teacher)table.getSelectionModel().getSelectedItem()).getClassroom()) 
+					elem.getTeachers().remove((Teacher)table.getSelectionModel().getSelectedItem());
+				//then delete the teacher
+				itemList.remove(table.getSelectionModel().getSelectedItem());
+				table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+			});
+		}else if(type instanceof Fleet) {
+			table.getColumns().add(phone);
+			table.getColumns().add(email);
+			table.getColumns().add(car);
+			table.getColumns().add(carNumberPlate);
+			table.getColumns().add(route);
+			actionBar.getDelete().setOnAction(e -> {
+				itemList.remove(table.getSelectionModel().getSelectedItem());
+				table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+			});
+		}else {}
+		table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+		table.getSelectionModel().selectFirst();
+		table.requestFocus();
+		table.setPlaceholder(noItems);
+		table.setTableMenuButtonVisible(true);
+
+		for(Form elem : new Form[]{staffForm, studentForm, teacherForm, fleetForm}) {
+			elem.save.setOnAction(e -> {
+				if (elem.createNew(itemList)) {
+					table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+					elem.cancel.fire();
+				}
+			});
+		}
 		
 		
-		ActionBar actionBar = new ActionBar();
 		
-		this.setTop(columnHeads);
-		this.setCenter(list);
-		this.setBottom(actionBar);
-		this.setStyle("-fx-background-color: #232323");
-		BorderPane.setAlignment(this.getBottom(), Pos.CENTER_RIGHT);
-		BorderPane.setMargin(actionBar, new Insets(5, 5, 5 , 0));
+		actionBar.getSearchBar().setOnKeyTyped(e -> {
+			search((TextField)e.getSource(), itemList);
+			((Button)(actionBar.getSearchContainer().getChildren().get(0))).setOnAction(v -> {
+				actionBar.hideSearch();
+				table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+			});
+		});
+
+
+		setCenter(table);
+		setBottom(actionBar);
+		setStyle("-fx-background-color: #232323");
+		BorderPane.setAlignment(getBottom(), Pos.CENTER_RIGHT);
+		BorderPane.setMargin(actionBar, new Insets(7, 7, 7 , 0));
+	}
+	
+	/**
+	 * @return the staffForm
+	 */
+	public synchronized Form getStaffForm() {
+		return staffForm;
+	}
+
+	/**
+	 * @param staffForm the staffForm to set
+	 */
+	public synchronized void setStaffForm(Form staffForm) {
+		this.staffForm = staffForm;
+	}
+
+	/**
+	 * @return the actionBar
+	 */
+	public synchronized ActionBar getActionBar() {
+		return actionBar;
+	}
+
+	/**
+	 * @param actionBar the actionBar to set
+	 */
+	public synchronized void setActionBar(ActionBar actionBar) {
+		this.actionBar = actionBar;
+	}
+
+	/**
+	 * displays all available searched items.
+	 */
+	protected void search(TextField source, TreeSet<E> itemList) {
+		//query to use with RegExp for searching
+		String query = source.getText();
+		//new set that holds the matching items
+		TreeSet<E> matchedItems = new TreeSet<>();
+		Iterator<E> iter = itemList.iterator();
+		while(iter.hasNext() && !query.isEmpty()) {
+			E person = iter.next();
+			if((person.getName().toLowerCase()).matches(query.toLowerCase() + ".*")) 
+				matchedItems.add(person);
+		}
+		if(matchedItems.isEmpty())table.setItems(FXCollections.observableList(new LinkedList<>(itemList)));
+		else
+			table.setItems((FXCollections.observableList(new LinkedList<>(matchedItems))));
 	}
 }

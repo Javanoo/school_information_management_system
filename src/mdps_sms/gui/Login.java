@@ -154,8 +154,8 @@ public class Login extends GridPane {
 				if(authenticate(admin)) {
 					//register session
 					admin.setSession(admin.getSession() + 1);
-					Main.saveAdmin(admin);
-					Main.switchScene(new App(admin));
+					Main.saveData(admin, Main.STORAGEFILE1);
+					//Main.switchScene(new App(admin));
 				};
 			});
 		}else {
@@ -170,8 +170,8 @@ public class Login extends GridPane {
 					//save admin details and register session
 					Administrator savedAdmin = new Administrator(nameString, emailString, passwordString);
 					savedAdmin.setSession(savedAdmin.getSession() + 1);
-					Main.saveAdmin(savedAdmin);
-					Main.switchScene(new App(savedAdmin));
+					Main.saveData(savedAdmin, Main.STORAGEFILE1);
+				//	Main.switchScene(new App(savedAdmin));
 				};
 			});
 		}
@@ -199,7 +199,7 @@ public class Login extends GridPane {
 	
 	
 	protected boolean authenticate() {
-		if(!name.getText().isBlank() && name.getText().matches("\\w{5,}")) {
+		if(!name.getText().isBlank() && name.getText().matches("\\w{2,}")) {
 			if(verifyEmail(email.getText())) {
 				if(verifyPassword(password.getText(), confirmPassword.getText())) {
 					nameString = name.getText();
@@ -250,7 +250,7 @@ public class Login extends GridPane {
 		return false;
 	}
 	
-	protected boolean verifyEmail(String email) {
+	public static boolean verifyEmail(String email) {
 		if(!email.isBlank() && email.matches("\\w+@\\w+\\.\\w+")) {
 			return true;
 		}

@@ -16,9 +16,9 @@ public class Teacher extends Person {
 	private TreeSet<String> subjects = new TreeSet<>();
 	private TreeSet<SchoolClass> classroom = new TreeSet<>();
 	
-	Teacher(){}
+	public Teacher(){}
 	
-	Teacher(String name, String gender, String[] subjects, String qualification, SchoolClass[] classroom, 
+	public Teacher(String name, String gender, String[] subjects, String qualification, SchoolClass[] classroom, 
 			String location, String[] phone, String[] email, String salary, String description){
 		this.setName(name);
 		this.setGender(gender);

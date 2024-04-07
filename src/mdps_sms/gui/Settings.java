@@ -117,6 +117,8 @@ public class Settings extends BorderPane {
 	Button cancel = new Button("Cancel");
 	Button save = new Button("Save");
 	
+	Settings(){}
+	
 	Settings(TreeSet<Person> list){
 		
 		this.admin = admin;
@@ -128,7 +130,7 @@ public class Settings extends BorderPane {
 		restore.setTextFill(Color.WHITE);
 		restore.setMinWidth(100);
 		cancel.setOnAction(e -> {
-			App.switchView(new ItemList(list));
+			//App.switchView(new ItemList(list));
 			App.leftPanelContents.setDisable(false);
 		});
 		restore.setStyle("-fx-background-color: #232323");

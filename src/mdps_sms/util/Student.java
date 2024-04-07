@@ -20,7 +20,7 @@ public class Student extends Person {
 	
 	
 	//no-arg constructor
-	Student() {super();}
+	public Student() {super();}
 	
 	/**
 	 * creates an object with the specified value arg set to their respective properties.
@@ -31,7 +31,7 @@ public class Student extends Person {
 	 * @param parents
 	 * @param description
 	 */
-	Student(String name, String gender, SchoolClass classroom, Parent[] parents, String description){
+	public Student(String name, String gender, SchoolClass classroom, Parent[] parents, String description){
 		super();
 		this.setName(name);
 		this.setGender(gender);
@@ -188,7 +188,7 @@ public class Student extends Person {
 	 * @exception UnsupportedOPerationExcepton
 	 */
 	@Override
-	public String[] getPhone()throws UnsupportedOperationException{
+	public String getPhone()throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Students doesn't have phones.");
 	}
@@ -208,7 +208,7 @@ public class Student extends Person {
 	 * @exception UnsupportedOPerationExcepton
 	 */
 	@Override
-	public String[] getEmail() throws UnsupportedOperationException{
+	public String getEmail() throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Students don't have emails");
 	}
