@@ -5,19 +5,25 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.control.Button;
+import javafx.stage.Popup;
+import javafx.stage.PopupWindow.AnchorLocation;
+import javafx.stage.Stage;
+import mdps_sms.Main;
 import mdps_sms.util.Fleet;
 import mdps_sms.util.Person;
 import mdps_sms.util.SchoolClass;
@@ -35,12 +41,17 @@ import mdps_sms.util.Teacher;
  * @see Person
  */
 public class ItemList<E extends Person> extends BorderPane{
+	private TreeSet<E> data = new TreeSet<>();
+
 	private Form staffForm = new Form();
 	private StudentForm studentForm = new StudentForm();
 	private TeacherForm teacherForm = new TeacherForm();
 	private FleetForm fleetForm = new FleetForm();
 
 	private ActionBar actionBar = new ActionBar(null);
+
+	private ContextMenu subMenu = new ContextMenu();
+	private MenuItem view = new MenuItem("view");
 
 	TableView<E> table = new TableView<>();
 	TableColumn<E, String> name = new TableColumn<>("Name");
@@ -61,18 +72,17 @@ public class ItemList<E extends Person> extends BorderPane{
 
 	ItemList(Person type, TreeSet<E> itemList){
 
+		data = itemList;
+
 		//list
 		Label noItems = new Label("nothing");
 		noItems.setFont(Font.font("Ubuntu", FontWeight.BOLD, 16));
 		noItems.setTextFill(Color.GRAY);
+		StackPane placeHolder = new StackPane(noItems);
+		placeHolder.setStyle("-fx-background-color: white");
 
-		name.setMinWidth(220);
-		gender.setMinWidth(220);
-		role.setMinWidth(220);
-		phone.setMinWidth(220);
-		email.setMinWidth(220);
-		salary.setMinWidth(220);
-		
+
+
 		name.setCellValueFactory(new PropertyValueFactory<>("name"));
 		gender.setCellValueFactory(new PropertyValueFactory<>("gender"));
 		role.setCellValueFactory(new PropertyValueFactory<>("role"));
@@ -84,49 +94,121 @@ public class ItemList<E extends Person> extends BorderPane{
 		car.setCellValueFactory(new PropertyValueFactory<>("car"));
 		carNumberPlate.setCellValueFactory(new PropertyValueFactory<>("carNumberPlate"));
 		route.setCellValueFactory(new PropertyValueFactory<>("route"));
-		
+
+		view.setOnAction(e -> {
+			showSummary();
+		});
+		subMenu.getItems().add(view);
+		subMenu.setId("tableSubMenu");
+
 		table.getColumns().add(name);
 		table.getColumns().add(gender);
-		
+		table.setContextMenu(subMenu);
+
 		if(type instanceof Staff) {
 			table.getColumns().add(role);
 			table.getColumns().add(phone);
 			table.getColumns().add(email);
 			table.getColumns().add(salary);
 			actionBar.getDelete().setOnAction(e -> {
-				itemList.remove(table.getSelectionModel().getSelectedItem());
-				table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+				data.remove(table.getSelectionModel().getSelectedItem());
+				table.setItems(FXCollections.observableList(new LinkedList<>(data)));
+			});
+			getActionBar().getAdd().setOnAction(e -> {
+				Main.popup.getContent().add(getStaffForm());
+				Main.popup.show(Main.primaryStage);
+				Main.popup.setAnchorY(200);
+				Main.popup.setOnHiding(v -> {
+					Main.popup.getContent().clear();
+					getStaffForm().cancel();
+				});
+			});
+			getStaffForm().cancel.setOnAction(e -> {
+				getTable().setItems(FXCollections.observableList(new LinkedList<>(getData())));
+				Main.popup.hide();
+				Main.popup.getContent().clear();
+			});
+
+			//edit
+			getActionBar().getEdit().setOnAction(e -> {
+				Main.popup.getContent().add(getStaffForm());
+				getStaffForm().edit((Staff)table.getSelectionModel().getSelectedItem(),getData());
+				Main.popup.show(Main.primaryStage);
 			});
 		}else if(type instanceof Student) {
 			table.getColumns().add(classroom);
 			table.getColumns().add(parent);
 			table.getColumns().add(phone);
 			table.getColumns().add(email);
-			if(itemList.isEmpty()) {
+			if(data.isEmpty()) {
 				noItems = new Label("Add classes first, to add students");
 				actionBar.setDisable(true);
 			}
 			actionBar.getDelete().setOnAction(e -> {
 				//remove student from classroom first
-				((Student)table.getSelectionModel().getSelectedItem()).getClassroom().getStudents().remove((Student)table.getSelectionModel().getSelectedItem());
+				((Student)table.getSelectionModel().getSelectedItem()).getClassroom().getStudents().remove(table.getSelectionModel().getSelectedItem());
 				//then delete the student
-				itemList.remove(table.getSelectionModel().getSelectedItem());
-				table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+				data.remove(table.getSelectionModel().getSelectedItem());
+				table.setItems(FXCollections.observableList(new LinkedList<>(data)));
 			});
+
+			getActionBar().getAdd().setOnAction(e -> {
+				Main.popup.getContent().add(getStudentForm());
+				Main.popup.show(Main.primaryStage);
+				Main.popup.setAnchorY(200);
+				Main.popup.setOnHiding(v -> {
+					Main.popup.getContent().clear();
+					getStudentForm().cancel();
+				});
+			});
+			getStudentForm().cancel.setOnAction(e -> {
+				getTable().setItems(FXCollections.observableList(new LinkedList<>(getData())));
+				Main.popup.hide();
+				Main.popup.getContent().clear();
+			});
+
+			//edit
+			getActionBar().getEdit().setOnAction(e -> {
+				Main.popup.getContent().add(getStudentForm());
+				//getStudentForm().edit((Teacher)table.getSelectionModel().getSelectedItem(),getData());
+				Main.popup.show(Main.primaryStage);
+			});
+
 		}else if(type instanceof Teacher) {
 			table.getColumns().add(classroom);
 			table.getColumns().add(qualification);
 			table.getColumns().add(phone);
 			table.getColumns().add(email);
 			table.getColumns().add(salary);
-			
+
 			actionBar.getDelete().setOnAction( e -> {
 				//remove Teacher from classroom first
-				for (SchoolClass elem : ((Teacher)table.getSelectionModel().getSelectedItem()).getClassroom()) 
-					elem.getTeachers().remove((Teacher)table.getSelectionModel().getSelectedItem());
+				for (SchoolClass elem : ((Teacher)table.getSelectionModel().getSelectedItem()).getClassroom())
+					elem.getTeachers().remove(table.getSelectionModel().getSelectedItem());
 				//then delete the teacher
-				itemList.remove(table.getSelectionModel().getSelectedItem());
-				table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+				data.remove(table.getSelectionModel().getSelectedItem());
+				table.setItems(FXCollections.observableList(new LinkedList<>(data)));
+			});
+			getActionBar().getAdd().setOnAction(e -> {
+				Main.popup.getContent().add(getTeacherForm());
+				Main.popup.show(Main.primaryStage);
+				Main.popup.setAnchorY(200);
+				Main.popup.setOnHiding(v -> {
+					Main.popup.getContent().clear();
+					getTeacherForm().cancel();
+				});
+			});
+			getTeacherForm().cancel.setOnAction(e -> {
+				getTable().setItems(FXCollections.observableList(new LinkedList<>(getData())));
+				Main.popup.hide();
+				Main.popup.getContent().clear();
+			});
+
+			//edit
+			getActionBar().getEdit().setOnAction(e -> {
+				Main.popup.getContent().add(getTeacherForm());
+			//	getTeacherForm().edit((Teacher)table.getSelectionModel().getSelectedItem(),getData());
+				Main.popup.show(Main.primaryStage);
 			});
 		}else if(type instanceof Fleet) {
 			table.getColumns().add(phone);
@@ -135,32 +217,54 @@ public class ItemList<E extends Person> extends BorderPane{
 			table.getColumns().add(carNumberPlate);
 			table.getColumns().add(route);
 			actionBar.getDelete().setOnAction(e -> {
-				itemList.remove(table.getSelectionModel().getSelectedItem());
-				table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+				data.remove(table.getSelectionModel().getSelectedItem());
+				table.setItems(FXCollections.observableList(new LinkedList<>(data)));
+			});
+			getActionBar().getAdd().setOnAction(e -> {
+				Main.popup.getContent().add(getFleetForm());
+				Main.popup.show(Main.primaryStage);
+				Main.popup.setAnchorY(200);
+				Main.popup.setOnHiding(v -> {
+					Main.popup.getContent().clear();
+					getFleetForm().cancel();
+				});
+			});
+			getFleetForm().cancel.setOnAction(e -> {
+				getTable().setItems(FXCollections.observableList(new LinkedList<>(getData())));
+				Main.popup.hide();
+				Main.popup.getContent().clear();
+			});
+
+			//edit
+			getActionBar().getEdit().setOnAction(e -> {
+				Main.popup.getContent().add(getFleetForm());
+				//getFleetForm().edit((Teacher)table.getSelectionModel().getSelectedItem(),getData());
+				Main.popup.show(Main.primaryStage);
 			});
 		}else {}
-		table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+		table.setItems(FXCollections.observableList(new LinkedList<>(data)));
 		table.getSelectionModel().selectFirst();
 		table.requestFocus();
-		table.setPlaceholder(noItems);
+		table.setPlaceholder(placeHolder);
 		table.setTableMenuButtonVisible(true);
+		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_LAST_COLUMN);
+
+
 
 		for(Form elem : new Form[]{staffForm, studentForm, teacherForm, fleetForm}) {
 			elem.save.setOnAction(e -> {
-				if (elem.createNew(itemList)) {
-					table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+				if (elem.createNew(data)) {
+					table.setItems(FXCollections.observableList(new LinkedList<>(data)));
 					elem.cancel.fire();
 				}
 			});
 		}
-		
-		
-		
+
 		actionBar.getSearchBar().setOnKeyTyped(e -> {
-			search((TextField)e.getSource(), itemList);
+			search((TextField)e.getSource(), data);
 			((Button)(actionBar.getSearchContainer().getChildren().get(0))).setOnAction(v -> {
 				actionBar.hideSearch();
-				table.setItems((ObservableList<E>) FXCollections.observableList(new LinkedList<>(itemList)));
+				table.setItems(FXCollections.observableList(new LinkedList<>(data)));
 			});
 		});
 
@@ -171,7 +275,17 @@ public class ItemList<E extends Person> extends BorderPane{
 		BorderPane.setAlignment(getBottom(), Pos.CENTER_RIGHT);
 		BorderPane.setMargin(actionBar, new Insets(7, 7, 7 , 0));
 	}
-	
+
+	public void showSummary() {
+		Popup summary = new Popup();
+
+		summary.getContent().add(new Summary(table.getSelectionModel().getSelectedItem()));
+		summary.setAutoHide(true);
+		summary.show(Main.primaryStage);
+		summary.setOnHiding(e -> summary.getContent().clear());
+		summary.setAnchorLocation(AnchorLocation.WINDOW_BOTTOM_LEFT);
+	}
+
 	/**
 	 * @return the staffForm
 	 */
@@ -211,11 +325,59 @@ public class ItemList<E extends Person> extends BorderPane{
 		Iterator<E> iter = itemList.iterator();
 		while(iter.hasNext() && !query.isEmpty()) {
 			E person = iter.next();
-			if((person.getName().toLowerCase()).matches(query.toLowerCase() + ".*")) 
+			if((person.getName().toLowerCase()).matches(query.toLowerCase() + ".*"))
 				matchedItems.add(person);
 		}
 		if(matchedItems.isEmpty())table.setItems(FXCollections.observableList(new LinkedList<>(itemList)));
 		else
 			table.setItems((FXCollections.observableList(new LinkedList<>(matchedItems))));
+	}
+
+
+	/**
+	 * @return the studentForm
+	 */
+	public synchronized StudentForm getStudentForm() {
+		return studentForm;
+	}
+
+
+	/**
+	 * @return the teacherForm
+	 */
+	public synchronized TeacherForm getTeacherForm() {
+		return teacherForm;
+	}
+
+
+	/**
+	 * @return the fleetForm
+	 */
+	public synchronized FleetForm getFleetForm() {
+		return fleetForm;
+	}
+
+
+	/**
+	 * @return the data
+	 */
+	public synchronized TreeSet<E> getData() {
+		return data;
+	}
+
+
+	/**
+	 * @return the table
+	 */
+	public synchronized TableView<E> getTable() {
+		return table;
+	}
+
+
+	/**
+	 * @param table the table to set
+	 */
+	public synchronized void setTable(TableView<E> table) {
+		this.table = table;
 	}
 }

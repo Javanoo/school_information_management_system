@@ -60,12 +60,12 @@ public class ActionBar extends HBox {
 		
 		((Button)searchContainer.getChildren().get(0)).setOnAction(e -> {
 			hideSearch();
-			Main.fadeIn(searchContainer);
+			Main.fadeIn(searchContainer, 400);
 		});
 		
 		search.setOnAction(e -> {
 			showSearch();
-			Main.fadeIn(searchContainer);
+			Main.fadeIn(searchContainer, 400);
 		});
 	}
 	public void hideSearch() {

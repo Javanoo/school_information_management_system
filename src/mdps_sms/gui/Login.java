@@ -56,9 +56,14 @@ public class Login extends GridPane {
 	private Button settings = null;
 	private Button cancel = null;
 	
+	Administrator admin = null;
+	
 	public Login() {};
 	
-	public Login(Administrator admin) {
+	public Login(Administrator admin, App app) {
+		
+		this.admin = admin;
+		
 		//fields
 		forName.setFont(Font.font("inter SemiBold", 15));
 		forName.setTextFill(Color.WHITE);
@@ -139,7 +144,7 @@ public class Login extends GridPane {
 		cancel.setOnAction(e -> clearFields());
 		
 		//show fields for the specific form type
-		if(admin != null) {
+		if(this.admin != null) {
 			credentialsField.getChildren().addAll(nameField, passwordField);
 			credentialsField.setMinSize(300, 200);
 			this.add(UiComponents.createIcon("lockWhite.png", 28), 0, 0);
@@ -151,11 +156,13 @@ public class Login extends GridPane {
 			GridPane.setColumnSpan(this.getChildren().get(0), 2);
 			GridPane.setHalignment(this.getChildren().get(0), HPos.CENTER);
 			login.setOnAction(e -> {
-				if(authenticate(admin)) {
+				if(authenticate(this.admin)) {
 					//register session
-					admin.setSession(admin.getSession() + 1);
-					Main.saveData(admin, Main.STORAGEFILE1);
-					//Main.switchScene(new App(admin));
+					this.admin.setSession(this.admin.getSession() + 1);
+					Main.saveData(this.admin, Main.STORAGEFILE1);
+					Main.mainContainer.getChildren().clear();
+					Main.mainContainer.getChildren().add(app);
+					Main.fadeIn(Main.mainContainer, 400);
 				};
 			});
 		}else {
@@ -168,10 +175,11 @@ public class Login extends GridPane {
 			login.setOnAction(e -> {
 				if(authenticate()) {
 					//save admin details and register session
-					Administrator savedAdmin = new Administrator(nameString, emailString, passwordString);
-					savedAdmin.setSession(savedAdmin.getSession() + 1);
-					Main.saveData(savedAdmin, Main.STORAGEFILE1);
-				//	Main.switchScene(new App(savedAdmin));
+					this.admin = new Administrator(nameString, emailString, passwordString);
+					this.admin.setSession(this.admin.getSession() + 1);
+					Main.saveData(this.admin, Main.STORAGEFILE1);
+					Main.mainContainer.getChildren().clear();
+					Main.mainContainer.getChildren().add(app);
 				};
 			});
 		}
@@ -250,7 +258,7 @@ public class Login extends GridPane {
 		return false;
 	}
 	
-	public static boolean verifyEmail(String email) {
+	public boolean verifyEmail(String email) {
 		if(!email.isBlank() && email.matches("\\w+@\\w+\\.\\w+")) {
 			return true;
 		}

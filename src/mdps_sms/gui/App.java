@@ -1,6 +1,7 @@
 package mdps_sms.gui;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.TreeSet;
 
 import javafx.animation.FadeTransition;
@@ -15,9 +16,11 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -97,7 +100,7 @@ public class App extends BorderPane {
 		teacherItemList = new ItemList<Teacher>(new Teacher(), this.teacherData);
 		fleetItemList = new ItemList<Fleet>(new Fleet(), this.fleetData);
 		
-		navTable.put("DashBoard", null);
+		navTable.put("DashBoard", new Summary<Staff>(staffData.last()));
 		navTable.put("Students", studentItemList);
 		navTable.put("Teachers", teacherItemList);
 		navTable.put("Staff", staffItemList);
@@ -148,6 +151,10 @@ public class App extends BorderPane {
 			}
 
 		);
+		Rectangle navRec = new Rectangle(200, 400);
+		navRec.setArcHeight(15);
+		navRec.setArcWidth(15);
+		navigation.setClip(navRec);
 
 
 		//bottom action buttons
@@ -161,7 +168,7 @@ public class App extends BorderPane {
 			switchView(new Settings(list));
 			leftPanelContents.setDisable(true);
 		});
-		Rectangle setRec = new Rectangle(120, 35);
+		Rectangle setRec = new Rectangle(120, 33);
 		setRec.setArcHeight(30);
 		setRec.setArcWidth(30);
 		settings.setClip(setRec);
@@ -173,7 +180,8 @@ public class App extends BorderPane {
 		logout.setPadding(new Insets(5, 0, 5, 10));
 		logout.setStyle("-fx-background-color: white");
 		logout.setOnAction(e -> logout());
-		Rectangle logRec = new Rectangle(200, 35);
+		logout.setTooltip(new Tooltip("end session"));
+		Rectangle logRec = new Rectangle(200, 33);
 		logRec.setArcHeight(20);
 		logRec.setArcWidth(20);
 		logout.setClip(logRec);
@@ -186,38 +194,15 @@ public class App extends BorderPane {
 		BorderPane.setAlignment(navigation, Pos.CENTER);
 		leftPanelContents.setPadding(new Insets(5,10,7,10));
 		leftPanelContents.setStyle("-fx-background-color: #232323");
-		
-		
-		//itemList actions
-		//add
-		staffItemList.getActionBar().getAdd().setOnAction(e -> {
-			getLeft().setDisable(true);
-			getCenter().setDisable(true);
-			setRight(staffItemList.getStaffForm());
-			BorderPane.setMargin(getRight(), new Insets(5, 5, 0, 0));
-		});
-		staffItemList.getStaffForm().cancel.setOnAction(e -> {
-			getLeft().setDisable(false);
-			getCenter().setDisable(false);
-			setRight(null);
-		});
-		
-		//edit
-		staffItemList.getActionBar().getEdit().setOnAction(e -> {
-			getLeft().setDisable(true);
-			getCenter().setDisable(true);
-			setRight(staffItemList.getStaffForm());
-			staffItemList.getStaffForm().edit((Staff)staffItemList.table.getSelectionModel().getSelectedItem());
-			BorderPane.setMargin(getRight(), new Insets(5, 5, 0, 0));
-		});
-		staffItemList.getStaffForm().cancel.setOnAction(e -> {
-			getLeft().setDisable(false);
-			getCenter().setDisable(false);
-			setRight(null);
-		});
 
 		centralPanel.setPadding(new Insets(5, 5, 0, 5));
 		centralPanel.setCenter(null);
+		Rectangle centRec = new Rectangle();
+		centRec.setArcHeight(30);
+		centRec.setArcWidth(30);
+		//centRec.widthProperty().bind(centralPanel.widthProperty());
+		//centRec.heightProperty().bind(centralPanel.heightProperty().add(100));
+		//centralPanel.setClip(centRec);
 
 
 		setLeft(leftPanelContents);
@@ -228,6 +213,7 @@ public class App extends BorderPane {
 	public void logout() {
 		admin.setSession(0);
 		Main.saveData(admin, Main.STORAGEFILE1);
+		Main.primaryStage.close();
 	}
 
 	public static void switchView(Node s) {

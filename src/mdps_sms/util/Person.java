@@ -41,8 +41,8 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 	 * Returns the name value assigned to this object
 	 * @return the name
 	 */
-	public String getName() {
-		return name;
+	public String getName() { 
+		return (name.charAt(0) + "").toUpperCase() + name.substring(1);
 	}
 	
 	/**
@@ -126,6 +126,10 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 		return phone[0];
 	}
 	
+	public String[] getPhoneArray() {
+		return phone;
+	}
+	
 	/**
 	 * updates the phone property assigned to this object.
 	 * <p>
@@ -147,6 +151,10 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 	 */
 	public String getEmail() {
 		return email == null ? "none" : email[0];
+	}
+	
+	public String[] getEmailArray() {
+		return email;
 	}
 	
 	/**
