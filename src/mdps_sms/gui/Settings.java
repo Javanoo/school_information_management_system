@@ -135,9 +135,6 @@ public class Settings extends BorderPane {
 		});
 		restore.setStyle("-fx-background-color: #232323");
 		separate.setStyle("-fx-background-color: black");
-		liner.setPadding(new Insets(15, 0, 15, 0));
-		liner.setMaxWidth(720);
-		liner.setSpacing(530);
 		
 		
 		//style sub headers
@@ -181,10 +178,6 @@ public class Settings extends BorderPane {
 		generalSettings.board.add(oldPair, 0, 4);
 		generalSettings.board.add(newPair, 0, 5);
 		generalSettings.board.setVgap(15);
-		Rectangle genRec = new Rectangle(700, 470);
-		genRec.setArcHeight(30);
-		genRec.setArcWidth(30);
-		generalSettings.board.setClip(genRec);
 		
 		
 		font.setPromptText("enter size ...");
@@ -206,12 +199,6 @@ public class Settings extends BorderPane {
 		appearanceSettings.board.add(themePair, 0, 4);
 		appearanceSettings.board.add(accentColorPair, 0, 5);
 		appearanceSettings.board.setVgap(15);
-		Rectangle appRec = new Rectangle(700, 470);
-		appRec.setArcHeight(30);
-		appRec.setArcWidth(30);
-		appearanceSettings.board.setClip(appRec);
-		appearanceSettings.setDisable(true);
-	
 		
 		
 		buffer.setPromptText("enter size ...");
@@ -233,18 +220,14 @@ public class Settings extends BorderPane {
 		securitySettings.board.add(encryptionPair, 0, 4);
 		securitySettings.board.add(recoveryPair, 0, 5);
 		securitySettings.board.setVgap(15);
-		Rectangle secRec = new Rectangle(700, 470);
-		secRec.setArcHeight(30);
-		secRec.setArcWidth(30);
-		securitySettings.board.setClip(secRec);
 		
 		
 		VBox cards = new VBox(generalSettings, appearanceSettings, securitySettings);
 		cards.setSpacing(30);
+		cards.setStyle("-fx-background-color: #232323");
 		
 		ScrollPane scrl= new ScrollPane(cards);
-		scrl.setMinViewportWidth(710);
-		scrl.setStyle("-fx-background-color: none");
+		scrl.setStyle("-fx-background-color: #232323");
 		
 		GridPane center = new GridPane();
 		
@@ -258,7 +241,7 @@ public class Settings extends BorderPane {
 		GridPane.setValignment(cancel, VPos.CENTER);
 		GridPane.setValignment(liner, VPos.CENTER);
 		
-		GridPane bottom = new GridPane();
+		BorderPane bottom = new BorderPane();
 		
 		cancel.setFont(Font.font("Outfit SemiBold", 16));
 		cancel.setTextFill(Color.WHITE);
@@ -275,18 +258,16 @@ public class Settings extends BorderPane {
 		save.setMinWidth(100);
 		save.setStyle("-fx-background-color: #232323");
 		
-		bottom.add(cancel, 0, 0);
+		/*bottom.add(cancel,
 		bottom.add(save, 1, 0);
 		bottom.setAlignment(Pos.CENTER);
-		bottom.setHgap(500);
-		bottom.setMaxWidth(720);
 		bottom.setPadding(new Insets(20, 0, 10, 0));
-		GridPane.setHalignment(cancel, HPos.LEFT);
+		GridPane.setHalignment(cancel, HPos.LEFT);*/
 		
 		this.setCenter(center);
 		this.setBottom(bottom);
 		BorderPane.setAlignment(bottom, Pos.CENTER);
-		BorderPane.setAlignment(center, Pos.CENTER);
+		setStyle("-fx-background-color: #232323");
 	}
 }
 
@@ -303,10 +284,8 @@ class Card extends VBox{
 		
 		board.setStyle("-fx-background-color: #232323");
 		board.setPadding(new Insets(30));
-		board.setMinWidth(700);
 		
 		this.getChildren().addAll(cardLabel, board);
 		this.setSpacing(10);
-		this.setMaxWidth(700);
 	}
 }
