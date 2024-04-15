@@ -2,6 +2,14 @@ package mdps_sms.util;
 
 import java.util.Date;
 
+/**
+ * This is used to create administrator objects, needed by the App class in the mdps_sms_gui. 
+ * <p>
+ * It is a subclass of the person abstract class and adds more specialized methods needed to perform
+ * administration activities.
+ * 
+ * @see Person App
+ */
 public class Administrator extends Person {
 	
 	private static final long serialVersionUID = 803976636899220758L;

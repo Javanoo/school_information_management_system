@@ -47,20 +47,22 @@ public class Form extends BorderPane{
 	protected HBox title =new HBox(formTitle, errorInfor);
 	
 	
-	private Label forFirstSection = new Label("Personal Information");
+	protected Label forFirstSection = new Label("Personal Information");
 	private Label forName = new Label("Name");
 	private Label forGender = new Label ("Gender");
-	private Label forPrimaryPhone = new Label("Primary Phone");
-	private Label forSecondaryPhone = new Label("Secondary Phone (Optional)");
-	private Label forPrimaryEmail = new Label("Primary Email");
-	private Label forSecondaryEmail = new Label("Secondary Email (Optional)");
+	private Label forPrimaryPhone = new Label("Primary phone");
+	private Label forSecondaryPhone = new Label("Secondary phone");
+	private Label forPrimaryEmail = new Label("Primary email");
+	private Label forSecondaryEmail = new Label("Secondary email");
 	private Label forLocation = new Label("Address");
 	private Separator separate1 = new Separator();
-	private Label forSecondSection = new Label("Professional Information");
+	protected Label forSecondSection = new Label("Professional Information");
 	private Label forRole = new Label("Role");
 	private Label forQualification = new Label("Qualification");
 	private Label forSalary = new Label("Salary");
-	private Separator separate2 = new Separator();
+	private Label forAccountAdmin = new Label("Account administrator");
+	private Label forAccountNumber = new Label("Account number");
+	protected Separator separate2 = new Separator();
 	private Label forThirdSection = new Label("Other Information");
 	private Label forDescription = new Label("Description");
 	private Separator separate3 = new Separator();
@@ -76,6 +78,8 @@ public class Form extends BorderPane{
 	protected TextField firstEmail = new TextField();
 	protected TextField secondEmail = new TextField();
 	protected TextArea description = new TextArea();
+	protected TextField accountAdmin = new TextField();
+	protected TextField accountNumber = new TextField();
 	
 	Button save = new Button("Register");
 	Button cancel = new Button("Cancel");
@@ -86,14 +90,16 @@ public class Form extends BorderPane{
 	private VBox secondaryPhonePair = new VBox(forSecondaryPhone, secondPhone);
 	private VBox primaryEmailPair =  new VBox(forPrimaryEmail, firstEmail);
 	private VBox secondaryEmailPair = new VBox(forSecondaryEmail, secondEmail);
-	private VBox locationPair = new VBox(forLocation, location);
+	protected VBox locationPair = new VBox(forLocation, location);
 	public VBox firstSection = new VBox(forFirstSection, separate1, namePair, genderPair, primaryPhonePair, 
 			secondaryPhonePair, primaryEmailPair, secondaryEmailPair, locationPair);
 	
 	private VBox rolePair = new VBox(forRole, role);
 	private VBox qualificationPair = new VBox(forQualification, qualification);
 	public VBox salaryPair = new VBox(forSalary, salary);
-	public VBox secondSection = new VBox(forSecondSection, separate2, rolePair, qualificationPair, salaryPair);
+	public VBox accountAdminPair = new VBox(forAccountAdmin, accountAdmin);
+	public VBox accountNumberPair = new VBox(forAccountNumber, accountNumber);
+	public VBox secondSection = new VBox(forSecondSection, separate2, rolePair, qualificationPair, salaryPair, accountAdminPair, accountNumberPair);
 	
 	private VBox descriptionPair = new VBox(forDescription, description);
 	public VBox thirdSection = new VBox(forThirdSection, separate3, descriptionPair);
@@ -112,7 +118,7 @@ public class Form extends BorderPane{
 		}
 		
 		styleLabels(forName, forGender, forPrimaryPhone, forSecondaryPhone, forPrimaryEmail, forSecondaryEmail, forLocation, 
-				forRole, forQualification, forSalary, forDescription);
+				forRole, forQualification, forSalary, forDescription, forAccountAdmin, forAccountNumber);
 		formTitle.setTextFill(Color.web("White"));
 		title.setStyle("-fx-background-color: #232323");
 		formTitle.setFont(Font.font("inter SemiBold", 17));
@@ -137,13 +143,15 @@ public class Form extends BorderPane{
 		secondPhone.setPromptText("enter alternative phone...");
 		firstEmail.setPromptText("enter email...");
 		secondEmail.setPromptText("enter alternative email...");
+		accountAdmin.setPromptText("enter account admin e.g. FDH Bank..");
+		accountNumber.setPromptText("enter account number...");
 		description.setPromptText("a short description of the individual...");
 		description.setMaxHeight(80);
-		description.setMaxWidth(340);
 		description.setWrapText(true);
+		description.setMaxWidth(540);
 		description.setFont(Font.font("Inter SemiBold", 15));
 		styleTextInputControls(name, gender, role, qualification, salary, location, firstPhone, secondPhone, 
-				firstEmail, secondEmail
+				firstEmail, secondEmail, accountNumber, accountAdmin
 		);
 		styleVPairs(namePair, genderPair, primaryPhonePair, secondaryPhonePair, primaryEmailPair, secondaryEmailPair, locationPair, rolePair, 
 				qualificationPair, salaryPair, descriptionPair
@@ -154,28 +162,28 @@ public class Form extends BorderPane{
 		thirdSection.setSpacing(20);
 		
 		save.setMinWidth(100);
-		save.setMinHeight(35);
-		save.setStyle("-fx-background-color: #232323");
+		save.setMinHeight(30);
+		save.setStyle("-fx-background-color: white");
 		save.setFont(Font.font("Inter SemiBold", 15));
-		save.setTextFill(Color.WHITE);
-		Rectangle saveRec = new Rectangle(100, 35);
-		saveRec.setArcHeight(30);
-		saveRec.setArcWidth(30);
+		save.setTextFill(Color.BLACK);
+		Rectangle saveRec = new Rectangle(100, 30);
+		saveRec.setArcHeight(25);
+		saveRec.setArcWidth(25);
 		save.setClip(saveRec);
 		
 		cancel.setMinWidth(100);
-		cancel.setMinHeight(35);
-		cancel.setStyle("-fx-background-color: #232323");
+		cancel.setMinHeight(30);
+		cancel.setStyle("-fx-background-color: white");
 		cancel.setFont(Font.font("Inter SemiBold", 15));
-		cancel.setTextFill(Color.WHITE);
+		cancel.setTextFill(Color.BLACK);
 		cancel.setPadding(new Insets(5));
 		cancel.setOnAction(e -> cancel());
-		Rectangle cancelRec = new Rectangle(100, 35);
-		cancelRec.setArcHeight(30);
-		cancelRec.setArcWidth(30);
+		Rectangle cancelRec = new Rectangle(100, 30);
+		cancelRec.setArcHeight(25);
+		cancelRec.setArcWidth(25);
 		cancel.setClip(cancelRec);
 		
-		title.setSpacing(450);
+		title.setSpacing(240);
 		title.setAlignment(Pos.CENTER_LEFT);
 		title.setPadding(new Insets(0, 0, 5, 10));
 		
@@ -184,24 +192,25 @@ public class Form extends BorderPane{
 		innerContainer.setAlignment(Pos.TOP_CENTER);
 		innerContainer.setPadding(new Insets(20));
 		innerContainer.setSpacing(30);
-		innerContainer.setMinWidth(780);
-		outerContainer.setMinWidth(800);
-		outerContainer.setStyle("-fx-background-color: #232323");
+		innerContainer.setMinWidth(480);
+		outerContainer.setMinWidth(600);
+		outerContainer.setStyle("-fx-background-color: #565656");
 		
-		buttonsPair.setSpacing(598);
+		buttonsPair.setSpacing(380);
+		buttonsPair.setPadding(new Insets(15,10,10,10));
+		buttonsPair.setStyle("-fx-background-color: #232323");
 		
 		setTop(title);
 		setCenter(outerContainer);
 		setBottom(buttonsPair);
 		this.setMaxHeight(700);
-		this.setMaxWidth(800);
-		Rectangle formRec = new Rectangle(800, 900);
+		this.setMaxWidth(600);
+		Rectangle formRec = new Rectangle(600, 700);
 		formRec.setArcHeight(30);
 		formRec.setArcWidth(30);
 		setClip(formRec);
 		//BorderPane.setAlignment(outerContainer, Pos.CENTER);
 		BorderPane.setAlignment(buttonsPair, Pos.CENTER_LEFT);
-		BorderPane.setMargin(buttonsPair, new Insets(7, 0, 7 , 0));
 	}
 	
 	/**
@@ -253,10 +262,10 @@ public class Form extends BorderPane{
 			}
 			String[] phone = {firstPhone.getText(), secondPhone.getText().isBlank() ? "none" : secondPhone.getText()};
 			String[] email = {firstEmail.getText(), secondEmail.getText().isBlank() ? "none" : secondEmail.getText()};
-			String description = this.description.getText().isBlank() ? "no description" : this.description.getText() ; 
+			String description = this.description.getText().isBlank() ? "no description" : this.description.getText(); 
 			
 			itemList.add(new Staff(name.getText(), gender.getValue().getText(), location.getText(), phone, email, role.getText(), qualification.getText(),
-					salary.getText(), description));
+					salary.getText(), accountAdmin.getText(), accountNumber.getText(), description));
 			return true;
 			
 		}
@@ -338,7 +347,7 @@ public class Form extends BorderPane{
 				((TextField)elem).setMaxWidth(340);
 				((TextField)elem).setMinWidth(340);
 				((TextField)elem).setMinHeight(40);;
-				((TextField)elem).setFont(Font.font("Inter SemiBold", 15));
+				((TextField)elem).setFont(Font.font("Inter", 14));
 				((TextField)elem).setStyle("-fx-background-color: #484848; -fx-text-fill: white");
 				((TextField)elem).focusedProperty().addListener(e -> {if(!errorInfor.getText().isEmpty()) {
 					errorInfor.setText(""); errorInfor.setStyle("-fx-background-color: none");}});

@@ -1,5 +1,7 @@
 package mdps_sms.gui;
 
+import java.text.SimpleDateFormat;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -18,7 +20,7 @@ import mdps_sms.util.Person;
 class Summary<E extends Person> extends BorderPane{
 	public Label forTitle = new Label("");
 	protected Label date = new Label("");
-	protected HBox title =new HBox(forTitle, date);
+	protected BorderPane title =new BorderPane();
 
 
 	private Label forFirstSection = new Label("Personal Information");
@@ -69,13 +71,19 @@ class Summary<E extends Person> extends BorderPane{
 	public VBox thirdSection = new VBox(forThirdSection, descriptionPair);
 
 	VBox mainContainer = new VBox();
+	
+	SimpleDateFormat dateFormat2 = new SimpleDateFormat("MMM dd yyyy");
 
 	Summary(E person){
 
 		forTitle.setText(person.getName());
-		date.setText(person.getDateRegistered().toString());
-		title.setSpacing(100);
+		forTitle.setMaxWidth(150);
+		date.setMaxWidth(150);
+		date.setText(dateFormat2.format(person.getDateRegistered()));
+		title.setLeft(forTitle);
+		title.setRight(date);
 		title.setMaxWidth(400);
+		title.setPadding(new Insets(20, 10, 10, 10));
 
 		gender.setText(person.getGender());
 		firstPhone.setText(person.getPhoneArray()[0]);
@@ -88,11 +96,10 @@ class Summary<E extends Person> extends BorderPane{
 		salary.setText(person.getSalary());
 		description.setText(person.getDescription());
 
-		forTitle.setFont(Font.font("Inter SemiBold", 14));
+		forTitle.setFont(Font.font("Inter SemiBold", 16));
 		forTitle.setWrapText(true);
 		forTitle.setTextFill(Color.WHITE);
-		forTitle.setMinWidth(150);
-		date.setFont(Font.font("Inter SemiBold", 14));
+		date.setFont(Font.font("Inter SemiBold", 16));
 		date.setTextFill(Color.WHITE);
 		date.setWrapText(true);
 		styleLabels(forName, forGender, forPrimaryPhone, forSecondaryPhone, forPrimaryEmail, forSecondaryEmail, forLocation,
@@ -114,33 +121,34 @@ class Summary<E extends Person> extends BorderPane{
 		firstSection.setSpacing(10);
 		secondSection.setSpacing(10);
 		descriptionPair.setSpacing(5);
-		descriptionPair.setMinHeight(50);
+		descriptionPair.setMinHeight(30);
 
-		mainContainer.getChildren().addAll(firstSection, secondSection);
+		mainContainer.getChildren().addAll(firstSection, secondSection, thirdSection);
 		ScrollPane scrl = new ScrollPane(mainContainer);
+		scrl.setStyle("-fx-background-color: #343434");
 
-		mainContainer.setMaxWidth(400);
-		mainContainer.setMaxHeight(450);
-		mainContainer.setPadding(new Insets(10));
+		mainContainer.setMinWidth(380);
+		mainContainer.setMinHeight(600);
 		mainContainer.setSpacing(20);
-		Rectangle sumRec = new Rectangle(400, 700);
+		mainContainer.setPadding(new Insets(10, 0, 10, 10));
+		mainContainer.setStyle("-fx-background-color: #232323");
+		Rectangle sumRec = new Rectangle(400, 600);
 		sumRec.setArcHeight(24);
 		sumRec.setArcWidth(24);
 		setClip(sumRec);
 
-		VBox topBox = new VBox(title, new Separator());
+		VBox topBox = new VBox(title);
 		topBox.setSpacing(5);
-		VBox bottomBox = new VBox(new Separator(),descriptionPair);
+		VBox bottomBox = new VBox();
 		bottomBox.setSpacing(5);
-		scrl.setStyle("-fx-background-color: #454545");
 		
 		setTop(topBox);
 		setCenter(scrl);
 		setBottom(bottomBox);
-		setMaxHeight(700);
-		setMaxWidth(400);
+		setMaxHeight(600);
+		setMinWidth(400);
 		setStyle("-fx-background-color: #232323");
-		setPadding(new Insets(10));
+		setPadding(new Insets(10, 0, 20, 0));
 		Main.fadeIn(this, 300);
 		setEffect(new DropShadow());
 	}

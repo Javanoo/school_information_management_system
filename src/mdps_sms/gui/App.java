@@ -1,18 +1,17 @@
 package mdps_sms.gui;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.TreeSet;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ListView;
@@ -20,30 +19,30 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.stage.Popup;
 import javafx.util.Duration;
 import mdps_sms.Main;
 import mdps_sms.util.Administrator;
 import mdps_sms.util.Fleet;
 import mdps_sms.util.Person;
+import mdps_sms.util.SchoolCalendar;
 import mdps_sms.util.SchoolClass;
 import mdps_sms.util.Staff;
 import mdps_sms.util.Student;
 import mdps_sms.util.Teacher;
 
 public class App extends BorderPane {
-	
+
 	private TreeSet<Student> studentData = new TreeSet<>();
 	private TreeSet<Teacher> teacherData = new TreeSet<>();
 	private TreeSet<Staff> staffData = new TreeSet<>();
 	private TreeSet<Fleet> fleetData = new TreeSet<>();
+	private SchoolCalendar calendarData = new SchoolCalendar(3);
 	private TreeSet<SchoolClass> classroomsData = new TreeSet<>();
-	
+
 	//private Settings settingsForm = new Settings();
 	//private ItemList<Student> studentItemList;
 	//private ItemList<Teacher> teacherItemList;
@@ -51,9 +50,11 @@ public class App extends BorderPane {
 	private ItemList<Student> studentItemList;
 	private ItemList<Teacher> teacherItemList;
 	private ItemList<Fleet> fleetItemList;
-	
+	private CalendarTable calendar = new CalendarTable(calendarData.getDates());
+	private FeesList feesList = new FeesList(studentData);
+
 	private Dialog logoutDialog = new Dialog();
-	
+
 	Administrator admin;
 
 	private static BorderPane centralPanel = new BorderPane();
@@ -61,15 +62,15 @@ public class App extends BorderPane {
 	private HBox profileBox = new HBox();
 	private Label loggedUser = new Label("Admin");
 
-	private Label dashboard = new Label("DashBoard");
-	private Label students = new Label("Students");
-	private Label teachers = new Label("Teachers");
-	private Label staff = new Label("Staff");
-	private Label classes = new Label("Classes");
-	private Label calendar = new Label("Calendar");
-	private Label exams = new Label("Exams");
-	private Label fees = new Label("Fees");
-	private Label fleet = new Label("Fleet");
+	private Label forDashboard = new Label("DashBoard");
+	private Label forStudents = new Label("Students");
+	private Label forTeachers = new Label("Teachers");
+	private Label forStaff = new Label("Staff");
+	private Label forClasses = new Label("Classes");
+	private Label forCalendar = new Label("Calendar");
+	private Label forExams = new Label("Exams");
+	private Label forFees = new Label("Fees");
+	private Label forFleet = new Label("Fleet");
 	private ListView<Labeled> navigation = new ListView<>();
 
 	private Button settings = new Button("Settings");
@@ -87,59 +88,62 @@ public class App extends BorderPane {
 
 	public App() {}
 
-	public App(Administrator admin, TreeSet<Student> studentData, TreeSet<Teacher> teacherData, TreeSet<Staff> staffData,
+	public App(Administrator admin, TreeSet<Student> studentData, TreeSet<Teacher> teacherData, TreeSet<Staff> staffData, TreeSet<Fleet> fleetData,
 			TreeSet<SchoolClass> classrooms) {
 		this.admin = admin;
 		this.studentData = studentData;
 		this.teacherData = teacherData;
 		this.staffData = staffData;
+		this.fleetData = fleetData;
 		this.classroomsData = classrooms;
+
+		staffItemList = new ItemList<>(new Staff(),this.staffData);
+		studentItemList = new ItemList<>(new Student(), this.studentData);
+		teacherItemList = new ItemList<>(new Teacher(), this.teacherData);
+		fleetItemList = new ItemList<>(new Fleet(), this.fleetData);
 		
-		staffItemList = new ItemList<Staff>(new Staff(),this.staffData);
-		studentItemList = new ItemList<Student>(new Student(), this.studentData);
-		teacherItemList = new ItemList<Teacher>(new Teacher(), this.teacherData);
-		fleetItemList = new ItemList<Fleet>(new Fleet(), this.fleetData);
-		
-		navTable.put("DashBoard", new Summary<Staff>(staffData.last()));
+		feesList = new FeesList(studentData);
+
+		navTable.put("DashBoard", null);
 		navTable.put("Students", studentItemList);
 		navTable.put("Teachers", teacherItemList);
 		navTable.put("Staff", staffItemList);
-		navTable.put("Calendar", null);
+		navTable.put("Calendar", calendar);
 		navTable.put("Exams", null);
-		navTable.put("Fees", null);
+		navTable.put("Fees", feesList);
 		navTable.put("Fleet", fleetItemList);
 
 		//navigation tabs
-		dashboard.setGraphic(UiComponents.createIcon("comboChartBlack.png", 24));
-		styleNavElem(dashboard);
+		forDashboard.setGraphic(UiComponents.createIcon("comboChartBlack.png", 24));
+		styleNavElem(forDashboard);
 
-		students.setGraphic(UiComponents.createIcon("studentBlack.png", 24));
-		styleNavElem(students);
+		forStudents.setGraphic(UiComponents.createIcon("studentBlack.png", 24));
+		styleNavElem(forStudents);
 
-		teachers.setGraphic(UiComponents.createIcon("teacherBlack.png", 24));
-		styleNavElem(teachers);
+		forTeachers.setGraphic(UiComponents.createIcon("teacherBlack.png", 24));
+		styleNavElem(forTeachers);
 
-		staff.setGraphic(UiComponents.createIcon("staffBlack.png", 24));
-		styleNavElem(staff);
-		staff.setOnKeyPressed(e -> {if(e.getCode().equals(KeyCode.TAB)) centralPanel.requestFocus();});
-		
-		classes.setGraphic(UiComponents.createIcon("userBlack.png", 24));
-		styleNavElem(classes);
-		
-		calendar.setGraphic(UiComponents.createIcon("calendarBlack.png", 24));
-		styleNavElem(calendar);
+		forStaff.setGraphic(UiComponents.createIcon("staffBlack.png", 24));
+		styleNavElem(forStaff);
+		forStaff.setOnKeyPressed(e -> {if(e.getCode().equals(KeyCode.TAB)) centralPanel.requestFocus();});
 
-		exams.setGraphic(UiComponents.createIcon("courseAssignBlack.png", 24));
-		styleNavElem(exams);
+		forClasses.setGraphic(UiComponents.createIcon("userBlack.png", 24));
+		styleNavElem(forClasses);
 
-		fees.setGraphic(UiComponents.createIcon("cashBlack.png", 24));
-		styleNavElem(fees);
+		forCalendar.setGraphic(UiComponents.createIcon("calendarBlack.png", 24));
+		styleNavElem(forCalendar);
 
-		fleet.setGraphic(UiComponents.createIcon("shuttleBusBlack.png", 24));
-		styleNavElem(fleet);
+		forExams.setGraphic(UiComponents.createIcon("courseAssignBlack.png", 24));
+		styleNavElem(forExams);
 
-		navigation.setItems(FXCollections.observableArrayList(dashboard, students,
-				teachers, calendar, exams, staff, classes, fees, fleet));
+		forFees.setGraphic(UiComponents.createIcon("cashBlack.png", 24));
+		styleNavElem(forFees);
+
+		forFleet.setGraphic(UiComponents.createIcon("shuttleBusBlack.png", 24));
+		styleNavElem(forFleet);
+
+		navigation.setItems(FXCollections.observableArrayList(forDashboard, forStudents,
+				forTeachers, forCalendar, forExams, forStaff, forClasses, forFees, forFleet));
 		navigation.setMaxHeight(400);
 		navigation.setFixedCellSize(44);
 		navigation.setMaxWidth(200);
@@ -223,7 +227,8 @@ public class App extends BorderPane {
 	}
 
 	public static void fadeIn(Node E) {
-		FadeTransition fade = new FadeTransition(new Duration(200), E);
+		FadeTransition fade = new FadeTransition(new Duration(300), E);
+		fade.setInterpolator(Interpolator.EASE_BOTH);
 		fade.setAutoReverse(true);
 		fade.setCycleCount(1);
 		fade.setFromValue(0.2);

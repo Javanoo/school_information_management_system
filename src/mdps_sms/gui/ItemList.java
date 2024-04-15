@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -44,11 +45,11 @@ public class ItemList<E extends Person> extends BorderPane{
 	private TreeSet<E> data = new TreeSet<>();
 
 	private Form staffForm = new Form();
-	private StudentForm studentForm = new StudentForm();
+	private StudentForm studentForm = new StudentForm(new TreeSet<SchoolClass>());
 	private TeacherForm teacherForm = new TeacherForm();
 	private FleetForm fleetForm = new FleetForm();
 
-	private ActionBar actionBar = new ActionBar(null);
+	private ActionBar actionBar = new ActionBar();
 
 	private ContextMenu subMenu = new ContextMenu();
 	private MenuItem view = new MenuItem("view");
@@ -66,6 +67,9 @@ public class ItemList<E extends Person> extends BorderPane{
 	TableColumn<E, String> car = new TableColumn<>("Car");
 	TableColumn<E, String> carNumberPlate = new TableColumn<>("Number Plate");
 	TableColumn<E, String> route = new TableColumn<>("Route");
+	TableColumn<E, String> codeNumber = new TableColumn<>("Code Number");
+	TableColumn<E, String> accountAdmin = new TableColumn<>("Account administrator");
+	TableColumn<E, String> accountNumber = new TableColumn<>("Account number");
 
 	ItemList(){}
 
@@ -94,7 +98,10 @@ public class ItemList<E extends Person> extends BorderPane{
 		car.setCellValueFactory(new PropertyValueFactory<>("car"));
 		carNumberPlate.setCellValueFactory(new PropertyValueFactory<>("carNumberPlate"));
 		route.setCellValueFactory(new PropertyValueFactory<>("route"));
-
+		codeNumber.setCellValueFactory(new PropertyValueFactory<>("codeNumber"));
+		accountAdmin.setCellValueFactory(new PropertyValueFactory<>("accountAdmin"));
+		accountNumber.setCellValueFactory(new PropertyValueFactory<>("accountNumber"));
+		
 		view.setOnAction(e -> {
 			showSummary();
 		});
@@ -110,11 +117,16 @@ public class ItemList<E extends Person> extends BorderPane{
 			table.getColumns().add(phone);
 			table.getColumns().add(email);
 			table.getColumns().add(salary);
+			table.getColumns().add(accountNumber);
+			table.getColumns().add(accountAdmin);
 			actionBar.getDelete().setOnAction(e -> {
-				data.remove(table.getSelectionModel().getSelectedItem());
-				table.setItems(FXCollections.observableList(new LinkedList<>(data)));
+				if(table.getSelectionModel().getSelectedItems().size() != 0) {
+					data.removeAll(table.getSelectionModel().getSelectedItems());
+					table.setItems(FXCollections.observableList(new LinkedList<>(data)));
+				}
 			});
 			getActionBar().getAdd().setOnAction(e -> {
+				Main.popup.getContent().clear();
 				Main.popup.getContent().add(getStaffForm());
 				Main.popup.show(Main.primaryStage);
 				Main.popup.setAnchorY(200);
@@ -131,6 +143,7 @@ public class ItemList<E extends Person> extends BorderPane{
 
 			//edit
 			getActionBar().getEdit().setOnAction(e -> {
+				Main.popup.getContent().clear();
 				Main.popup.getContent().add(getStaffForm());
 				getStaffForm().edit((Staff)table.getSelectionModel().getSelectedItem(),getData());
 				Main.popup.show(Main.primaryStage);
@@ -138,12 +151,15 @@ public class ItemList<E extends Person> extends BorderPane{
 		}else if(type instanceof Student) {
 			table.getColumns().add(classroom);
 			table.getColumns().add(parent);
+			phone.setText("Parent's phone");
 			table.getColumns().add(phone);
+			email.setText("Parent's email");
 			table.getColumns().add(email);
-			if(data.isEmpty()) {
+			table.getColumns().add(0, codeNumber);
+			/*if(data.isEmpty()) {
 				noItems = new Label("Add classes first, to add students");
 				actionBar.setDisable(true);
-			}
+			}*/
 			actionBar.getDelete().setOnAction(e -> {
 				//remove student from classroom first
 				((Student)table.getSelectionModel().getSelectedItem()).getClassroom().getStudents().remove(table.getSelectionModel().getSelectedItem());
@@ -153,6 +169,7 @@ public class ItemList<E extends Person> extends BorderPane{
 			});
 
 			getActionBar().getAdd().setOnAction(e -> {
+				Main.popup.getContent().clear();
 				Main.popup.getContent().add(getStudentForm());
 				Main.popup.show(Main.primaryStage);
 				Main.popup.setAnchorY(200);
@@ -169,8 +186,9 @@ public class ItemList<E extends Person> extends BorderPane{
 
 			//edit
 			getActionBar().getEdit().setOnAction(e -> {
+				Main.popup.getContent().clear();
 				Main.popup.getContent().add(getStudentForm());
-				//getStudentForm().edit((Teacher)table.getSelectionModel().getSelectedItem(),getData());
+				getStudentForm().edit((Student)table.getSelectionModel().getSelectedItem(), getData());
 				Main.popup.show(Main.primaryStage);
 			});
 
@@ -180,6 +198,8 @@ public class ItemList<E extends Person> extends BorderPane{
 			table.getColumns().add(phone);
 			table.getColumns().add(email);
 			table.getColumns().add(salary);
+			table.getColumns().add(accountNumber);
+			table.getColumns().add(accountAdmin);
 
 			actionBar.getDelete().setOnAction( e -> {
 				//remove Teacher from classroom first
@@ -190,6 +210,7 @@ public class ItemList<E extends Person> extends BorderPane{
 				table.setItems(FXCollections.observableList(new LinkedList<>(data)));
 			});
 			getActionBar().getAdd().setOnAction(e -> {
+				Main.popup.getContent().clear();
 				Main.popup.getContent().add(getTeacherForm());
 				Main.popup.show(Main.primaryStage);
 				Main.popup.setAnchorY(200);
@@ -206,6 +227,7 @@ public class ItemList<E extends Person> extends BorderPane{
 
 			//edit
 			getActionBar().getEdit().setOnAction(e -> {
+				Main.popup.getContent().clear();
 				Main.popup.getContent().add(getTeacherForm());
 			//	getTeacherForm().edit((Teacher)table.getSelectionModel().getSelectedItem(),getData());
 				Main.popup.show(Main.primaryStage);
@@ -221,6 +243,7 @@ public class ItemList<E extends Person> extends BorderPane{
 				table.setItems(FXCollections.observableList(new LinkedList<>(data)));
 			});
 			getActionBar().getAdd().setOnAction(e -> {
+				Main.popup.getContent().clear();
 				Main.popup.getContent().add(getFleetForm());
 				Main.popup.show(Main.primaryStage);
 				Main.popup.setAnchorY(200);
@@ -237,17 +260,19 @@ public class ItemList<E extends Person> extends BorderPane{
 
 			//edit
 			getActionBar().getEdit().setOnAction(e -> {
+				Main.popup.getContent().clear();
 				Main.popup.getContent().add(getFleetForm());
-				//getFleetForm().edit((Teacher)table.getSelectionModel().getSelectedItem(),getData());
+				getFleetForm().edit((Fleet)table.getSelectionModel().getSelectedItem(),getData());
 				Main.popup.show(Main.primaryStage);
 			});
-		}else {}
+		}
 		table.setItems(FXCollections.observableList(new LinkedList<>(data)));
 		table.getSelectionModel().selectFirst();
 		table.requestFocus();
 		table.setPlaceholder(placeHolder);
 		table.setTableMenuButtonVisible(true);
-		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_LAST_COLUMN);
+		table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
 
 
@@ -276,6 +301,7 @@ public class ItemList<E extends Person> extends BorderPane{
 		BorderPane.setMargin(actionBar, new Insets(7, 7, 7 , 0));
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void showSummary() {
 		Popup summary = new Popup();
 

@@ -13,12 +13,11 @@ public class Parent extends Person {
 	private static final long serialVersionUID = -4414380891539446068L;
 	private static ArrayList<Student> children = new ArrayList<>();
 	
-	Parent(){}
+	public Parent(){}
 	
-	Parent(String name, String location, String[] email, String[] phone){
+	public Parent(String name, String[] phone, String[] email){
 		super();
 		setName(name);
-		setLocation(location);
 		setEmail(email);
 		setPhone(phone);
 	}

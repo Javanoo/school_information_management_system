@@ -9,7 +9,7 @@ public class Staff extends Person {
 	public Staff() {}
 	
 	public Staff(String name, String gender, String location, String[] phone, String[] email, String role, 
-			String qualification, String salary, String description){
+			String qualification, String salary, String accountAdmin, String accountNumber, String description){
 		setName(name);
 		setGender(gender);
 		setLocation(location);
@@ -18,6 +18,8 @@ public class Staff extends Person {
 		setRole(role);
 		setQualification(qualification);
 		setSalary(salary);
+		setAccountAdmin(accountAdmin);
+		setAccountNumber(accountNumber);
 		setDescription(description);
 		setDateRegistered(new Date());
 	}

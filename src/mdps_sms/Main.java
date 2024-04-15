@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.util.TreeSet;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
 import javafx.application.Application;
 import javafx.scene.Node;
@@ -16,13 +17,12 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.stage.Popup;
-import javafx.stage.PopupWindow.AnchorLocation;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import mdps_sms.gui.App;
-import mdps_sms.gui.Form;
 import mdps_sms.gui.Login;
 import mdps_sms.util.Administrator;
+import mdps_sms.util.Fleet;
 import mdps_sms.util.SchoolClass;
 import mdps_sms.util.Staff;
 import mdps_sms.util.Student;
@@ -36,7 +36,7 @@ public class Main extends Application{
 	private final String STORAGEFILE_S  = "mdps_S.bin";  // for students
 	private final String STORAGEFILE_T  = "mdps_T.bin";  // for teachers
 	private final String STORAGEFILE_s  = "mdps_s.bin";  // for students
-	private final String STORAGEFILE_F  = "mdps_F.bin";  // for fleets
+	public static final String STORAGEFILE_F  = "mdps_F.bin";  // for fleets
 	private final String STORAGEFILE_C2 = "mdps_C2.bin"; // for calendars
 	
 	//data structures
@@ -45,6 +45,7 @@ public class Main extends Application{
 	private static TreeSet<Teacher> teachers = new TreeSet<>();
 	private static TreeSet<Staff> staff = new TreeSet<>();
 	private static TreeSet<SchoolClass> classrooms = new TreeSet<>();
+	private static TreeSet<Fleet> fleet = new TreeSet<>();
 	
 	public static Popup popup = new Popup();
 	public static Stage primaryStage = new Stage();
@@ -69,11 +70,12 @@ public class Main extends Application{
 		//students = (TreeSet<Student>)loadAdmin(STORAGEFILE_S);
 		//teachers = (TreeSet<Teacher>)loadAdmin(STORAGEFILE_T);
 		//classrooms = (TreeSet<SchoolClass>)loadAdmin(STORAGEFILE_C);
+		fleet = (TreeSet<Fleet>)loadData(STORAGEFILE_F);
 		staff = (TreeSet<Staff>)loadData(STORAGEFILE_s);
 		
 		//System.out.print(admin.getName());
 		
-		app = new App(admin,students, teachers, staff, classrooms);
+		app = new App(admin,students, teachers, staff, fleet, classrooms);
 		
 		//if the admin logged out, load the login ui, otherwise
 		//continue with existing session.
@@ -88,6 +90,7 @@ public class Main extends Application{
 		popup.setOnShowing(e -> {
 			app.setDisable(true);
 			app.setStyle("-fx-background-color: #232323");
+			Main.fadeIn(popup.getContent().get(0), 350);
 		});
 		popup.setOnHidden(e -> {
 			app.setDisable(false);
@@ -95,6 +98,7 @@ public class Main extends Application{
 		});
 		
 		Scene scene = new Scene(mainContainer, 1500, 850);
+		fadeIn(mainContainer, 800);
 		scene.getStylesheets().add("style.css");
 		Main.primaryStage.setTitle("School");
 		Main.primaryStage.setScene(scene);
@@ -103,6 +107,7 @@ public class Main extends Application{
 		/*Main.primaryStage.setOnCloseRequest(e -> {
 			saveData(staff, STORAGEFILE_s);
 			saveData(admin, STORAGEFILE1);
+			sleep(1);
 		});*/
 	}
 	
@@ -139,6 +144,7 @@ public class Main extends Application{
 	
 	public static void fadeIn(Node E, double duration) {
 		FadeTransition fade = new FadeTransition(new Duration(duration), E);
+		fade.setInterpolator(Interpolator.EASE_IN);
 		fade.setAutoReverse(true);
 		fade.setCycleCount(1);
 		fade.setFromValue(0.2);

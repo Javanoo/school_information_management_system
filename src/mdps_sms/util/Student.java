@@ -15,8 +15,10 @@ import java.util.Date;
  */
 public class Student extends Person {
 	private static final long serialVersionUID = -4057680552881492210L;
+	private String codeNumber = "none";
 	private SchoolClass classroom = new SchoolClass();
 	Parent[] parents = new Parent[2];
+	private long fees = 0;
 	
 	
 	//no-arg constructor
@@ -31,7 +33,7 @@ public class Student extends Person {
 	 * @param parents
 	 * @param description
 	 */
-	public Student(String name, String gender, SchoolClass classroom, Parent[] parents, String description){
+	public Student(String name, String codeNumber,String gender, SchoolClass classroom, Parent[] parents, String description){
 		super();
 		this.setName(name);
 		this.setGender(gender);
@@ -188,9 +190,8 @@ public class Student extends Person {
 	 * @exception UnsupportedOPerationExcepton
 	 */
 	@Override
-	public String getPhone()throws UnsupportedOperationException{
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Students doesn't have phones.");
+	public String getPhone(){
+		return (parents[0].getPhone().isBlank()) ? "none" : parents[0].getPhone();
 	}
 	
 	/**
@@ -208,9 +209,8 @@ public class Student extends Person {
 	 * @exception UnsupportedOPerationExcepton
 	 */
 	@Override
-	public String getEmail() throws UnsupportedOperationException{
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Students don't have emails");
+	public String getEmail(){
+		return (parents[0].getEmail().isBlank()) ? "none" : parents[0].getEmail();
 	}
 	
 	/**
@@ -221,5 +221,19 @@ public class Student extends Person {
 	public void setEmail(String[] email) throws UnsupportedOperationException{
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Students don't have emails, instead set their Parent's email.");
+	}
+
+	/**
+	 * @return the codeNumber
+	 */
+	public synchronized String getCodeNumber() {
+		return codeNumber;
+	}
+
+	/**
+	 * @param codeNumber the codeNumber to set
+	 */
+	public synchronized void setCodeNumber(String codeNumber) {
+		this.codeNumber = codeNumber;
 	}
 }

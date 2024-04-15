@@ -9,7 +9,9 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 	private String name = "unknown";
 	private String gender = "unknown";
 	private String role = "unknown";
-	private String qualification = "unknown";
+	private String qualification = "none";
+	private String accountNumber = "none";
+	private String accountAdmin = "unknown";
 	private String salary = "unknown";
 	private String location = "unknown";
 	private String[] phone = {"none", "none"};
@@ -220,5 +222,33 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * @return the accountNumber
+	 */
+	public synchronized String getAccountNumber() {
+		return accountNumber;
+	}
+
+	/**
+	 * @param accountNumber the accountNumber to set
+	 */
+	public synchronized void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	/**
+	 * @return the accountAdmin
+	 */
+	public synchronized String getAccountAdmin() {
+		return accountAdmin;
+	}
+
+	/**
+	 * @param accountAdmin the accountAdmin to set
+	 */
+	public synchronized void setAccountAdmin(String accountAdmin) {
+		this.accountAdmin = accountAdmin;
 	}
 }

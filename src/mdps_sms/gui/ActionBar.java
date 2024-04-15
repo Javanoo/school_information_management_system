@@ -31,7 +31,7 @@ public class ActionBar extends HBox {
 	
 	Rectangle actRec = new Rectangle(165, 37);
 	
-	public ActionBar(Person ps) {
+	public ActionBar() {
 		separator.setOrientation(Orientation.VERTICAL);
 		separator.setMaxHeight(20);
 		separator.setStyle("-fx-color: black");
