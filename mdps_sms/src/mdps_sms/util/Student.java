@@ -86,6 +86,7 @@ public class Student extends Person {
 	}
 
 	public String getParentName() {
+		this.parentName = getParents()[0].getName();
 		return parentName;
 	}
 
@@ -279,15 +280,5 @@ public class Student extends Person {
 		this.feesPaidEntry = feesPaidEntry;
 		feesPaid = 0;
 		for(Long elem : feesPaidEntry.values()) feesPaid += elem;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-
-		//if obj is instance of this class, check equality based on name reference.
-		if(obj instanceof Student) return getName().equals(((Student)obj).getName());
-
-		//else based on obj reference.
-		return this.equals(obj);
 	}
 }

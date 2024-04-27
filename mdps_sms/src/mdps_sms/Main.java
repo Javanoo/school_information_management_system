@@ -36,13 +36,26 @@ import mdps_sms.util.Teacher;
 public class Main extends Application{
 
 	//data structure files
-	public static final String STORAGEFILE1   = "mdps1.bin";   // for admin
-	public static final String STORAGEFILE_C  = "mdps_C.bin";  // for classrooms
-	public static final String STORAGEFILE_S  = "mdps_S.bin";  // for students
-	public static final String STORAGEFILE_T  = "mdps_T.bin";  // for teachers
-	public static final String STORAGEFILE_s  = "mdps_s.bin";  // for students
-	public static final String STORAGEFILE_F  = "mdps_F.bin";  // for fleets
-	public static final String STORAGEFILE_C2 = "mdps_C2.bin"; // for calendars
+	 /** for admin */
+	public static final String STORAGEFILE1   = "mdps1.bin";  
+	
+	/** for classrooms */
+	public static final String STORAGEFILE_C  = "mdps_C.bin";  
+	
+	/** for students */
+	public static final String STORAGEFILE_S  = "mdps_S.bin";
+	
+	/** for teachers */
+	public static final String STORAGEFILE_T  = "mdps_T.bin";
+	
+	/** for staff */
+	public static final String STORAGEFILE_s  = "mdps_s.bin";
+	
+	/** for fleets */
+	public static final String STORAGEFILE_F  = "mdps_F.bin";
+	
+	/** for calendars */
+	public static final String STORAGEFILE_C2 = "mdps_C2.bin"; 
 
 	//data structures
 	private static Administrator admin= null;
@@ -105,7 +118,8 @@ public class Main extends Application{
 		popup.setOnShowing(e -> {
 			app.setDisable(true);
 			app.setStyle("-fx-background-color: #232323");
-			Main.fadeIn(popup.getContent().get(0), 350);
+			Main.fadeIn(popup.getContent().get(0), 500);
+			popup.setHideOnEscape(true);
 		});
 		popup.setOnHidden(e -> {
 			app.setDisable(false);
@@ -136,7 +150,7 @@ public class Main extends Application{
 
 		}catch(Exception e) {
 			//replace with a logger :)
-			System.out.println("[Failed to load admin] : " + e.getMessage());
+			System.out.println("[Failed to load data from " + filename + " ] : " + e.getMessage());
 			return null;
 		}
 	}

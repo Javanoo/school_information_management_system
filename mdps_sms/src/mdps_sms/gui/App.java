@@ -2,7 +2,6 @@ package mdps_sms.gui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.ArrayList;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -26,8 +25,6 @@ import mdps_sms.Main;
 import mdps_sms.util.Administrator;
 import mdps_sms.util.Fleet;
 import mdps_sms.util.Person;
-import mdps_sms.util.SchoolCalendar;
-import mdps_sms.util.SchoolClass;
 import mdps_sms.util.Staff;
 import mdps_sms.util.Student;
 import mdps_sms.util.Teacher;
@@ -83,16 +80,16 @@ public class App extends BorderPane {
 	public App(Administrator admin) {
 		if(admin != null) {
 			this.admin = admin;
-		
+
 			navTable.put("DashBoard", new DashBoard(admin, Main.cal));
-			navTable.put("Students", new ItemList<>(new Student(), studentData));
-			navTable.put("Teachers", new ItemList<>(new Teacher(), teacherData));
+			navTable.put("Students", new ItemList<>(new Student(), Main.students));
+			navTable.put("Teachers", new ItemList<>(new Teacher(), Main.teachers));
 			navTable.put("Classes", new Classrooms());
-			navTable.put("Staff", new ItemList<>(new Staff(), staffData));
+			navTable.put("Staff", new ItemList<>(new Staff(), Main.staff));
 			navTable.put("Calendar", new CalendarTable(Main.cal));
 			//navTable.put("Exams", null);
-			navTable.put("Fees", new FeesList(studentData));
-			navTable.put("Fleet",  new ItemList<>(new Fleet(), fleetData));
+			navTable.put("Fees", new FeesList(Main.students));
+			navTable.put("Fleet",  new ItemList<>(new Fleet(), Main.fleet));
 
 			//navigation tabs
 			forDashboard.setGraphic(UiComponents.createIcon("comboChartBlack.png", 24));
@@ -106,7 +103,9 @@ public class App extends BorderPane {
 
 			forStaff.setGraphic(UiComponents.createIcon("staffBlack.png", 24));
 			styleNavElem(forStaff);
-			forStaff.setOnKeyPressed(e -> {if(e.getCode().equals(KeyCode.TAB)) centralPanel.requestFocus();});
+			forStaff.setOnKeyPressed(e -> {if(e.getCode().equals(KeyCode.TAB)) {
+				centralPanel.requestFocus();
+			}});
 
 			forClasses.setGraphic(UiComponents.createIcon("userBlack.png", 24));
 			styleNavElem(forClasses);
@@ -122,8 +121,8 @@ public class App extends BorderPane {
 
 			forFleet.setGraphic(UiComponents.createIcon("shuttleBusBlack.png", 24));
 			styleNavElem(forFleet);
-			
-			navigation.setItems(FXCollections.observableArrayList(forDashboard, forCalendar, forClasses,  forExams, forFees, forTeachers, 
+
+			navigation.setItems(FXCollections.observableArrayList(forDashboard, forCalendar, forClasses,  forExams, forFees, forTeachers,
 					forStudents, forStaff, forFleet));
 			navigation.setMaxHeight(400);
 			navigation.setFixedCellSize(44);
@@ -134,10 +133,11 @@ public class App extends BorderPane {
 				{
 					switchView((Node)navTable.get(navigation.getSelectionModel().getSelectedItem().getText()));
 					navTable.put("DashBoard", new DashBoard(admin, Main.cal));
-					navTable.put("Students", new ItemList<>(new Student(), studentData));
-					navTable.put("Teachers", new ItemList<>(new Teacher(), teacherData));
-					navTable.put("Staff", new ItemList<>(new Staff(), staffData));
-					navTable.put("Fees", new FeesList(studentData));
+					navTable.put("Students", new ItemList<>(new Student(), Main.students));
+					navTable.put("Teachers", new ItemList<>(new Teacher(), Main.teachers));
+					Classrooms.classesTable.refresh();
+					navTable.put("Staff", new ItemList<>(new Staff(), Main.staff));
+					navTable.put("Fees", new FeesList(Main.students));
 					navTable.put("Calendar", new CalendarTable(Main.cal));
 				}
 			);

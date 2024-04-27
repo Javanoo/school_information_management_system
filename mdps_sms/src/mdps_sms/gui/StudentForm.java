@@ -2,6 +2,7 @@ package mdps_sms.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Control;
@@ -97,17 +98,57 @@ public class StudentForm extends Form {
 			
 			if(selectedClass != null && parentArray != null) {
 				if(itemList == null) itemList = new ArrayList<Student>();
+				
+				Iterator<SchoolClass> iter = Main.classrooms.iterator();
+				
 				Student newStudent = new Student(name.getText(), codeNumber.getText(),gender.getValue(), selectedClass, parentArray, description);
-				if(itemList.contains(type)) {
-					SchoolClass classCopy = ((Student)type).getClassroom();
-					classCopy.getStudents().remove((Student)type);
-					Main.classrooms.remove(((Student)type).getClassroom());
-					Main.classrooms.add(classCopy);
+				
+				//edit an already existing student
+				if(itemList.contains((Student)type)) {
+					((Student)type).setName(name.getText());
+					((Student)type).setGender(gender.getValue());
+					((Student)type).setParents(parentArray);
+					((Student)type).setDescription(description);
+					
+					//update classes
+					if(!selectedClass.getName().equals((((Student)type).getClassroom()).getName())) {
+						SchoolClass classCopy = (((Student)type).getClassroom());
+						
+						while(iter.hasNext()) {
+							SchoolClass classroom = iter.next();
+							if(classroom.getName().equals(classCopy.getName())) {
+								classroom.getStudents().remove(((Student)type));
+								break;
+							}
+						}
+						
+						Iterator<SchoolClass> iter2 = Main.classrooms.iterator();
+						
+						while(iter2.hasNext()) {
+							SchoolClass classroom = iter2.next();
+							if(classroom.getName().equals(selectedClass.getName())) {
+								classroom.getStudents().add(((Student)type));
+								break;
+							}
+						}
+						
+						((Student)type).setClassroom(selectedClass);
+					}
+					
+					//update student list
+					itemList.set(itemList.indexOf((Student)type), (Student)type);
+					return true;
 				}
-				selectedClass.getStudents().add(newStudent);
+				
+				//add student to the class
+				while(iter.hasNext()) {
+					SchoolClass classroom = iter.next();
+					if(classroom.getName().equals(selectedClass.getName())) {
+						classroom.getStudents().add(newStudent);
+						break;
+					}
+				}
 				itemList.add(newStudent);
-				Main.saveData(itemList, Main.STORAGEFILE_S);
-				Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
 				return true;
 			}
 			if(selectedClass == null) warn("select a class");
@@ -206,16 +247,17 @@ public class StudentForm extends Form {
 		});
 	}
 	
-	/*@Override
-	public void cancel() {
-		sup
-		codeNumber.clear();
-		parent.clear();
-		secondParent.clear();
-		secondParentFirstPhone.clear();
-		secondParentSecondPhone.clear();
-		secondParentFirstEmail.clear();
-		secondParentSecondEmail.clear();
-		classrooms.getSelectionModel().clearSelection();
-	}*/
+	private String generateCode(String Name) {
+		String[] codeArray = Name.split(" ");
+		if(codeArray.length == 1) {
+			String code =  (codeArray[0].charAt(0) + "" + codeArray[0].charAt(codeArray[0].length() - 1)).toUpperCase();
+		}else {
+			String code =  (codeArray[0].charAt(0) + "" + codeArray[0].charAt(codeArray[0].length() - 1) + "" + 
+					codeArray[codeArray.length - 1].charAt(codeArray[codeArray.length - 1].length() - 1)
+			).toUpperCase();
+		}
+		
+		
+		return "";
+	}
 }

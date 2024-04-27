@@ -29,6 +29,16 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+
+		//if obj is instance of this class, check equality based on name reference.
+		if(obj instanceof Person) return getName().equals(((Person)obj).getName());
+
+		//else based on obj reference.
+		return this == obj;
+	}
 
 	/**
 	 * Returns a name plus role string description of this object.

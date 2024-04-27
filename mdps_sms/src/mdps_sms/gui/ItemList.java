@@ -48,6 +48,8 @@ public class ItemList<E extends Person> extends BorderPane{
 	private ContextMenu subMenu = new ContextMenu();
 	private MenuItem view = new MenuItem("view");
 	private MenuItem mail = new MenuItem("email");
+	private MenuItem print = new MenuItem("print");
+	private MenuItem printAll = new MenuItem("print all");
 	
 	Mail mailor = new Mail();
 
@@ -103,7 +105,7 @@ public class ItemList<E extends Person> extends BorderPane{
 		view.setOnAction(e -> {
 			showSummary();
 		});
-		subMenu.getItems().addAll(view, mail);
+		subMenu.getItems().addAll(view, print, printAll, mail);
 		subMenu.setId("tableSubMenu");
 
 		table.getColumns().add(name);
@@ -175,7 +177,7 @@ public class ItemList<E extends Person> extends BorderPane{
 					});
 				}
 			});
-		}else if(type instanceof Student) {
+		}else if(type instanceof Student) {///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			table.getColumns().add(classroom);
 			table.getColumns().add(parent);
 			phone.setText("Parent's phone");
@@ -193,12 +195,17 @@ public class ItemList<E extends Person> extends BorderPane{
 				if(table.getSelectionModel().getSelectedItems().size() != 0) {
 					//remove student from classroom first
 					for(E elem : table.getSelectionModel().getSelectedItems()) {
-						SchoolClass classroom = ((Student)elem).getClassroom();
-						classroom.getStudents().remove((Student)elem);
-						if(FXCollections.observableList(Main.classrooms).contains(classroom)) System.out.println(" contains class ");
-						if (Main.classrooms.remove(classroom)) System.out.println(" removed class ");
-						else System.out.println(" failed to remove class ");
-						Main.classrooms.add(classroom);
+						SchoolClass classCopy = (((Student)elem).getClassroom());
+						
+						Iterator<SchoolClass> iter = Main.classrooms.iterator();
+						
+						while(iter.hasNext()) {
+							SchoolClass classroom = iter.next();
+							if(classroom.getName().equals(classCopy.getName())) {
+								classroom.getStudents().remove(((Student)elem));
+								break;
+							}
+						}
 					}
 					
 					//remove students and save both the student dat and classrooms.
@@ -210,6 +217,7 @@ public class ItemList<E extends Person> extends BorderPane{
 			});
 
 			getActionBar().getAdd().setOnAction(e -> {
+				//call the pop up
 				Main.popup.getContent().add(new StudentForm());
 				Main.popup.show(Main.primaryStage);
 				Main.popup.setAnchorY(200);
@@ -221,12 +229,10 @@ public class ItemList<E extends Person> extends BorderPane{
 				((StudentForm)Main.popup.getContent().get(0)).cancel.setOnAction(v -> {
 					getTable().setItems(FXCollections.observableList(itemList));
 					Main.popup.hide();
-					Main.popup.getContent().clear();
 				});
 				
 				((StudentForm)Main.popup.getContent().get(0)).save.setOnAction(v -> {
 					if (((StudentForm)Main.popup.getContent().get(0)).createNew(new Student(), itemList)) {
-						//table.setItems(FXCollections.observableList(new LinkedList<>(data)));
 						((StudentForm)Main.popup.getContent().get(0)).cancel.fire();
 						Main.saveData(itemList, Main.STORAGEFILE_S);
 						Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
@@ -238,19 +244,23 @@ public class ItemList<E extends Person> extends BorderPane{
 			//edit
 			getActionBar().getEdit().setOnAction(e -> {
 				if((Student)table.getSelectionModel().getSelectedItem() != null) {
-					Main.popup.getContent().add(new StudentForm());
-					((StudentForm)Main.popup.getContent().get(0)).edit((Student)table.getSelectionModel().getSelectedItem(), itemList);
-					Main.popup.show(Main.primaryStage);
+					
+					StudentForm form = new StudentForm();
 					
 					//register forms buttons
-					((StudentForm)Main.popup.getContent().get(0)).cancel.setOnAction(v -> {
+					form.cancel.setOnAction(v -> {
 						getTable().setItems(FXCollections.observableList(itemList));
 						Main.popup.hide();
 						Main.popup.getContent().clear();
+						Main.saveData(itemList, Main.STORAGEFILE_S);
+						Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
 					});
+					
+					form.edit((Student)table.getSelectionModel().getSelectedItem(), itemList);
+					Main.popup.getContent().add(form);
+					Main.popup.show(Main.primaryStage);
 				}
-			});
-
+			});////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		}else if(type instanceof Teacher) {
 			table.getColumns().add(classes);
 			table.getColumns().add(qualification);

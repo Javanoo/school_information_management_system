@@ -15,7 +15,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
@@ -74,6 +76,12 @@ public class FeesList extends BorderPane {
 	
 	TreeSet<Student> students = new TreeSet<>();
 	
+	private MenuItem print = new MenuItem("print reciepts");
+	private MenuItem printBal = new MenuItem("print all with balances");
+	private MenuItem printAll = new MenuItem("print geneal report");
+	private MenuItem printPaid = new MenuItem("print all with no balances");
+	private ContextMenu subMenu = new ContextMenu(print, printBal, printPaid, printAll);
+	
 	FeesList(){}
 	
 	FeesList(ArrayList<Student> studentData){
@@ -116,6 +124,7 @@ public class FeesList extends BorderPane {
 		studentsTable.setTableMenuButtonVisible(true);
 		studentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 		studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class1)));
+		studentsTable.setContextMenu(subMenu);
 		
 		forTitle.setText((forTitle.getText() + dateFormat2.format(new Date())).toUpperCase());
 		

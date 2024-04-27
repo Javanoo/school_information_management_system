@@ -1,52 +1,42 @@
 package mdps_sms.gui;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.TreeSet;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import mdps_sms.Main;
 import mdps_sms.util.Administrator;
-import mdps_sms.util.Configer;
 import mdps_sms.util.Person;
-import mdps_sms.util.Student;
 
 /**
  * This class is used for making instances of the Gui settings object.
- * This object helps the user in configuring personal preferred settings which 
- * overrides the defaults. 
+ * This object helps the user in configuring personal preferred settings which
+ * overrides the defaults.
  * It also has a restore option which can be used to revert the settings to their
  * default values in case the user messed up.
  */
 public class Settings extends BorderPane {
-	
+
 	Administrator admin = new Administrator();
-	
+
 	//top header
 	Label forSettings =  new Label("Settings");
 	Button restore = new Button("Restore");
 	Button cancel = UiComponents.createButton("cancelWhite.png", 22, "cancel");
-	
+
 	//first card
 	Label changeAccount = new Label("Change account details");
 	//--------------------------------------------------------
@@ -57,7 +47,7 @@ public class Settings extends BorderPane {
 	Label forAccountEmail = new Label("Account email");
 	TextField email = new TextField();
 	VBox emailPair = new VBox(forAccountEmail, email);
-	
+
 	Label changePassword = new Label("Change password details");
 	//---------------------------------------------------------
 	Label forOldPassword = new Label("Old password");
@@ -67,10 +57,10 @@ public class Settings extends BorderPane {
 	Label forNewPassword = new Label("New password");
 	PasswordField newPassword = new PasswordField();
 	VBox newPair = new VBox(forNewPassword, newPassword);
-	
+
 	Card generalSettings = new Card("General");
-	
-	
+
+
 	//third card
 	Label changeFont = new Label("Font Feel");
 	//--------------------------------------------------------
@@ -81,7 +71,7 @@ public class Settings extends BorderPane {
 	Label forFontSize = new Label("Font size");
 	TextField fontSize = new TextField();
 	VBox fontSizePair = new VBox(forFontSize, fontSize);
-		
+
 	Label changeTheme= new Label("Theme Feel");
 	//---------------------------------------------------------
 	Label forTheme = new Label("Theme");
@@ -91,10 +81,10 @@ public class Settings extends BorderPane {
 	Label forAccentColor = new Label("Accent color");
 	TextField accentColor = new TextField();
 	VBox accentColorPair = new VBox(forAccentColor, accentColor);
-		
+
 	Card appearanceSettings = new Card("Apearance");
-	
-	
+
+
 	//third card
 	Label changeMemory = new Label("Buffer size");
 	//--------------------------------------------------------
@@ -105,7 +95,7 @@ public class Settings extends BorderPane {
 	Label forThread = new Label("Number of threads");
 	TextField thread = new TextField();
 	VBox threadPair = new VBox(forThread, thread);
-		
+
 	Label changeSecurity = new Label("Security");
 	//---------------------------------------------------------
 	Label forEncryptionStandard = new Label("Encryption standard");
@@ -115,21 +105,19 @@ public class Settings extends BorderPane {
 	Label forRecoveryEmail = new Label("Recovery email");
 	TextField recoveryEmail = new TextField();
 	VBox recoveryPair = new VBox(forRecoveryEmail, recoveryEmail);
-		
+
 	Card securitySettings = new Card("Security and Performance");
-	
+
 	//Button cancel = new Button("Cancel");
 	Button save = new Button("Save");
-	
+
 	Settings(){}
-	
+
 	Settings(ArrayList<Person> list){
-		
-		this.admin = admin;
-		
+
 		forSettings.setFont(Font.font("Outfit SemiBold", 24));
 		forSettings.setTextFill(Color.web("#232323"));
-		
+
 		restore.setFont(Font.font("Outfit SemiBold", 16));
 		restore.setTextFill(Color.WHITE);
 		restore.setMinWidth(100);
@@ -138,10 +126,10 @@ public class Settings extends BorderPane {
 			App.leftPanelContents.setDisable(false);
 		});
 		restore.setStyle("-fx-background-color: #232323");
-		
-		
+
+
 		//style sub headers
-		for(Label elem : new Label[]{changeAccount, changePassword, changeMemory, changeSecurity, 
+		for(Label elem : new Label[]{changeAccount, changePassword, changeMemory, changeSecurity,
 				changeFont, changeTheme}) {
 			elem.setFont(Font.font("Inter SemiBold", 16));
 			elem.setTextFill(Color.BLACK);
@@ -156,14 +144,14 @@ public class Settings extends BorderPane {
 			elem.setAlignment(Pos.CENTER_RIGHT);
 		}
 		//style fields
-		for(TextField elem : new TextField[]{name, email, oldPassword, newPassword, buffer, thread, 
+		for(TextField elem : new TextField[]{name, email, oldPassword, newPassword, buffer, thread,
 				encryptionStandard, recoveryEmail, font, fontSize, theme, accentColor}) {
 			elem.setFont(Font.font("Inter SemiBold", 14));
 			elem.setMinWidth(250);
 			elem.setMinHeight(40);
 			elem.setStyle("-fx-background-color: #898989; -fx-text-fill: white");
 		}
-		
+
 		name.setPromptText("enter name ...");
 		name.setText("Admin");
 		email.setPromptText("enter email address ...");
@@ -177,7 +165,7 @@ public class Settings extends BorderPane {
 		generalSettings.board.add(forAccountEmail, 0, 2);
 		GridPane.setHalignment(forAccountEmail, HPos.RIGHT);
 		generalSettings.board.add(email, 1, 2);
-		
+
 		changePassword.setPadding(new Insets(30,0,0,0));
 		oldPassword.setPromptText("enter old password ...");
 		newPassword.setPromptText("enter new password ...");
@@ -194,8 +182,8 @@ public class Settings extends BorderPane {
 		generalSettings.board.add(newPassword, 1, 5);
 		generalSettings.board.setHgap(20);
 		generalSettings.board.setVgap(10);
-		
-		
+
+
 		font.setPromptText("enter size ...");
 		font.setText("Inter");
 		fontSize.setPromptText("enter font size");
@@ -211,7 +199,7 @@ public class Settings extends BorderPane {
 		appearanceSettings.board.add(forFontSize, 0, 2);
 		GridPane.setHalignment(forFontSize, HPos.RIGHT);
 		appearanceSettings.board.add(fontSize, 1, 2);
-		
+
 		changeTheme.setPadding(new Insets(30,0,0,0));
 		theme.setPromptText("enter theme ...");
 		accentColor.setPromptText("enter recovery email ...");
@@ -229,8 +217,8 @@ public class Settings extends BorderPane {
 		appearanceSettings.board.setHgap(20);
 		appearanceSettings.board.setVgap(10);
 		appearanceSettings.setDisable(true);
-		
-		
+
+
 		buffer.setPromptText("enter size ...");
 		buffer.setText("512kbs");
 		thread.setPromptText("enter number of threads ...");
@@ -246,7 +234,7 @@ public class Settings extends BorderPane {
 		securitySettings.board.add(forThread, 0, 2);
 		GridPane.setHalignment(forThread, HPos.RIGHT);
 		securitySettings.board.add(thread, 1, 2);
-		
+
 		changeSecurity.setPadding(new Insets(30,0,0,0));
 		encryptionStandard.setPromptText("enter standard ...");
 		recoveryEmail.setPromptText("enter recovery email ...");
@@ -263,21 +251,21 @@ public class Settings extends BorderPane {
 		securitySettings.board.add(encryptionStandard, 1, 5);
 		securitySettings.board.setHgap(20);
 		securitySettings.board.setVgap(10);
-		
-		
+
+
 		VBox cards = new VBox(generalSettings, appearanceSettings, securitySettings);
 		cards.setSpacing(30);
 		cards.setAlignment(Pos.CENTER);
-		
+
 		ScrollPane scrl= new ScrollPane(new StackPane(cards));
 		scrl.setPadding(new Insets(0, 110, 0, 110));
 		scrl.setMinViewportWidth(490);
 		scrl.setMaxWidth(700);
-		
+
 		BorderPane bottom = new BorderPane();
 		BorderPane center = new BorderPane();
 		BorderPane cancelPanel = new BorderPane();
-		
+
 		cancelPanel.setRight(cancel);
 		cancelPanel.setMaxWidth(724);
 		cancelPanel.setPadding(new Insets(10, 10 ,10, 0));
@@ -286,15 +274,15 @@ public class Settings extends BorderPane {
 		cancel.setOnMouseExited( e -> {
 			cancel.setStyle("-fx-background-color: #232323");
 		});
-		
+
 		bottom.setLeft(restore);
 		bottom.setRight(save);
 		bottom.setMaxWidth(724);
 		bottom.setPadding(new Insets(10, 0 ,10, 0));
 		BorderPane.setAlignment(save, Pos.CENTER_RIGHT);
-		
+
 		center.setCenter(scrl);
-		
+
 		/*cancel.setFont(Font.font("Outfit SemiBold", 16));
 		cancel.setTextFill(Color.WHITE);
 		cancel.setMinWidth(100);
@@ -309,17 +297,7 @@ public class Settings extends BorderPane {
 		save.setTextFill(Color.WHITE);
 		save.setMinWidth(100);
 		save.setStyle("-fx-background-color: #232323");
-		save.setOnAction(e -> {
-			Configer config = new Configer(name.getText(), email.getText(), newPassword.getText(), "", 8, "", "", 1024, 2, "", "");
-			Main.saveData(config, "config.sys");
-	});
-		
-		setTop(cancelPanel);
-		setCenter(center);
-		setBottom(bottom);
-		BorderPane.setAlignment(cancelPanel, Pos.CENTER);
-		BorderPane.setAlignment(bottom, Pos.CENTER);
-		BorderPane.setAlignment(forSettings, Pos.CENTER);
+
 	}
 }
 
@@ -328,26 +306,26 @@ class Card extends VBox{
 	GridPane board = new GridPane();
 	Separator separate = new Separator();
 	StackPane labelHolder = new StackPane(cardLabel);
-	
+
 	Card(String label){
 		cardLabel.setText(label);
 		cardLabel.setMinHeight(35);
-		
+
 		separate.setMaxWidth(350);
-		
+
 		labelHolder.setMaxWidth(300);
 		labelHolder.setStyle("-fx-background-color: #232323");
 		Rectangle saveRec = new Rectangle(300, 35);
 		saveRec.setArcHeight(35);
 		saveRec.setArcWidth(35);
 		labelHolder.setClip(saveRec);
-		
+
 		//default label and board style
 		cardLabel.setFont(Font.font("Inter SemiBold", 16));
 		cardLabel.setTextFill(Color.WHITE);
-		
+
 		board.setPadding(new Insets(10));
-		
+
 		getChildren().addAll(labelHolder, separate, board);
 		setSpacing(10);
 		setAlignment(Pos.CENTER);

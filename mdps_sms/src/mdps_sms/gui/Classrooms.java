@@ -3,7 +3,6 @@ package mdps_sms.gui;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.TreeSet;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -91,12 +90,13 @@ public class Classrooms extends BorderPane {
 			if(classesTable.getSelectionModel().getSelectedItems() != null && classesTable.getSelectionModel().getSelectedItems().size() != 0) {
 				for(SchoolClass elem : classesTable.getSelectionModel().getSelectedItems()) {
 					for(Student item : elem.getStudents()) ((Student)item).setClassroom(new SchoolClass());
-					for(Teacher item : elem.getTeachers()) { 
+					/*for(Teacher item : elem.getTeachers()) { 
 						((Teacher)item).getClass_subject().remove(elem);
-					}
+					}*/
 				}
 				Main.classrooms.removeAll(classesTable.getSelectionModel().getSelectedItems());
 				Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
+				Main.saveData(Main.students, Main.STORAGEFILE_S);
 				if(Main.classrooms != null)
 					classesTable.setItems(FXCollections.observableList(Main.classrooms));
 			}
@@ -154,7 +154,7 @@ public class Classrooms extends BorderPane {
 		BorderPane.setMargin(actionBar, new Insets(7, 7, 7 , 0));
 	}
 	
-	<E extends Person> void showItems(SchoolClass classroom, TreeSet<E> items, char a){
+	<E extends Person> void showItems(SchoolClass classroom, ArrayList<E> items, char a){
 		BorderPane listTab = new BorderPane();
 		Label title = new Label();
 		ListView<E> listView = new ListView<>();
@@ -162,7 +162,7 @@ public class Classrooms extends BorderPane {
 		Button cancel = new Button("Cancel");
 		HBox buttons = new HBox(cancel, remove);
 		
-		title.setText(classroom.getName() + (items.first() instanceof Student ? " Students" : " Teachers"));
+		title.setText(classroom.getName() + (items.get(0) instanceof Student ? " Students" : " Teachers"));
 		
 		if(a == 'a')
 			title.setText(classroom.getName() + " Attendance");
@@ -230,7 +230,7 @@ public class Classrooms extends BorderPane {
 		//query to use with RegExp for searching
 		String query = source.getText();
 		//new set that holds the matching items
-		TreeSet<SchoolClass> matchedItems = new TreeSet<>();
+		ArrayList<SchoolClass> matchedItems = new ArrayList<>();
 		Iterator<SchoolClass> iter = classroomsData.iterator();
 		while(iter.hasNext() && !query.isEmpty()) {
 			SchoolClass classroom = iter.next();
@@ -385,7 +385,7 @@ public class Classrooms extends BorderPane {
 			if(name.getText().matches("Class \\d*")) {
 				try {
 					if(!fees.getText().isBlank() && Long.valueOf(fees.getText()) != null) {
-						TreeSet<String> subjectsList = new TreeSet<>();
+						ArrayList<String> subjectsList = new ArrayList<>();
 						for(Node elem : subjects.getChildren()) {
 							if(!((TextField)((HBox)elem).getChildren().get(0)).getText().isBlank())
 								subjectsList.add(((TextField)((HBox)elem).getChildren().get(0)).getText());

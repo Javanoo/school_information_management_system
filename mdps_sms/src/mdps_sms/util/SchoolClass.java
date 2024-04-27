@@ -4,7 +4,7 @@
 package mdps_sms.util;
 
 import java.io.Serializable;
-import java.util.TreeSet;
+import java.util.ArrayList;
 
 /**
  *
@@ -13,21 +13,21 @@ public class SchoolClass implements Cloneable, Comparable<SchoolClass>, Serializ
 	private static final long serialVersionUID = 1L;
 	private String name = "unknown";
 	private long fees = 0l;
-	private TreeSet<Student> students = new TreeSet<>();
-	private TreeSet<String> subjects = new TreeSet<>();
+	private ArrayList<Student> students = new ArrayList<>();
+	private ArrayList<String> subjects = new ArrayList<>();
 	private String subjectRep = "no subjects";
-	private TreeSet<String> freeSubjects = new TreeSet<>();
-	private TreeSet<Teacher> teachers = new TreeSet<>();
+	private ArrayList<String> freeSubjects = new ArrayList<>();
+	private ArrayList<Teacher> teachers = new ArrayList<>();
 	private int numberOfStudents = students.size();
 	private int numberOfTeachers = teachers.size();
 
 	public SchoolClass(){}
 
-	public SchoolClass(String name, long fees, TreeSet<String> subjects){
+	public SchoolClass(String name, long fees, ArrayList<String> subjects){
 		setName(name);
 		setFees(fees);
 		setSubjects(subjects);
-		setFreeSubjects(new TreeSet<>(subjects));
+		setFreeSubjects(new ArrayList<>(subjects));
 
 		if(subjects.size() != 0) {
 			subjectRep = "";
@@ -45,27 +45,27 @@ public class SchoolClass implements Cloneable, Comparable<SchoolClass>, Serializ
 		this.name = name;
 	}
 
-	public TreeSet<Student> getStudents() {
+	public ArrayList<Student> getStudents() {
 		return students;
 	}
 
-	public void setStudents(TreeSet<Student> students) {
+	public void setStudents(ArrayList<Student> students) {
 		this.students = students;
 	}
 
-	public TreeSet<String> getSubjects() {
+	public ArrayList<String> getSubjects() {
 		return subjects;
 	}
 
-	public void setSubjects(TreeSet<String> subjects) {
+	public void setSubjects(ArrayList<String> subjects) {
 		this.subjects = subjects;
 	}
 
-	public TreeSet<Teacher> getTeachers() {
+	public ArrayList<Teacher> getTeachers() {
 		return teachers;
 	}
 
-	public void setTeachers(TreeSet<Teacher> teachers) {
+	public void setTeachers(ArrayList<Teacher> teachers) {
 		this.teachers = teachers;
 	}
 
@@ -98,14 +98,14 @@ public class SchoolClass implements Cloneable, Comparable<SchoolClass>, Serializ
 	/**
 	 * @return the freeSubjects
 	 */
-	public synchronized TreeSet<String> getFreeSubjects() {
+	public synchronized ArrayList<String> getFreeSubjects() {
 		return freeSubjects;
 	}
 
 	/**
 	 * @param freeSubjects the freeSubjects to set
 	 */
-	public synchronized void setFreeSubjects(TreeSet<String> freeSubjects) {
+	public synchronized void setFreeSubjects(ArrayList<String> freeSubjects) {
 		this.freeSubjects = freeSubjects;
 	}
 
@@ -143,6 +143,13 @@ public class SchoolClass implements Cloneable, Comparable<SchoolClass>, Serializ
 	public String toString() {
 		// TODO Auto-generated method stub
 		return getName();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof SchoolClass) {
+			return name.equals(((SchoolClass)obj).getName());
+		}else return this == obj;
 	}
 }
 //
