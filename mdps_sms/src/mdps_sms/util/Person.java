@@ -6,7 +6,7 @@ import java.util.Date;
 
 public abstract class Person implements Cloneable, Comparable<Person>, Serializable {
 	private static final long serialVersionUID = 1814959407778504394L;
-	private String name = "unknown";
+	protected String name = "unknown";
 	private String gender = "unknown";
 	private String role = "unknown";
 	private String qualification = "none";

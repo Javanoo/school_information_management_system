@@ -108,7 +108,7 @@ public class Student extends Person {
 	 */
 	@Override
 	public String toString() {
-		return this.getName();
+		return this.getCodeNumber() + "\t" + this.getName();
 	}
 
 	/**

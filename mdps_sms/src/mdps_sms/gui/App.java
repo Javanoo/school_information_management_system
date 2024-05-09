@@ -16,6 +16,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -81,13 +83,13 @@ public class App extends BorderPane {
 		if(admin != null) {
 			this.admin = admin;
 
-			navTable.put("DashBoard", new DashBoard(admin, Main.cal));
+			//navTable.put("DashBoard", new DashBoard(admin, Main.cal));
 			navTable.put("Students", new ItemList<>(new Student(), Main.students));
 			navTable.put("Teachers", new ItemList<>(new Teacher(), Main.teachers));
 			navTable.put("Classes", new Classrooms());
 			navTable.put("Staff", new ItemList<>(new Staff(), Main.staff));
 			navTable.put("Calendar", new CalendarTable(Main.cal));
-			//navTable.put("Exams", null);
+			navTable.put("Exams", new ExamsTable(Main.cal));
 			navTable.put("Fees", new FeesList(Main.students));
 			navTable.put("Fleet",  new ItemList<>(new Fleet(), Main.fleet));
 
@@ -122,26 +124,27 @@ public class App extends BorderPane {
 			forFleet.setGraphic(UiComponents.createIcon("shuttleBusBlack.png", 24));
 			styleNavElem(forFleet);
 
-			navigation.setItems(FXCollections.observableArrayList(forDashboard, forCalendar, forClasses,  forExams, forFees, forTeachers,
+			navigation.setItems(FXCollections.observableArrayList(/*forDashboard,*/ forCalendar, forClasses,  forExams, forFees, forTeachers,
 					forStudents, forStaff, forFleet));
-			navigation.setMaxHeight(400);
+			navigation.setMaxHeight(356);
 			navigation.setFixedCellSize(44);
 			navigation.setMaxWidth(200);
 			navigation.setId("mainNav");
 			navigation.getSelectionModel().selectFirst();
 			navigation.getSelectionModel().selectedItemProperty().addListener(e ->
 				{
-					switchView((Node)navTable.get(navigation.getSelectionModel().getSelectedItem().getText()));
-					navTable.put("DashBoard", new DashBoard(admin, Main.cal));
+					//navTable.put("DashBoard", new DashBoard(admin, Main.cal));
 					navTable.put("Students", new ItemList<>(new Student(), Main.students));
 					navTable.put("Teachers", new ItemList<>(new Teacher(), Main.teachers));
 					Classrooms.classesTable.refresh();
 					navTable.put("Staff", new ItemList<>(new Staff(), Main.staff));
 					navTable.put("Fees", new FeesList(Main.students));
 					navTable.put("Calendar", new CalendarTable(Main.cal));
+					navTable.put("Exams", new ExamsTable(Main.cal));
+					switchView((Node)navTable.get(navigation.getSelectionModel().getSelectedItem().getText()));
 				}
 			);
-		Rectangle navRec = new Rectangle(200, 400);
+		Rectangle navRec = new Rectangle(200, 356);
 		navRec.setArcHeight(15);
 		navRec.setArcWidth(15);
 		navigation.setClip(navRec);
@@ -155,8 +158,15 @@ public class App extends BorderPane {
 		settings.setPadding(new Insets(5, 0, 5, 10));
 		settings.setStyle("-fx-background-color: white");
 		settings.setOnAction(e -> {
-			switchView(new Settings(list));
+			Settings setting = new Settings(admin); 
+			setting.cancel.setOnAction(v -> {
+				switchView((Node)navTable.get(navigation.getSelectionModel().getSelectedItem().getText()));
+				setLeft(leftPanelContents);
+				centralPanel.setPadding(new Insets(5, 5, 0, 5));
+			});
+			switchView(setting);
 			setLeft(null);
+			centralPanel.setPadding(new Insets(0));
 		});
 		Rectangle setRec = new Rectangle(120, 33);
 		setRec.setArcHeight(30);
@@ -186,7 +196,7 @@ public class App extends BorderPane {
 		leftPanelContents.setStyle("-fx-background-color: #232323");
 
 		centralPanel.setPadding(new Insets(5, 5, 0, 5));
-		centralPanel.setCenter(new DashBoard(admin, Main.cal));
+		centralPanel.setCenter(new CalendarTable(Main.cal));
 
 
 		setLeft(leftPanelContents);
@@ -217,7 +227,7 @@ public class App extends BorderPane {
 	}
 	protected void styleNavElem(Labeled label) {
 		label.setTextFill(Color.BLACK);
-		label.setFont(Font.font("Inter SemiBold", 15));
+		label.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 1));
 		label.setPadding(new Insets(5, 0, 5, 0));
 		label.setGraphicTextGap(10);
 	}

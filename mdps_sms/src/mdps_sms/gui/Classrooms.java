@@ -1,6 +1,13 @@
 package mdps_sms.gui;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -21,6 +28,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -28,15 +36,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import mdps_sms.Main;
+import mdps_sms.util.PdfPrinter;
 import mdps_sms.util.Person;
 import mdps_sms.util.SchoolClass;
 import mdps_sms.util.Student;
 import mdps_sms.util.Teacher;
 
 public class Classrooms extends BorderPane {
-	
-	private Label forAvailableClasses = new Label("Available Classes");
-	private Button addNewClass = new Button("Add");
 	
 	public static TableView<SchoolClass> classesTable = new TableView<>();
 	private TableColumn<SchoolClass, String> name = new TableColumn<>("Name");
@@ -53,7 +59,13 @@ public class Classrooms extends BorderPane {
 	private ContextMenu subMenu = new ContextMenu();
 	private MenuItem viewTeachers = new MenuItem("view teachers");
 	private MenuItem viewStudents = new MenuItem("view students");
+	private MenuItem printClass = new MenuItem("print");
 	private MenuItem attendance = new MenuItem("attendance");
+	private MenuItem attendanceHistory = new MenuItem("attendance history");
+	
+	SimpleDateFormat dateFormat2 = new SimpleDateFormat("MMM dd yyyy");
+	
+	ArrayList<HashMap<String, ArrayList<Student>>> records = new ArrayList<>();
 	
 	Classrooms(){
 		
@@ -78,27 +90,55 @@ public class Classrooms extends BorderPane {
 		classesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 		classesTable.setItems(FXCollections.observableList(Main.classrooms));
 		classesTable.setContextMenu(subMenu);
+		classesTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		
+		printClass.setOnAction(e -> PdfPrinter.printClassroom(classesTable.getSelectionModel().getSelectedItem()));
 		
 		title.setLeft(forTitle);
 		title.setBottom(new Separator());
 		title.setPadding(new Insets(10, 10, 0, 10));
 		((Separator)title.getBottom()).setPadding(new Insets(10, 0, 0, 0));
-		title.setStyle("-fx-background-color: #232323");
+		title.setStyle("-fx-background-color: " + Main.configuration.theme);
 		BorderPane.setAlignment(forTitle, Pos.BOTTOM_LEFT);
 		
 		actionBar.getDelete().setOnAction(e -> {
 			if(classesTable.getSelectionModel().getSelectedItems() != null && classesTable.getSelectionModel().getSelectedItems().size() != 0) {
-				for(SchoolClass elem : classesTable.getSelectionModel().getSelectedItems()) {
-					for(Student item : elem.getStudents()) ((Student)item).setClassroom(new SchoolClass());
-					/*for(Teacher item : elem.getTeachers()) { 
-						((Teacher)item).getClass_subject().remove(elem);
-					}*/
-				}
-				Main.classrooms.removeAll(classesTable.getSelectionModel().getSelectedItems());
-				Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
-				Main.saveData(Main.students, Main.STORAGEFILE_S);
-				if(Main.classrooms != null)
-					classesTable.setItems(FXCollections.observableList(Main.classrooms));
+				String prompt = "Delete " + (classesTable.getSelectionModel().getSelectedItems().size() > 1 ? "all selected classes?" :
+					classesTable.getSelectionModel().getSelectedItem().getName() + "?");  
+				
+				GridPane confirm = actionBar.confirm(prompt);
+				
+				Main.popup.getContent().clear();
+				Main.popup.getContent().add(confirm);
+				Main.popup.show(Main.primaryStage);
+				
+				((Button)confirm.getChildren().get(2)).setOnAction( v -> {
+					for(SchoolClass elem : classesTable.getSelectionModel().getSelectedItems()) {
+						for(Student item : elem.getStudents()) ((Student)item).setClassroom(new SchoolClass());
+						for(Teacher item : elem.getTeachers()) { 
+							Iterator<Teacher> iter = Main.teachers.iterator();
+							while(iter.hasNext()) {
+								Teacher teacherFound = iter.next();
+								if(teacherFound.getName().equals(item.getName()) && teacherFound.getPhone().equals(item.getPhone())) {
+									teacherFound.getClass_subject().remove(elem);
+									teacherFound.updateClasses();
+								}
+							}
+						}
+					}
+					Main.classrooms.removeAll(classesTable.getSelectionModel().getSelectedItems());
+					Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
+					Main.saveData(Main.students, Main.STORAGEFILE_S);
+					Main.saveData(Main.teachers, Main.STORAGEFILE_T);
+					if(Main.classrooms != null)
+						classesTable.setItems(FXCollections.observableList(Main.classrooms));
+					
+					((Button)confirm.getChildren().get(1)).fire();
+				});
+				((Button)confirm.getChildren().get(1)).setOnAction(v -> {
+					Main.popup.hide();
+					Main.popup.getContent().clear();
+				});
 			}
 		});
 		actionBar.getAdd().setOnAction(e -> {
@@ -143,13 +183,13 @@ public class Classrooms extends BorderPane {
 				;//recordAttendance(classesTable.getSelectionModel().getSelectedItems());
 			showItems( classesTable.getSelectionModel().getSelectedItem(), (classesTable.getSelectionModel().getSelectedItem()).getStudents(), 'a');
 		});
-		subMenu.getItems().addAll(viewTeachers, viewStudents, attendance);
+		subMenu.getItems().addAll(printClass, viewTeachers, viewStudents, attendance, attendanceHistory);
 		
 		setTop(title);
 		setCenter(classesTable);
 		setBottom(actionBar);
 		setPadding(new Insets(0));
-		setStyle("-fx-background-color: #232323");
+		setStyle("-fx-background-color: " + Main.configuration.theme);
 		BorderPane.setAlignment(actionBar, Pos.CENTER_RIGHT);
 		BorderPane.setMargin(actionBar, new Insets(7, 7, 7 , 0));
 	}
@@ -170,7 +210,7 @@ public class Classrooms extends BorderPane {
 		title.setFont(Font.font("Inter SemiBold", 14));
 		title.setPadding(new Insets(10));
 		
-		listView.setItems(FXCollections.observableList(new LinkedList<>(items)));
+		listView.setItems(FXCollections.observableList(new ArrayList<>(items)));
 		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		remove.setMinWidth(100);
 		remove.setMinHeight(35);
@@ -178,13 +218,18 @@ public class Classrooms extends BorderPane {
 		remove.setFont(Font.font("Inter SemiBold", 15));
 		remove.setTextFill(Color.BLACK);
 		Rectangle remRec = new Rectangle(100, 35);
-		remRec.setArcHeight(25);
-		remRec.setArcWidth(25);
+		remRec.setArcHeight(35);
+		remRec.setArcWidth(35);
 		remove.setClip(remRec);
 		
 		if(a == 'a') {
 			remove.setText("Record");
-			remove.setOnAction(e -> {});//write( listView, new Date().toString()) + classroom.getName() + ".attendance");
+			remove.setOnAction(e -> {
+				String date = dateFormat2.format(new Date());
+				ArrayList<E> present = new ArrayList<>(listView.getSelectionModel().getSelectedItems());
+				createAttendanceRecord(classroom.getName(), date, (ArrayList<Student>)present);
+			});
+			listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		}
 		
 		cancel.setMinWidth(100);
@@ -197,8 +242,8 @@ public class Classrooms extends BorderPane {
 			Main.popup.getContent().clear();
 		});
 		Rectangle canRec = new Rectangle(100, 35);
-		canRec.setArcHeight(25);
-		canRec.setArcWidth(25);
+		canRec.setArcHeight(35);
+		canRec.setArcWidth(35);
 		cancel.setClip(canRec);
 		
 		buttons.setSpacing(180);
@@ -215,7 +260,7 @@ public class Classrooms extends BorderPane {
 		listTab.setClip(listRec);
 		BorderPane.setAlignment(title, Pos.CENTER_LEFT);
 		BorderPane.setMargin(buttons, new Insets(15, 0, 10, 0));
-		listTab.setStyle("-fx-background-color: #232323");
+		listTab.setStyle("-fx-background-color: " + Main.configuration.theme);
 		
 		Main.popup.getContent().clear();
 		Main.popup.getContent().add(listTab);
@@ -240,6 +285,42 @@ public class Classrooms extends BorderPane {
 		if(matchedItems.isEmpty())classesTable.setItems(FXCollections.observableList(Main.classrooms));
 		else
 			classesTable.setItems((FXCollections.observableList(new LinkedList<>(matchedItems))));
+	}
+	
+	void createAttendanceRecord(String dirName, String date, ArrayList<Student> present) {
+		HashMap<String, ArrayList<Student>> recording = new HashMap<>();
+		
+		recording.put(date, present);
+		records.add(recording);
+		
+		File file = new File(dirName);
+		
+		if(file.exists() && file.isDirectory()) {	
+			try {
+				try(
+						ObjectOutputStream out = new ObjectOutputStream(
+								new BufferedOutputStream(new FileOutputStream(dirName + "/" + dirName + ".attendace")));
+						){
+					out.writeObject(records);
+				}
+			}catch(Exception e) {
+				//replace with a logger :)
+				System.out.println("[Failed to save data to " + dirName + "/" + dirName + ".attendace" + " ] : " + e.getMessage());
+			}
+		}else {
+			file.mkdir();
+			try {
+				try(
+						ObjectOutputStream out = new ObjectOutputStream(
+								new BufferedOutputStream(new FileOutputStream(dirName + "/" + dirName + ".attendace")));
+						){
+					out.writeObject(records);
+				}
+			}catch(Exception e) {
+				//replace with a logger :)
+				System.out.println("[Failed to save data to " + dirName + "/" + dirName + ".attendace" + " ] : " + e.getMessage());
+			}
+		}
 	}
 	
 	class classForm extends BorderPane{
@@ -373,7 +454,7 @@ public class Classrooms extends BorderPane {
 			setMinWidth(400);
 			setMinHeight(500);
 			setPadding(new Insets(20, 10, 10, 10));
-			setStyle("-fx-background-color: #232323");
+			setStyle("-fx-background-color: " + Main.configuration.theme);
 			
 			Rectangle rec = new Rectangle(400, 500);
 			rec.setArcHeight(35);

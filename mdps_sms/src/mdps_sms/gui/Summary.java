@@ -131,7 +131,7 @@ class Summary<E extends Person> extends BorderPane{
 		mainContainer.setMinHeight(600);
 		mainContainer.setSpacing(20);
 		mainContainer.setPadding(new Insets(10, 0, 10, 10));
-		mainContainer.setStyle("-fx-background-color: #232323");
+		mainContainer.setStyle("-fx-background-color: " + Main.configuration.theme);
 		Rectangle sumRec = new Rectangle(400, 600);
 		sumRec.setArcHeight(24);
 		sumRec.setArcWidth(24);
@@ -147,7 +147,7 @@ class Summary<E extends Person> extends BorderPane{
 		setBottom(bottomBox);
 		setMaxHeight(600);
 		setMinWidth(400);
-		setStyle("-fx-background-color: #232323");
+		setStyle("-fx-background-color: " + Main.configuration.theme);
 		setPadding(new Insets(10, 0, 20, 0));
 		Main.fadeIn(this, 300);
 		setEffect(new DropShadow());

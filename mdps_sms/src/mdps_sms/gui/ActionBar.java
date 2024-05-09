@@ -1,10 +1,14 @@
 package mdps_sms.gui;
 
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import mdps_sms.Main;
 import mdps_sms.util.Fleet;
 import mdps_sms.util.Person;
@@ -12,6 +16,7 @@ import mdps_sms.util.Staff;
 import mdps_sms.util.Student;
 import mdps_sms.util.Teacher;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 
@@ -123,6 +128,56 @@ public class ActionBar extends HBox {
 	 */
 	public synchronized HBox getSearchContainer() {
 		return searchContainer;
+	}
+	
+	public GridPane confirm(String prompt) {
+		
+		Label ask  = new Label(prompt);
+		
+		GridPane pane = new GridPane();
+		Button yes = new Button("yes");
+		Button no = new Button("no");
+		
+		pane.add(ask, 0, 0);
+		pane.addRow(1, no, yes);
+		pane.setHgap(45);
+		pane.setVgap(40);
+		
+		GridPane.setHalignment(ask, HPos.CENTER);
+		GridPane.setColumnSpan(ask, 2);
+		
+		ask.setFont(Font.font("Inter SemiBold", 15));
+		ask.setTextFill(Color.WHITE);
+		
+		for(Button elem : new Button[] {no, yes}) {
+			elem.setMinWidth(100);
+			elem.setMinHeight(35);
+			elem.setStyle("-fx-background-color: white");
+			elem.setFont(Font.font("Inter SemiBold", 15));
+			elem.setTextFill(Color.BLACK);
+			Rectangle elemRec = new Rectangle(100, 35);
+			elemRec.setArcHeight(35);
+			elemRec.setArcWidth(35);
+			elem.setClip(elemRec);
+		}
+		
+		pane.setStyle("-fx-background-color: " + Main.configuration.theme);
+		pane.setPadding(new Insets(20));
+		pane.setMinSize(285, 140);
+		Rectangle rec = new Rectangle(285, 140);
+		rec.setArcHeight(35);
+		rec.setArcWidth(35);
+		pane.setClip(rec);
+		
+		yes.setOnAction(e -> {
+			
+		});
+		no.setOnAction(e -> {
+			Main.popup.hide();
+			Main.popup.getContent().clear();
+		} );
+		
+		return pane;
 	}
 
 }

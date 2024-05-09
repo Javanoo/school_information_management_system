@@ -51,17 +51,23 @@ public class DashBoard extends BorderPane {
 	public Label fees = new Label("Total fees to collect");
 	public Label feesPaid = new Label("Fees Paid");
 	public Label feesBalance = new Label("Balances");
-	public HBox fifthTab = new HBox(fees, feesPaid, feesBalance);
+	CalendarTable cale = new CalendarTable(Main.cal);
+	
+	public HBox fifthTab = new HBox(cale);
+
 	
 	public VBox centralPanel = new VBox(secondTab, thirdTab, fourthTab, fifthTab);
 	SimpleDateFormat dateFormat = new SimpleDateFormat("EEE dd MMM YYYY");
 	
 	public DashBoard(Administrator admin, SchoolCalendar cal) {
 		
+		cale.actionBar.setVisible(false);
+		cale.table.setContextMenu(null);
+		
 		user.setFill(Color.WHITE);
-		user.setFont(Font.font("Inter SemiBold", 16));
+		user.setFont(Font.font(Main.configuration.font  + " SemiBold", Main.configuration.fontSize + 2));
 		user.setText(admin.getName());
-		userHolder.setStyle("-fx-background-color: #232323");
+		userHolder.setStyle("-fx-background-color: " + Main.configuration.theme);
 		userHolder.setPadding(new Insets(10));
 		userHolder.setMinSize(300, 35);
 		userHolder.setMaxWidth(300);
@@ -71,11 +77,11 @@ public class DashBoard extends BorderPane {
 		userHolder.setClip(userRec);
 		
 		today.setFill(Color.WHITE);
-		today.setFont(Font.font("Outfit SemiBold", 18));
-		today.setText(dateFormat.format(new Date()) + "\n\nWeeKend." + "\nWeek's back in 1 day");
+		today.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 4));
+		today.setText(dateFormat.format(new Date()));
 		today.setWrappingWidth(200);
 		forCalendar.setTextFill(Color.WHITE);
-		forCalendar.setFont(Font.font("Inter SemiBold", 16));
+		forCalendar.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
 		if(cal.getDates() != null) {
 			days.setItems(FXCollections.observableArrayList(cal.getDates()));
 		}
@@ -88,7 +94,7 @@ public class DashBoard extends BorderPane {
 		firstTab.setPadding(new Insets(5));
 		firstTab.setMinSize(300, 780);
 		BorderPane.setAlignment(today, Pos.CENTER);
-		firstTab.setStyle("-fx-background-color: #232323");
+		firstTab.setStyle("-fx-background-color: " + Main.configuration.theme);
 		Rectangle firstRec = new Rectangle(300, 1000);
 		firstRec.setArcHeight(35);
 		firstRec.setArcWidth(35);
@@ -106,12 +112,12 @@ public class DashBoard extends BorderPane {
 		forNumberofFStudents.setText("Number of  Female Students\n\n" + female + "");
 		forNumberofMStudents.setText("Number of Male Students\n\n" + male + "");
 		forNumberofStudents.setTextFill(Color.WHITE);
-		forNumberofStudents.setFont(Font.font("Inter SemiBold", 16));
+		forNumberofStudents.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
 		forNumberofFStudents.setTextFill(Color.WHITE);
-		forNumberofFStudents.setFont(Font.font("Inter SemiBold", 16));
+		forNumberofFStudents.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
 		forNumberofMStudents.setTextFill(Color.WHITE);
-		forNumberofMStudents.setFont(Font.font("Inter SemiBold", 16));
-		secondTab.setStyle("-fx-background-color: #232323");
+		forNumberofMStudents.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
+		secondTab.setStyle("-fx-background-color: " + Main.configuration.theme);
 		secondTab.setPadding(new Insets(10));
 		
 		int Smale = 0; int Sfemale = 0;
@@ -122,13 +128,13 @@ public class DashBoard extends BorderPane {
 		forNumberofFPersonnel.setText("Number of  Female Staff\n\n" + Sfemale + "");
 		forNumberofMPersonnel.setText("Number of Male Staff\n\n" + Smale + "");
 		forNumberofPersonnel.setTextFill(Color.WHITE);
-		forNumberofPersonnel.setFont(Font.font("Inter SemiBold", 16));
+		forNumberofPersonnel.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
 		forNumberofFPersonnel.setTextFill(Color.WHITE);
-		forNumberofFPersonnel.setFont(Font.font("Inter SemiBold", 16));
+		forNumberofFPersonnel.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
 		forNumberofMPersonnel.setTextFill(Color.WHITE);
-		forNumberofMPersonnel.setFont(Font.font("Inter SemiBold", 16));
+		forNumberofMPersonnel.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
 		forNumberofPersonnel.setText("Number of Staff\n\n" + Main.staff.size() + "");
-		thirdTab.setStyle("-fx-background-color: #232323");
+		thirdTab.setStyle("-fx-background-color: " + Main.configuration.theme);
 		thirdTab.setAlignment(Pos.CENTER_LEFT);
 		thirdTab.setPadding(new Insets(10));
 		thirdTab.setSpacing(200);
@@ -143,12 +149,12 @@ public class DashBoard extends BorderPane {
 		forNumberofTeachers.setText("Number of Teachers\n\n" + teacher + "");
 		forNumberofSubjects.setText("Number of Subjects\n\n" + subject + "");
 		forNumberofClasses.setTextFill(Color.WHITE);
-		forNumberofClasses.setFont(Font.font("Inter SemiBold", 16));
+		forNumberofClasses.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
 		forNumberofTeachers.setTextFill(Color.WHITE);
-		forNumberofTeachers.setFont(Font.font("Inter SemiBold", 16));
+		forNumberofTeachers.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
 		forNumberofSubjects.setTextFill(Color.WHITE);
-		forNumberofSubjects.setFont(Font.font("Inter SemiBold", 16));
-		fourthTab.setStyle("-fx-background-color: #232323");
+		forNumberofSubjects.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
+		fourthTab.setStyle("-fx-background-color: " + Main.configuration.theme);
 		fourthTab.setAlignment(Pos.CENTER_LEFT);
 		fourthTab.setSpacing(200);
 		fourthTab.setMinHeight(150);
@@ -162,18 +168,14 @@ public class DashBoard extends BorderPane {
 		fees.setText("Total Fees Amount\n\n" + feesT + "");
 		feesPaid.setText("Collected\n\n" + paid + "");
 		fees.setTextFill(Color.WHITE);
-		feesPaid.setFont(Font.font("Inter SemiBold", 16));
+		feesPaid.setFont(Font.font("Inter SemiBold", Main.configuration.fontSize + 2));
 		feesPaid.setTextFill(Color.WHITE);
-		fees.setFont(Font.font("Inter SemiBold", 16));
+		fees.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
 		feesBalance.setTextFill(Color.WHITE);
-		feesBalance.setFont(Font.font("Inter SemiBold", 16));
+		feesBalance.setFont(Font.font(Main.configuration.font + " SemiBold", Main.configuration.fontSize + 2));
 		feesBalance.setText("To Collect\n\n" + (feesT - paid));
-		fifthTab.setStyle("-fx-background-color: #232323");
-		fifthTab.setPadding(new Insets(10));
-		fifthTab.setStyle("-fx-background-color: #232323");
-		fifthTab.setSpacing(200);
-		fifthTab.setPrefHeight(1500);
-		fifthTab.setAlignment(Pos.CENTER);
+		fifthTab.setStyle("-fx-background-color: " + Main.configuration.theme);
+		fifthTab.setStyle("-fx-background-color: " + Main.configuration.theme);
 		
 		secondTab.setMinHeight(150);
 		thirdTab.setMinHeight(150);

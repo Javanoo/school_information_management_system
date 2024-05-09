@@ -113,7 +113,7 @@ public class Form extends BorderPane{
 		styleLabels(forName, forGender, forPrimaryPhone, forSecondaryPhone, forPrimaryEmail, forSecondaryEmail, forLocation, 
 				forRole, forQualification, forSalary, forDescription, forAccountAdmin, forAccountNumber);
 		formTitle.setTextFill(Color.web("White"));
-		title.setStyle("-fx-background-color: #232323");
+		title.setStyle("-fx-background-color: " + Main.configuration.theme);
 		formTitle.setFont(Font.font("inter SemiBold", 17));
 		formTitle.setPadding(new Insets(10, 0, 10, 0));
 		forFirstSection.setFont(Font.font("Inter SemiBold", 16));
@@ -182,7 +182,7 @@ public class Form extends BorderPane{
 		title.setPadding(new Insets(0, 0, 5, 10));
 		
 		innerContainer.getChildren().addAll(firstSection, secondSection, thirdSection);
-		innerContainer.setStyle("-fx-background-color: #232323");
+		innerContainer.setStyle("-fx-background-color: " + Main.configuration.theme);
 		innerContainer.setAlignment(Pos.TOP_CENTER);
 		innerContainer.setPadding(new Insets(20));
 		innerContainer.setSpacing(30);
@@ -192,7 +192,7 @@ public class Form extends BorderPane{
 		
 		buttonsPair.setSpacing(380);
 		buttonsPair.setPadding(new Insets(15,10,10,10));
-		buttonsPair.setStyle("-fx-background-color: #232323");
+		buttonsPair.setStyle("-fx-background-color: " + Main.configuration.theme);
 		
 		setTop(title);
 		setCenter(outerContainer);

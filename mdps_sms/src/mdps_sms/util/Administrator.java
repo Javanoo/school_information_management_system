@@ -40,4 +40,13 @@ public class Administrator extends Person {
 	public int getSession() {return session;}
 	
 	public void setSession(int session) {this.session = session;}
+	
+	/**
+	 * Returns the name value assigned to this object
+	 * @return the name
+	 */
+	@Override
+	public String getName() {
+		return name;
+	}
 }

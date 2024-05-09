@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.TreeSet;
+import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -34,6 +34,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import mdps_sms.Main;
 import mdps_sms.gui.Classrooms.classForm;
+import mdps_sms.util.PdfPrinter;
 import mdps_sms.util.SchoolClass;
 import mdps_sms.util.Student;
 
@@ -74,13 +75,10 @@ public class FeesList extends BorderPane {
 	
 	SimpleDateFormat dateFormat2 = new SimpleDateFormat("MMM dd yyyy");
 	
-	TreeSet<Student> students = new TreeSet<>();
-	
-	private MenuItem print = new MenuItem("print reciepts");
-	private MenuItem printBal = new MenuItem("print all with balances");
+	ArrayList<Student> students = new ArrayList<>();
+
 	private MenuItem printAll = new MenuItem("print geneal report");
-	private MenuItem printPaid = new MenuItem("print all with no balances");
-	private ContextMenu subMenu = new ContextMenu(print, printBal, printPaid, printAll);
+	private ContextMenu subMenu = new ContextMenu(printAll);
 	
 	FeesList(){}
 	
@@ -99,6 +97,8 @@ public class FeesList extends BorderPane {
 				else class8.add(elem);
 			}
 		}
+		
+		printAll.setOnAction(e -> PdfPrinter.printFeesReport(Main.classrooms.toArray(new SchoolClass[] {})));
 		
 		classChoice.setItems(FXCollections.observableArrayList("Class 1", "Class 2", "Class 3", "Class 4", 
 				"Class 5", "Class 6", "Class 7", "Class 8"));
@@ -155,7 +155,7 @@ public class FeesList extends BorderPane {
 		title.setBottom(new Separator());
 		title.setPadding(new Insets(10, 10, 0, 10));
 		((Separator)title.getBottom()).setPadding(new Insets(10, 0, 0, 0));
-		title.setStyle("-fx-background-color: #232323");
+		title.setStyle("-fx-background-color: " + Main.configuration.theme);
 		BorderPane.setAlignment(forTitle, Pos.BOTTOM_LEFT);
 		BorderPane.setAlignment(classChoice, Pos.CENTER_RIGHT);
 		
@@ -189,7 +189,7 @@ public class FeesList extends BorderPane {
 		setCenter(studentsTable);
 		setBottom(actionBar);
 		setPadding(new Insets(0));
-		setStyle("-fx-background-color: #232323");
+		setStyle("-fx-background-color: " + Main.configuration.theme);
 		BorderPane.setAlignment(actionBar, Pos.CENTER_RIGHT);
 		BorderPane.setMargin(actionBar, new Insets(7, 7, 7 , 0));
 	}
@@ -292,7 +292,7 @@ public class FeesList extends BorderPane {
 			setMinWidth(400);
 			setMinHeight(400);
 			setPadding(new Insets(20, 10, 10, 10));
-			setStyle("-fx-background-color: #232323");
+			setStyle("-fx-background-color: " + Main.configuration.theme);
 			
 			Rectangle rec = new Rectangle(400, 400);
 			rec.setArcHeight(35);
@@ -322,7 +322,6 @@ public class FeesList extends BorderPane {
 			
 			VBox historyContainer = new VBox();
 			
-			System.out.println( person.getFeesPaidEntry().keySet() + "");
 			if(person.getFeesPaidEntry().keySet() != null) {
 				for(String elem : person.getFeesPaidEntry().keySet()) {
 					HBox entryView = new HBox();

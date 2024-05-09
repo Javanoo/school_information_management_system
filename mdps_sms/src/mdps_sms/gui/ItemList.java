@@ -18,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -27,6 +28,7 @@ import javafx.stage.PopupWindow.AnchorLocation;
 import javafx.stage.Stage;
 import mdps_sms.Main;
 import mdps_sms.util.Fleet;
+import mdps_sms.util.PdfPrinter;
 import mdps_sms.util.Person;
 import mdps_sms.util.SchoolClass;
 import mdps_sms.util.Staff;
@@ -49,7 +51,7 @@ public class ItemList<E extends Person> extends BorderPane{
 	private MenuItem view = new MenuItem("view");
 	private MenuItem mail = new MenuItem("email");
 	private MenuItem print = new MenuItem("print");
-	private MenuItem printAll = new MenuItem("print all");
+	//private MenuItem printAll = new MenuItem("print all");
 	
 	Mail mailor = new Mail();
 
@@ -77,11 +79,9 @@ public class ItemList<E extends Person> extends BorderPane{
 	ItemList(Person type, ArrayList<E> itemList){
 		
 		//list
-		Label noItems = new Label("nothing");
+		Label noItems = new Label("nothing yet,\npopulate using the + button(bottom right corner)");
 		noItems.setFont(Font.font("Ubuntu", FontWeight.BOLD, 16));
 		noItems.setTextFill(Color.GRAY);
-		StackPane placeHolder = new StackPane(noItems);
-		placeHolder.setStyle("-fx-background-color: white");
 
 
 
@@ -105,7 +105,7 @@ public class ItemList<E extends Person> extends BorderPane{
 		view.setOnAction(e -> {
 			showSummary();
 		});
-		subMenu.getItems().addAll(view, print, printAll, mail);
+		subMenu.getItems().addAll(view, print, mail);
 		subMenu.setId("tableSubMenu");
 
 		table.getColumns().add(name);
@@ -124,11 +124,31 @@ public class ItemList<E extends Person> extends BorderPane{
 				if((Staff)table.getSelectionModel().getSelectedItem() != null)
 				sendEmail((Staff)table.getSelectionModel().getSelectedItem());
 			});
+			
+			print.setOnAction(e -> PdfPrinter.printStaff(((Staff)table.getSelectionModel().getSelectedItem())));
+			//printAll.setOnAction(e -> PdfPrinter.printStaff((table.getSelectionModel().getSelectedItems()).toArray(new Staff[]{})));
+			
 			actionBar.getDelete().setOnAction(e -> {
 				if((Staff)table.getSelectionModel().getSelectedItem() != null) {
-					itemList.removeAll(table.getSelectionModel().getSelectedItems());
-					Main.saveData(itemList, Main.STORAGEFILE_s);
-					table.setItems(FXCollections.observableList(itemList));
+					String prompt = "Delete " + (table.getSelectionModel().getSelectedItems().size() > 1 ? "all selected staff?" :
+						table.getSelectionModel().getSelectedItem().getName() + "?");  
+					
+					GridPane confirm = actionBar.confirm(prompt);
+					
+					Main.popup.getContent().clear();
+					Main.popup.getContent().add(confirm);
+					Main.popup.show(Main.primaryStage);
+					
+					((Button)confirm.getChildren().get(2)).setOnAction( v -> {
+						itemList.removeAll(table.getSelectionModel().getSelectedItems());
+						Main.saveData(itemList, Main.STORAGEFILE_s);
+						table.setItems(FXCollections.observableList(itemList));
+						((Button)confirm.getChildren().get(1)).fire();
+					});
+					((Button)confirm.getChildren().get(1)).setOnAction(v -> {
+						Main.popup.hide();
+						Main.popup.getContent().clear();
+					});
 				}
 			});
 			getActionBar().getAdd().setOnAction(e -> {
@@ -164,20 +184,19 @@ public class ItemList<E extends Person> extends BorderPane{
 					
 					//register forms buttons
 					((Form)Main.popup.getContent().get(0)).cancel.setOnAction(v -> {
-						getTable().setItems(FXCollections.observableList(itemList));
+						getTable().refresh();
 						Main.popup.hide();
 						Main.popup.getContent().clear();
 					});
 					
 					((Form)Main.popup.getContent().get(0)).save.setOnAction(v -> {
 						if (((Form)Main.popup.getContent().get(0)).createNew((Staff)table.getSelectionModel().getSelectedItem(), itemList)) {
-							//table.setItems(FXCollections.observableList(new LinkedList<>(data)));
 							((Form)Main.popup.getContent().get(0)).cancel.fire();
 						}
 					});
 				}
 			});
-		}else if(type instanceof Student) {///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		}else if(type instanceof Student) {
 			table.getColumns().add(classroom);
 			table.getColumns().add(parent);
 			phone.setText("Parent's phone");
@@ -191,28 +210,54 @@ public class ItemList<E extends Person> extends BorderPane{
 				sendEmail((Student)table.getSelectionModel().getSelectedItem());
 			});
 			
+			print.setOnAction(e -> PdfPrinter.printStudent(((Student)table.getSelectionModel().getSelectedItem())));
+			//printAll.setOnAction(e -> PdfPrinter.printStudent((table.getSelectionModel().getSelectedItems()).toArray(new Student[]{})));
+			
+			if(Main.classrooms.size() == 0) {
+				actionBar.setDisable(true);
+				noItems.setText("Create classes first, to add students");
+			}
+			
 			actionBar.getDelete().setOnAction(e -> {
 				if(table.getSelectionModel().getSelectedItems().size() != 0) {
-					//remove student from classroom first
-					for(E elem : table.getSelectionModel().getSelectedItems()) {
-						SchoolClass classCopy = (((Student)elem).getClassroom());
-						
-						Iterator<SchoolClass> iter = Main.classrooms.iterator();
-						
-						while(iter.hasNext()) {
-							SchoolClass classroom = iter.next();
-							if(classroom.getName().equals(classCopy.getName())) {
-								classroom.getStudents().remove(((Student)elem));
-								break;
-							}
-						}
-					}
 					
-					//remove students and save both the student dat and classrooms.
-					itemList.removeAll(table.getSelectionModel().getSelectedItems());
-					Main.saveData(itemList, Main.STORAGEFILE_S);
-					Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
-					table.setItems(FXCollections.observableList(itemList));
+					String prompt = "Delete " + (table.getSelectionModel().getSelectedItems().size() > 1 ? "all selected students ?" :
+						table.getSelectionModel().getSelectedItem().getName() + "?");  
+					
+					GridPane confirm = actionBar.confirm(prompt);
+					
+					Main.popup.getContent().clear();
+					Main.popup.getContent().add(confirm);
+					Main.popup.show(Main.primaryStage);
+					
+					((Button)confirm.getChildren().get(2)).setOnAction( v ->
+						{
+							//remove student from classroom first
+							for(E elem : table.getSelectionModel().getSelectedItems()) {
+								SchoolClass classCopy = (((Student)elem).getClassroom());
+						
+								Iterator<SchoolClass> iter = Main.classrooms.iterator();
+							
+								while(iter.hasNext()) {
+									SchoolClass classroom = iter.next();
+									if(classroom.getName().equals(classCopy.getName())) {
+										classroom.getStudents().remove(((Student)elem));
+										break;
+									}
+								}
+							}
+					
+							//remove students and save both the student dat and classrooms.
+							itemList.removeAll(table.getSelectionModel().getSelectedItems());
+							Main.saveData(itemList, Main.STORAGEFILE_S);
+							Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
+							getTable().setItems(FXCollections.observableList(itemList));
+							((Button)confirm.getChildren().get(1)).fire();
+					});
+					((Button)confirm.getChildren().get(1)).setOnAction(v -> {
+						Main.popup.hide();
+						Main.popup.getContent().clear();
+					});
 				}
 			});
 
@@ -249,19 +294,19 @@ public class ItemList<E extends Person> extends BorderPane{
 					
 					//register forms buttons
 					form.cancel.setOnAction(v -> {
-						getTable().setItems(FXCollections.observableList(itemList));
 						Main.popup.hide();
 						Main.popup.getContent().clear();
 						Main.saveData(itemList, Main.STORAGEFILE_S);
 						Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
+						getTable().refresh();
 					});
 					
 					form.edit((Student)table.getSelectionModel().getSelectedItem(), itemList);
 					Main.popup.getContent().add(form);
 					Main.popup.show(Main.primaryStage);
 				}
-			});////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		}else if(type instanceof Teacher) {
+			});
+		}else if(type instanceof Teacher) {////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			table.getColumns().add(classes);
 			table.getColumns().add(qualification);
 			table.getColumns().add(phone);
@@ -274,26 +319,65 @@ public class ItemList<E extends Person> extends BorderPane{
 				if((Teacher)table.getSelectionModel().getSelectedItem() != null)
 				sendEmail((Teacher)table.getSelectionModel().getSelectedItem());
 			});
+			
+			print.setOnAction(e -> PdfPrinter.printTeacher(((Teacher)table.getSelectionModel().getSelectedItem())));
+			//printAll.setOnAction(e -> PdfPrinter.printTeacher((table.getSelectionModel().getSelectedItems()).toArray(new Teacher[]{})));
+			
+			if(Main.classrooms.size() == 0) {
+				actionBar.setDisable(true);
+				noItems.setText("Create classes first, to add teachers");
+			}
 
 			actionBar.getDelete().setOnAction( e -> {
-				if(table.getSelectionModel().getSelectedItems() != null) {
-					//remove Teacher from classroom first
-					for (E elem : table.getSelectionModel().getSelectedItems()) {
-						 for(SchoolClass var : ((Teacher)elem).getClass_subject().keySet()) {
+				if(table.getSelectionModel().getSelectedItems() != null && table.getSelectionModel().getSelectedItems().size() != 0) {
+				String prompt = "Delete " + (table.getSelectionModel().getSelectedItems().size() > 1 ? "all selected teachers?" :
+					table.getSelectionModel().getSelectedItem().getName() + "?");  
+				
+				GridPane confirm = actionBar.confirm(prompt);
+				
+				Main.popup.getContent().clear();
+				Main.popup.getContent().add(confirm);
+				Main.popup.show(Main.primaryStage);
+				
+				
+				
+				((Button)confirm.getChildren().get(2)).setOnAction( v ->{
+						//remove Teacher from classroom first
+						for (E elem : table.getSelectionModel().getSelectedItems()) {
+							for(SchoolClass var : ((Teacher)elem).getClass_subject().keySet()) {
+							
+								Iterator<SchoolClass> iter = Main.classrooms.iterator();
+								
+								while(iter.hasNext()) {
+									SchoolClass foundClass = iter.next();
+									if(foundClass.getName().equals(var.getName())) {
+										foundClass.getTeachers().remove(((Teacher)elem)); //remove teacher
+										foundClass.getFreeSubjects().addAll(((Teacher)elem).getClass_subject().get(var)); //add subjects to free subjects
+										break;
+									}
+								}
+							}
 							 
-						 }
-					}
-					//then delete the teacher
-					itemList.removeAll(table.getSelectionModel().getSelectedItems());
-					table.setItems(FXCollections.observableList(new LinkedList<>(itemList)));
-					Main.saveData(itemList, Main.STORAGEFILE_T);
-					Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
-					
+						}
+						//then delete the teacher
+						itemList.removeAll(table.getSelectionModel().getSelectedItems());
+						table.setItems(FXCollections.observableList(itemList));
+						Main.saveData(itemList, Main.STORAGEFILE_T);
+						Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
+						
+					((Button)confirm.getChildren().get(1)).fire();
+				});
+				
+				((Button)confirm.getChildren().get(1)).setOnAction(v -> {
+					Main.popup.hide();
+					Main.popup.getContent().clear();
+				});
+				
 				}
 			});
 			getActionBar().getAdd().setOnAction(e -> {
 				Main.popup.getContent().clear();
-				Main.popup.getContent().add(new TeacherForm(Main.classrooms));
+				Main.popup.getContent().add(new TeacherForm());
 				Main.popup.show(Main.primaryStage);
 				Main.popup.setAnchorY(200);
 				Main.popup.setOnHiding(v -> {
@@ -309,7 +393,6 @@ public class ItemList<E extends Person> extends BorderPane{
 				
 				((TeacherForm)Main.popup.getContent().get(0)).save.setOnAction(v -> {
 					if (((TeacherForm)Main.popup.getContent().get(0)).createNew(new Teacher(), itemList)) {
-						//table.setItems(FXCollections.observableList(new LinkedList<>(data)));
 						((TeacherForm)Main.popup.getContent().get(0)).cancel.fire();
 					}
 				});
@@ -318,19 +401,20 @@ public class ItemList<E extends Person> extends BorderPane{
 			getActionBar().getEdit().setOnAction(e -> {
 				if((Teacher)table.getSelectionModel().getSelectedItem() != null) {
 					Main.popup.getContent().clear();
-					Main.popup.getContent().add(new TeacherForm(Main.classrooms));
+					Main.popup.getContent().add(new TeacherForm());
 					((TeacherForm)Main.popup.getContent().get(0)).edit((Teacher)table.getSelectionModel().getSelectedItem(),itemList);
 					Main.popup.show(Main.primaryStage);
-					
-
-					((TeacherForm)Main.popup.getContent().get(0)).save.setOnAction(v -> {
-						if (((TeacherForm)Main.popup.getContent().get(0)).createNew(new Teacher(), itemList)) {
-							//table.setItems(FXCollections.observableList(new LinkedList<>(data)));
-							((TeacherForm)Main.popup.getContent().get(0)).cancel.fire();
-						}
-					});
 				}
-			});
+				
+				((TeacherForm)Main.popup.getContent().get(0)).cancel.setOnAction(v -> {
+					Main.popup.hide();
+					Main.popup.getContent().clear();
+					Main.saveData(Main.classrooms, Main.STORAGEFILE_C);
+					Main.saveData(itemList, Main.STORAGEFILE_T);
+					getTable().refresh();
+				});
+				
+			});////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		}else if(type instanceof Fleet) {
 			table.getColumns().add(phone);
 			table.getColumns().add(email);
@@ -343,11 +427,31 @@ public class ItemList<E extends Person> extends BorderPane{
 				sendEmail((Fleet)table.getSelectionModel().getSelectedItem());
 			});
 			
+			print.setOnAction(e -> PdfPrinter.printFleet(((Fleet)table.getSelectionModel().getSelectedItem())));
+			//printAll.setOnAction(e -> PdfPrinter.printFleet((table.getSelectionModel().getSelectedItems()).toArray(new Fleet[]{})));
+			
 			actionBar.getDelete().setOnAction(e -> {
-				if((Fleet)table.getSelectionModel().getSelectedItem() != null) {
-					itemList.removeAll(table.getSelectionModel().getSelectedItems());
-					table.setItems(FXCollections.observableList(itemList));
-					Main.saveData(itemList, Main.STORAGEFILE_F);
+				if(table.getSelectionModel().getSelectedItems() != null && (table.getSelectionModel().getSelectedItems()).size() != 0) {
+					
+					String prompt = "Delete " + (table.getSelectionModel().getSelectedItems().size() > 1 ? "all selected fleet members?" :
+						table.getSelectionModel().getSelectedItem().getName() + "?");  
+					
+					GridPane confirm = actionBar.confirm(prompt);
+					
+					Main.popup.getContent().clear();
+					Main.popup.getContent().add(confirm);
+					Main.popup.show(Main.primaryStage);
+					((Button)confirm.getChildren().get(2)).setOnAction( v ->{
+						itemList.removeAll(table.getSelectionModel().getSelectedItems());
+						getTable().setItems(FXCollections.observableList(itemList));
+						Main.saveData(itemList, Main.STORAGEFILE_F);
+						((Button)confirm.getChildren().get(1)).fire();
+					});
+					
+					((Button)confirm.getChildren().get(1)).setOnAction(v -> {
+						Main.popup.hide();
+						Main.popup.getContent().clear();
+					});
 				}
 			});
 			getActionBar().getAdd().setOnAction(e -> {
@@ -369,7 +473,6 @@ public class ItemList<E extends Person> extends BorderPane{
 				
 				((FleetForm)Main.popup.getContent().get(0)).save.setOnAction(v -> {
 					if (((FleetForm)Main.popup.getContent().get(0)).createNew(new Fleet(), itemList)) {
-						//table.setItems(FXCollections.observableList(new LinkedList<>(data)));
 						((FleetForm)Main.popup.getContent().get(0)).cancel.fire();
 					}
 				});
@@ -385,7 +488,7 @@ public class ItemList<E extends Person> extends BorderPane{
 					
 					//register forms buttons
 					((FleetForm)Main.popup.getContent().get(0)).cancel.setOnAction(v -> {
-						getTable().setItems(FXCollections.observableList(itemList));
+						getTable().refresh();
 						Main.popup.hide();
 						Main.popup.getContent().clear();
 					});
@@ -396,6 +499,8 @@ public class ItemList<E extends Person> extends BorderPane{
 			table.setItems(FXCollections.observableList(itemList));
 			table.getSelectionModel().selectFirst();
 		}
+		StackPane placeHolder = new StackPane(noItems);
+		placeHolder.setStyle("-fx-background-color: white");
 		table.requestFocus();
 		table.setPlaceholder(placeHolder);
 		table.setTableMenuButtonVisible(true);
@@ -413,7 +518,7 @@ public class ItemList<E extends Person> extends BorderPane{
 
 		setCenter(table);
 		setBottom(actionBar);
-		setStyle("-fx-background-color: #232323");
+		setStyle("-fx-background-color: " + Main.configuration.theme);
 		BorderPane.setAlignment(getBottom(), Pos.CENTER_RIGHT);
 		BorderPane.setMargin(actionBar, new Insets(7, 7, 7 , 0));
 	}
@@ -422,7 +527,7 @@ public class ItemList<E extends Person> extends BorderPane{
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void showSummary() {
 		Popup summary = new Popup();
-
+		
 		summary.getContent().add(new Summary(table.getSelectionModel().getSelectedItem()));
 		summary.setAutoHide(true);
 		summary.show(Main.primaryStage);

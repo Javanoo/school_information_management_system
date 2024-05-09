@@ -1,7 +1,11 @@
 package mdps_sms.gui;
 
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TreeSet;
 
@@ -12,11 +16,13 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -29,9 +35,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.util.Callback;
 import mdps_sms.Main;
 import mdps_sms.gui.FeesList.FeesForm;
+import mdps_sms.util.PdfPrinter;
 import mdps_sms.util.SchoolCalendar;
+import mdps_sms.util.SchoolCalendar.DayEntry;
 
 public class CalendarTable extends BorderPane{
 	
@@ -52,20 +61,18 @@ public class CalendarTable extends BorderPane{
 	
 	ActionBar actionBar = new ActionBar();
 	
-	public static SchoolCalendar calendarData = new SchoolCalendar();
 	TreeSet<SchoolCalendar.DayEntry> dates = new TreeSet<SchoolCalendar.DayEntry>();
 	
 	MenuItem viewCal = new MenuItem("view");
 	MenuItem editCal = new MenuItem("edit");
-	MenuItem printDay = new MenuItem("print day");
 	MenuItem printCal = new MenuItem("print calendar");
 	
-	ContextMenu calMenu = new ContextMenu(viewCal, editCal, printDay, printCal);
+	ContextMenu calMenu = new ContextMenu(viewCal, editCal, printCal);
 	
 	CalendarTable(){}
 	
 	CalendarTable(SchoolCalendar cal){
-		dates =cal.getDates();
+		dates = cal.getDates();
 		if(dates.size() != 0)
 		calendarTitle.setText("SCHOOL CALENDAR - " + (dateFormat.format(dates.first().getDate())).toUpperCase() 
 				+ " TO " +  (dateFormat.format(dates.last().getDate())).toUpperCase());
@@ -77,6 +84,8 @@ public class CalendarTable extends BorderPane{
 		today.setFont(Font.font("Inter SemiBold", 14));
 		GridPane.setHalignment(view, HPos.RIGHT);
 		GridPane.setHalignment(today, HPos.CENTER);
+		
+		printCal.setOnAction(e -> PdfPrinter.printCalendar(cal));
 		
 		view.setItems(FXCollections.observableArrayList("Calendar","Timetable"));
 		view.getSelectionModel().selectFirst();
@@ -97,14 +106,14 @@ public class CalendarTable extends BorderPane{
 		
 		
 		titleBar.setLeft(calendarTitle);
-		titleBar.setCenter(today);
-		titleBar.setRight(view);
+		//titleBar.setCenter(today);
+		titleBar.setRight(today);
 		titleBar.setBottom(new Separator());
 		((Separator)titleBar.getBottom()).setPadding(new Insets(10, 0, 0, 0));
 		titleBar.setPadding(new Insets(10, 10, 0, 10));
 		BorderPane.setAlignment(calendarTitle, Pos.BOTTOM_LEFT);
 		BorderPane.setAlignment(today, Pos.BOTTOM_CENTER);
-		titleBar.setStyle("-fx-background-color: #232323");
+		titleBar.setStyle("-fx-background-color: " + Main.configuration.theme);
 		
 		table.setItems(FXCollections.observableArrayList(dates));
 		table.getColumns().addAll(day, dayType, events, description);
@@ -122,10 +131,13 @@ public class CalendarTable extends BorderPane{
 		description.setCellValueFactory(new PropertyValueFactory<>("Description"));
 		
 		actionBar.getAdd().setOnAction( e -> { createCalendar();});
-		actionBar.getDelete().setOnAction( e -> { deleteCalendar(cal);});
+		actionBar.getDelete().setOnAction( e -> { 
+			if(Main.cal.getDates().size() != 0)
+				deleteCalendar();
+		});
 		actionBar.getEdit().setOnAction( e -> {	
 			if(table.getSelectionModel().getSelectedItem() != null)
-			editCalendar(cal);
+				editCalendar(Main.cal);
 		});
 		actionBar.getSearchBar().setOnKeyTyped(( e -> { searchCalendar();}));
 		
@@ -133,7 +145,7 @@ public class CalendarTable extends BorderPane{
 		setCenter(table);
 		setBottom(actionBar);
 		BorderPane.setAlignment(getBottom(), Pos.CENTER_RIGHT);
-		setStyle("-fx-background-color: #232323");
+		setStyle("-fx-background-color: " + Main.configuration.theme);
 		BorderPane.setMargin(getBottom(), new Insets(7, 7, 7 , 0));
 	}
 	
@@ -158,7 +170,30 @@ public class CalendarTable extends BorderPane{
 		Button done = new Button("Done");
 		Button cancel = new Button("Cancel");
 		
-		HBox buttons = new HBox(done, cancel);
+		HBox buttons = new HBox(cancel, done);
+		buttons.setSpacing(145);
+		
+		for(DatePicker elem :  new DatePicker[]{datePicks2, datePicks}) {
+			elem.setMaxWidth(345);
+			elem.setMinHeight(35);;
+			elem.setStyle("-fx-background-color: #484848; -fx-text-fill: black");
+			elem.setEditable(false);
+			elem.focusedProperty().addListener(e -> {
+				done.setStyle("-fx-background-color: white");
+				done.setTextFill(Color.BLACK);
+			});
+		}
+		for(Button elem : new Button[] {cancel, done}) {
+			elem.setMinWidth(100);
+			elem.setMinHeight(30);
+			elem.setStyle("-fx-background-color: white");
+			elem.setFont(Font.font("Inter SemiBold", 15));
+			elem.setTextFill(Color.BLACK);
+			Rectangle elemRec = new Rectangle(100, 30);
+			elemRec.setArcHeight(30);
+			elemRec.setArcWidth(30);
+			elem.setClip(elemRec);
+		}
 		
 		BorderPane view = new BorderPane();
 		pair3.setSpacing(10);
@@ -175,23 +210,45 @@ public class CalendarTable extends BorderPane{
 		
 		done.setOnAction(e -> {
 			SchoolCalendar calendar = new SchoolCalendar(datePicks.getValue(), datePicks2.getValue());
-			Main.saveData(calendar, Main.STORAGEFILE_C2);
+			System.out.println(calendar.getDates().size());
+			Main.cal = calendar;
 			table.setItems(FXCollections.observableArrayList(calendar.getDates()));
 			cancel.fire();
 		});
 		cancel.setOnAction(e -> {
+			Main.fadeOut(Main.popup.getContent().get(0), 250);
+			Main.saveData(Main.cal, Main.STORAGEFILE_C2);
+		});
+		
+		view.setStyle("-fx-background-color: " + Main.configuration.theme);
+		view.setPadding(new Insets(20));
+		view.setMinSize(385, 340);
+		Rectangle rec = new Rectangle(385, 340);
+		rec.setArcHeight(35);
+		rec.setArcWidth(35);
+		view.setClip(rec);
+	}
+	
+	void deleteCalendar() {
+		String prompt = "Delete school Calendar?";  
+		
+		GridPane confirm = actionBar.confirm(prompt);
+		
+		Main.popup.getContent().clear();
+		Main.popup.getContent().add(confirm);
+		Main.popup.show(Main.primaryStage);
+		
+		((Button)confirm.getChildren().get(2)).setOnAction( v -> {
+			table.getItems().clear();
+			Main.cal = new SchoolCalendar();
+			Main.saveData(Main.cal, Main.STORAGEFILE_C2);
+			
+			((Button)confirm.getChildren().get(1)).fire();
+		});
+		((Button)confirm.getChildren().get(1)).setOnAction(v -> {
 			Main.popup.hide();
 			Main.popup.getContent().clear();
 		});
-		
-		view.setStyle("-fx-background-color: #232323");
-		view.setPadding(new Insets(10));
-		view.setMinSize(400, 500);
-	}
-	void deleteCalendar(SchoolCalendar cal) {
-		table.getItems().clear();
-		cal = new SchoolCalendar();
-		Main.saveData(cal, Main.STORAGEFILE_C2);
 	}
 	void editCalendar(SchoolCalendar calendar) {
 		
@@ -208,7 +265,9 @@ public class CalendarTable extends BorderPane{
 		forDesc.setFont(Font.font("Inter", 14));
 		forDesc.setTextFill(Color.WHITE); 
 		
-		TextField type = new TextField(table.getSelectionModel().getSelectedItem().getDayType());
+		ComboBox<String> type = new ComboBox<>();
+		type.setItems(FXCollections.observableArrayList("Exams day", "School day", "Holiday"));
+		type.getSelectionModel().select(table.getSelectionModel().getSelectedItem().getDayType());
 		TextField events = new TextField(table.getSelectionModel().getSelectedItem().getEvent());
 		TextArea desc = new TextArea(table.getSelectionModel().getSelectedItem().getDescription());
 		
@@ -220,45 +279,83 @@ public class CalendarTable extends BorderPane{
 		pair3.setSpacing(5);
 		
 		VBox pairs = new VBox(pair,pair2,pair3);
-		pairs.setSpacing(10);
+		pairs.setSpacing(20);
 		
 		Button done = new Button("Done");
 		Button cancel = new Button("Cancel");
 		
-		HBox buttons = new HBox(done, cancel);
+		HBox buttons = new HBox(cancel, done);
+		
+		buttons.setSpacing(145);
+		
+		for(Control elem :  new Control[]{type, events}) {
+			if(elem instanceof TextField) {
+				elem.setMaxWidth(345);
+				elem.setMinHeight(35);;
+				elem.setStyle("-fx-background-color: #fefefe; -fx-text-fill: black");
+				elem.focusedProperty().addListener(e -> {
+					done.setStyle("-fx-background-color: white");
+					done.setTextFill(Color.BLACK);
+				});
+			}else {
+				elem.setMaxWidth(345);
+				elem.setMinHeight(35);;
+				elem.setStyle("-fx-background-color: #fefefe; -fx-text-fill: black");
+			}
+		}
+		for(Button elem : new Button[] {cancel, done}) {
+			elem.setMinWidth(100);
+			elem.setMinHeight(30);
+			elem.setStyle("-fx-background-color: white");
+			elem.setFont(Font.font("Inter SemiBold", 15));
+			elem.setTextFill(Color.BLACK);
+			Rectangle elemRec = new Rectangle(100, 30);
+			elemRec.setArcHeight(30);
+			elemRec.setArcWidth(30);
+			elem.setClip(elemRec);
+		}
+		
+		
+		desc.setMaxWidth(345);
+		desc.setMaxHeight(85);;
+		desc.setStyle("-fx-background-color: #fefefe; -fx-text-fill: black");
 		
 		BorderPane view = new BorderPane();
 		view.setCenter(pairs);
 		view.setBottom(buttons);
 		
-		view.setStyle("-fx-background-color: #232323");
-		view.setPadding(new Insets(10));
-		view.setMinSize(400, 500);
+		view.setStyle("-fx-background-color: " + Main.configuration.theme);
+		view.setPadding(new Insets(20));
+		view.setMinSize(385, 440);
+		Rectangle rec = new Rectangle(385, 440);
+		rec.setArcHeight(35);
+		rec.setArcWidth(35);
+		view.setClip(rec);
 		
 		Main.popup.getContent().clear();
 		Main.popup.getContent().add(view);
 		Main.popup.show(Main.primaryStage);
 		Main.popup.setAnchorY(250);
-		Main.popup.setOnHiding(v -> {
-			Main.popup.getContent().clear();
-		});
 		
 		done.setOnAction(e -> {
+			System.out.println(calendar.getDates().size());
 			for(SchoolCalendar.DayEntry elem : calendar.getDates()) {
 				if(elem.equals(table.getSelectionModel().getSelectedItem())) {
-					elem.setDayType(type.getText());
+					elem.setDayType(type.getValue());
 					elem.setEvent(events.getText());
 					elem.setDescription(desc.getText());
 				}
 			}
 			
-			Main.saveData(calendar, Main.STORAGEFILE_C2);
-			table.setItems(FXCollections.observableArrayList(calendar.getDates()));
+			calendar.updateExamDates();
+			System.out.println(calendar.getDates().size());
+			table.refresh();
 			cancel.fire();
 		});
 		cancel.setOnAction(e -> {
 			Main.popup.hide();
 			Main.popup.getContent().clear();
+			Main.saveData(calendar, Main.STORAGEFILE_C2);
 		});
 	}
 	void searchCalendar() {}

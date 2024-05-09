@@ -2,6 +2,7 @@ package mdps_sms.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import javafx.collections.FXCollections;
@@ -47,9 +48,16 @@ public class StudentForm extends Form {
 	private VBox secondParentFirstEmailPair = new VBox(forSecondParentFirstEmail, secondParentFirstEmail);
 	private VBox secondParentSecondEmailPair = new VBox(forSecondParentSecondEmail, secondParentSecondEmail);
 	private VBox classroomPair = new VBox(forClassroom, classrooms);
+	
+	HashSet<String> codes = new HashSet<>();
 
 	StudentForm(){
 		super();
+		
+		Iterator<Student> codeIter = Main.students.iterator();
+		while(codeIter.hasNext()) {
+			codes.add(codeIter.next().getCodeNumber());
+		}
 		
 		Label noItems = new Label("no classes found");
 		StackPane placeHolder = new StackPane(noItems);
@@ -66,8 +74,17 @@ public class StudentForm extends Form {
 				secondParentFirstEmail, secondParentSecondEmail);
 		this.styleVPairs(studentIdPair, parentPair, secondParentPair, secondParentFirstPhonePair, secondParentSecondPhonePair
 				, secondParentFirstEmailPair, secondParentSecondEmailPair, classroomPair);
+		
+		//override name's inherited listener
+		name.setOnKeyTyped(e -> {
+			if(!name.getText().isBlank()) {
+				codeNumber.setText(generateCode(name.getText()));
+			}
+			else codeNumber.clear();
+		});
 
-		codeNumber.setPromptText("enter student code...");
+		codeNumber.setEditable(false);
+		codeNumber.setPromptText("------");
 		parent.setPromptText("enter parent name...");
 		secondParent.setPromptText("enter other parent's name...");
 		secondParentFirstPhone.setPromptText("enter other parent's phone number...");
@@ -249,15 +266,24 @@ public class StudentForm extends Form {
 	
 	private String generateCode(String Name) {
 		String[] codeArray = Name.split(" ");
+		String code = "";
 		if(codeArray.length == 1) {
-			String code =  (codeArray[0].charAt(0) + "" + codeArray[0].charAt(codeArray[0].length() - 1)).toUpperCase();
+			 code =  (codeArray[0].charAt(0) + "" + codeArray[0].charAt(codeArray[0].length() - 1)).toUpperCase();
 		}else {
-			String code =  (codeArray[0].charAt(0) + "" + codeArray[0].charAt(codeArray[0].length() - 1) + "" + 
+			 code =  (codeArray[0].charAt(0) + "" + codeArray[0].charAt(codeArray[0].length() - 1) + "" + 
 					codeArray[codeArray.length - 1].charAt(codeArray[codeArray.length - 1].length() - 1)
 			).toUpperCase();
 		}
 		
+		String codeCopy = new String(code);
 		
-		return "";
+		//number
+		while(codes != null) {
+			long pad = 100 + ((int)(Math.random() * 900));
+			code += pad + "";
+			if(!codes.contains(code)) break;
+			code = codeCopy;
+		}
+		return code;
 	}
 }

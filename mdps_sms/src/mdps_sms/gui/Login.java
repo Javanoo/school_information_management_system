@@ -128,7 +128,7 @@ public class Login extends GridPane {
 		login.setFont(Font.font("inter SemiBold", 15));
 		login.setMinSize(100, 20);
 		login.setTextFill(Color.BLACK);
-		login.setStyle("-fx-background-color: #ADADAD");
+		login.setStyle("-fx-background-color: white");
 		
 		
 		settings = UiComponents.createButton("settingsWhite.png", 24, "settings");
@@ -139,7 +139,7 @@ public class Login extends GridPane {
 		cancel.setFont(Font.font("inter SemiBold", 15));
 		cancel.setMinSize(100, 20);
 		cancel.setTextFill(Color.BLACK);
-		cancel.setStyle("-fx-background-color: #ADADAD");
+		cancel.setStyle("-fx-background-color: white");
 		StackPane cancelContainer = new StackPane(cancel);
 		cancelContainer.setMinWidth(150);
 		cancel.setOnAction(e -> clearFields());
@@ -192,7 +192,7 @@ public class Login extends GridPane {
 	//	credentialsField.setAlignment(Pos.CENTER);
 		credentialsField.setSpacing(15);
 		
-		this.setStyle("-fx-background-color:  #111F26");
+		this.setStyle("-fx-background-color:  " + Main.configuration.theme);
 		GridPane.setColumnSpan(credentialsField, 2);
 		GridPane.setColumnSpan(errorInfor, 2);
 		GridPane.setHalignment(login, HPos.RIGHT);
