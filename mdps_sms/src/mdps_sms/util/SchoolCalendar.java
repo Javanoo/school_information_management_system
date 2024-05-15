@@ -85,7 +85,7 @@ public class SchoolCalendar implements Comparable<SchoolCalendar>, Serializable 
 		private String event = "class lessons.";
 		private String description = "Nothing unusual, just a normal Day.";
 		private String dateRepresentation = "";
-		SimpleDateFormat dateFormat = new SimpleDateFormat("EEE\ndd\nMMM");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("EEE - dd -MMM");
 
 		public DayEntry(){}
 

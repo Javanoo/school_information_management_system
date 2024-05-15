@@ -24,6 +24,7 @@ public class Student extends Person {
 	private long feesPaid = 0;
 	private long feesBalance = fees - feesPaid;
 	private HashMap<String, Long> feesPaidEntry = new HashMap<>(); //history of payments.
+	private HashMap<String, String> examResults = new HashMap<>(); //history of payments.
 
 
 	//no-arg constructor
@@ -196,7 +197,7 @@ public class Student extends Person {
 	 */
 	@Override
 	public String getEmail(){
-		return (parents[0].getEmail().isBlank()) ? "none" : parents[0].getEmail();
+		return (parents[0].getEmail().isBlank()) ? "" : parents[0].getEmail();
 	}
 
 	/**

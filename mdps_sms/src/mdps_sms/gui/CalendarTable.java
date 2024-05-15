@@ -115,10 +115,24 @@ public class CalendarTable extends BorderPane{
 		BorderPane.setAlignment(today, Pos.BOTTOM_CENTER);
 		titleBar.setStyle("-fx-background-color: " + Main.configuration.theme);
 		
+		day.setCellFactory(column -> {
+            return new AgeTableCell();
+        });
+		dayType.setCellFactory(column -> {
+            return new AgeTableCell();
+        });
+		events.setCellFactory(column -> {
+            return new AgeTableCell();
+        });
+		description.setCellFactory(column -> {
+            return new AgeTableCell();
+        });
+		
 		table.setItems(FXCollections.observableArrayList(dates));
 		table.getColumns().addAll(day, dayType, events, description);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 		table.setContextMenu(calMenu);
+		table.setFixedCellSize(45);
 		editCal.setOnAction(e -> actionBar.getEdit().fire());
 		
 		table.widthProperty().addListener(e -> titleBar.setMinWidth(table.getMinWidth()));
@@ -360,3 +374,24 @@ public class CalendarTable extends BorderPane{
 	}
 	void searchCalendar() {}
 }
+
+// Custom cell factory for styling age column
+class AgeTableCell extends javafx.scene.control.TableCell<SchoolCalendar.DayEntry, String> {
+    @Override
+    protected void updateItem(String item, boolean empty) {
+        super.updateItem(item, empty);
+        if (item == null || empty) {
+            setText("");
+            setStyle("-fx-background-color: wheat");
+        } else {
+            setText(String.valueOf(item));
+            if (item.contains("SUNDAY") || item.contains("SATURDAY") || item.isBlank()) {
+                setTextFill(Color.RED);
+                setStyle("-fx-font-weight: bold; -fx-background-color: wheat; -fx-border-color: wheat");
+            }else {
+                setTextFill(Color.BLACK);
+                setStyle("");
+            }
+        }
+    }
+ }

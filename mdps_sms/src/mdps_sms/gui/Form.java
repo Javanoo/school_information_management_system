@@ -242,20 +242,20 @@ public class Form extends BorderPane{
 				warn("Check phone number");
 				return false;
 			}
-			if(!secondPhone.getText().isBlank() && !secondPhone.getText().equalsIgnoreCase("none") && !verifyPhone(secondPhone.getText())) {
+			if(!secondPhone.getText().isBlank() && !secondPhone.getText().equalsIgnoreCase("") && !verifyPhone(secondPhone.getText())) {
 				warn("Check second phone number");
 				return false;
 			}
-			if(!firstEmail.getText().isBlank() && !firstEmail.getText().equalsIgnoreCase("none") && !verifyEmail(firstEmail.getText())) {
+			if(!firstEmail.getText().isBlank() && !firstEmail.getText().equalsIgnoreCase("") && !verifyEmail(firstEmail.getText())) {
 				warn("Check email");
 				return false;
 			}
-			if(!secondEmail.getText().isBlank() && !secondEmail.getText().equalsIgnoreCase("none") && !verifyEmail(secondEmail.getText())) {
+			if(!secondEmail.getText().isBlank() && !secondEmail.getText().equalsIgnoreCase("") && !verifyEmail(secondEmail.getText())) {
 				warn("Check second email");
 				return false;
 			}
-			String[] phone = {firstPhone.getText(), secondPhone.getText().isBlank() ? "none" : secondPhone.getText()};
-			String[] email = {firstEmail.getText().isBlank() ? "none" : firstEmail.getText(), secondEmail.getText().isBlank() ? "none" : secondEmail.getText()};
+			String[] phone = {firstPhone.getText(), secondPhone.getText().isBlank() ? "" : secondPhone.getText()};
+			String[] email = {firstEmail.getText().isBlank() ? "" : firstEmail.getText(), secondEmail.getText().isBlank() ? "" : secondEmail.getText()};
 			String description = this.description.getText().isBlank() ? "no description" : this.description.getText() ;  
 			
 			if(itemList.contains(type)) itemList.remove(type);

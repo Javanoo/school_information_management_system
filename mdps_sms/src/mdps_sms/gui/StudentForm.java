@@ -199,7 +199,7 @@ public class StudentForm extends Form {
 			TextField firstParentEmail, TextField firstParentEmail2, TextField secondParent, TextField secondParentPhone, TextField secondParentPhone2,
 			TextField secondParentEmail, TextField secondParentEmail2) {
 		Parent parent1 = null;
-		Parent parent2 = new Parent("none", new String[] {"none", "none"}, new String[] {"none", "none"});
+		Parent parent2 = new Parent("", new String[] {"", ""}, new String[] {"", ""});
 		String fParent = firstParent.getText();
 		String fParentP1 = firstParentPhone.getText();
 		String fParentP2 = firstParentPhone2.getText();
@@ -216,13 +216,13 @@ public class StudentForm extends Form {
 		if(!fParent.isBlank()) {
 			//or if the parents first phone number is not set fail.
 			if(!fParentP1.isBlank() && verifyPhone(fParentP1)) {
-				parent1 = new Parent(fParent, new String[]{fParentP1, ((!fParentP2.isBlank() && verifyPhone(fParentP2)) ? fParentP2 : "none" )},
-						new String[]{((!fParentE1.isBlank() && verifyEmail(fParentE1)) ? fParentE1 : "none") , ((!fParentE2.isBlank() && verifyEmail(fParentE2)) ? fParentE2 : "none") });
+				parent1 = new Parent(fParent, new String[]{fParentP1, ((!fParentP2.isBlank() && verifyPhone(fParentP2)) ? fParentP2 : "" )},
+						new String[]{((!fParentE1.isBlank() && verifyEmail(fParentE1)) ? fParentE1 : "") , ((!fParentE2.isBlank() && verifyEmail(fParentE2)) ? fParentE2 : "") });
 				//check for second Parent
 				if(!sParent.isBlank()) {
 					if(!sParentP1.isBlank() && verifyPhone(sParentP1)) {
-						parent2 = new Parent(sParent, new String[]{sParentP1, ((!sParentP2.isBlank() && verifyPhone(sParentP2)) ? sParentP2 : "none" )},
-								new String[]{((!sParentE1.isBlank() && verifyEmail(sParentE1)) ? sParentE1 : "none") , ((!sParentE2.isBlank() && verifyEmail(sParentE2)) ? sParentE2 : "none") });
+						parent2 = new Parent(sParent, new String[]{sParentP1, ((!sParentP2.isBlank() && verifyPhone(sParentP2)) ? sParentP2 : "" )},
+								new String[]{((!sParentE1.isBlank() && verifyEmail(sParentE1)) ? sParentE1 : "") , ((!sParentE2.isBlank() && verifyEmail(sParentE2)) ? sParentE2 : "") });
 
 					}
 				}
@@ -240,6 +240,7 @@ public class StudentForm extends Form {
 		save.setText("Save");
 		codeNumber.setText(person.getCodeNumber());
 		name.setText(person.getName());
+		name.setOnKeyTyped(e -> {});
 		gender.setValue(person.getGender());
 		parent.setText((person.getParents()[0]).getName());
 		firstPhone.setText((person.getParents()[0]).getPhoneArray()[0]);

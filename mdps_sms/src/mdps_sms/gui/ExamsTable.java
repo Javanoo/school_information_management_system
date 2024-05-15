@@ -53,7 +53,7 @@ public class ExamsTable extends BorderPane {
 	
 	TableView<SchoolCalendar.ExamEntry> table = new TableView<>();
 	TableColumn<SchoolCalendar.ExamEntry, String> day = new TableColumn<>("Day");
-	TableColumn<SchoolCalendar.ExamEntry, String> supervisor = new TableColumn<>("Supervisors");
+	TableColumn<SchoolCalendar.ExamEntry, String> supervisor = new TableColumn<>("Invigilators");
 	TableColumn<SchoolCalendar.ExamEntry, String> time = new TableColumn<>("8:00 - 10:00");
 	TableColumn<SchoolCalendar.ExamEntry, String> otherTime = new TableColumn<>("10:00 - 12 : 00");
 	
@@ -96,7 +96,7 @@ public class ExamsTable extends BorderPane {
 		dates = cal.getExamDates();
 		
 		if(dates.size() != 0)
-		calendarTitle.setText("EXAMS TIMETABLE - " + (dateFormat.format(dates.first().getDate())).toUpperCase() 
+		calendarTitle.setText("EXAMS - " + (dateFormat.format(dates.first().getDate())).toUpperCase() 
 				+ " TO " +  (dateFormat.format(dates.last().getDate())).toUpperCase());
 		calendarTitle.setTextFill(Color.WHITE);
 		calendarTitle.setFont(Font.font("Inter SemiBold", 14));
@@ -243,7 +243,7 @@ public class ExamsTable extends BorderPane {
 	
 void editCalendar(TreeSet<SchoolCalendar.ExamEntry> examDates) {
 		
-		Label forDay = new Label("Supervisor");
+		Label forDay = new Label("Invigilators");
 		Label fortype = new Label("First Subjects");
 		Label forDesc = new Label("Last Subjects");
 		
@@ -360,7 +360,7 @@ void editCalendar(TreeSet<SchoolCalendar.ExamEntry> examDates) {
 	protected BorderPane enterResults(Student stud) {
 		 BorderPane pane = new BorderPane();
 		 Label forName = new Label("Name");
-		 Label forResults = new Label("Results");
+		 Label forResults = new Label("Enter Results");
 		
 		 TextField name = new TextField();
 		 Button cancel = new Button("Cancel");
@@ -400,7 +400,8 @@ void editCalendar(TreeSet<SchoolCalendar.ExamEntry> examDates) {
 			elem.setClip(elemRec);
 		}
 			
-		name.setText(stud.getCodeNumber() + " " + stud.getName() + " : [" + stud.getClassroom().getName() + "]");
+		name.setText(stud.getCodeNumber() + " | " + stud.getName().toUpperCase() + " | " + stud.getClassroom().getName().toUpperCase());
+		name.setAlignment(Pos.CENTER);
 		name.setEditable(false);
 		name.setFocusTraversable(false);
 			
@@ -416,10 +417,12 @@ void editCalendar(TreeSet<SchoolCalendar.ExamEntry> examDates) {
 		});
 		
 		add.setOnAction(e -> {
+			
+			cancel.fire();
 		});
 			
 		mainHolder.getChildren().addAll(namePair, resultsPair);
-		mainHolder.setSpacing(20);
+		mainHolder.setSpacing(10);
 		mainHolder.setAlignment(Pos.TOP_CENTER);
 		
 		buttons.setSpacing(180);
@@ -455,7 +458,7 @@ void editCalendar(TreeSet<SchoolCalendar.ExamEntry> examDates) {
 			results.getChildren().add(entry);
 		}
 		
-		results.setSpacing(10);
+		results.setSpacing(5);
 		
 		pane.setCenter(mainHolder);
 		pane.setBottom(buttons);

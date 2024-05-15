@@ -37,19 +37,6 @@ public class App extends BorderPane {
 	public static ArrayList<Teacher> teacherData = new ArrayList<>();
 	public static ArrayList<Staff> staffData = new ArrayList<>();
 	public static ArrayList<Fleet> fleetData = new ArrayList<>();
-	//public static SchoolCalendar calendarData = new SchoolCalendar();
-	//public static ArrayList<SchoolClass> classroomsData = new ArrayList<>();
-
-	/*//private Settings settingsForm = new Settings();
-	//private ItemList<Student> studentItemList;
-	//private ItemList<Teacher> teacherItemList;
-	public static ItemList<Staff> staffItemList;
-	public static ItemList<Student> studentItemList;
-	public static ItemList<Teacher> teacherItemList;
-	public static ItemList<Fleet> fleetItemList;
-	public  static CalendarTable calendar = new CalendarTable(calendarData.getDates());
-	public static  FeesList feesList = new FeesList(studentData);
-	public static Classrooms classrooms = new Classrooms(classroomsData);*/
 
 	Administrator admin;
 

@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -40,15 +41,6 @@ import mdps_sms.util.Student;
 
 public class FeesList extends BorderPane {
 	
-	private LinkedHashSet<Student> class1 = new LinkedHashSet<>();
-	private LinkedHashSet<Student> class2 = new LinkedHashSet<>();
-	private LinkedHashSet<Student> class3 = new LinkedHashSet<>();
-	private LinkedHashSet<Student> class4 = new LinkedHashSet<>();
-	private LinkedHashSet<Student> class5 = new LinkedHashSet<>();
-	private LinkedHashSet<Student> class6 = new LinkedHashSet<>();
-	private LinkedHashSet<Student> class7 = new LinkedHashSet<>();
-	private LinkedHashSet<Student> class8 = new LinkedHashSet<>();
-	
 	private TableView<Student> studentsTable = new TableView<>();
 	private TableColumn<Student, String> studentCode = new TableColumn<>("Code Number");
 	private TableColumn<Student, String> studentName = new TableColumn<>("Name");
@@ -57,7 +49,7 @@ public class FeesList extends BorderPane {
 	
 	private Label forNoItems = new Label("No List");
 	
-	private ComboBox<String> classChoice = new ComboBox<>();
+	private ComboBox<SchoolClass> classChoice = new ComboBox<>();
 	
 	private Label forClass1 = new Label("Class 1");
 	private Label forClass2 = new Label("Class 2");
@@ -84,25 +76,19 @@ public class FeesList extends BorderPane {
 	
 	FeesList(ArrayList<Student> studentData){
 		
-		//sort the students into classes
-		if(studentData != null) {
-			for(Student elem : studentData) {
-				if(elem.getClassroom().getName().equalsIgnoreCase("Class 1")) class1.add(elem);
-				else if(elem.getClassroom().getName().equalsIgnoreCase("Class 2")) class2.add(elem);
-				else if(elem.getClassroom().getName().equalsIgnoreCase("Class 3")) class3.add(elem);
-				else if(elem.getClassroom().getName().equalsIgnoreCase("Class 4")) class4.add(elem);
-				else if(elem.getClassroom().getName().equalsIgnoreCase("Class 5")) class5.add(elem);
-				else if(elem.getClassroom().getName().equalsIgnoreCase("Class 6")) class6.add(elem);
-				else if(elem.getClassroom().getName().equalsIgnoreCase("Class 7")) class7.add(elem);
-				else class8.add(elem);
-			}
-		}
-		
 		printAll.setOnAction(e -> PdfPrinter.printFeesReport(Main.classrooms.toArray(new SchoolClass[] {})));
 		
-		classChoice.setItems(FXCollections.observableArrayList("Class 1", "Class 2", "Class 3", "Class 4", 
-				"Class 5", "Class 6", "Class 7", "Class 8"));
+		classChoice.setItems(FXCollections.observableArrayList(Main.classrooms));
 		classChoice.setPadding(new Insets(0, 5, 0, 5));
+		
+		
+		classChoice.getSelectionModel().selectFirst();
+		students.clear();
+		for(Student elem : Main.students) {
+			if(elem.getClassroom().getName().equals(classChoice.getSelectionModel().getSelectedItem().getName())) {
+				students.add(elem);
+			}
+		}
 		
 		for(Label elem : new Label[] {forTitle,forClass1, forClass2, forClass3,forClass4, forClass5, forClass6, forClass7, forClass8}) {
 			elem.setTextFill(Color.BLACK);
@@ -123,7 +109,7 @@ public class FeesList extends BorderPane {
 		studentsTable.setPlaceholder(holder);
 		studentsTable.setTableMenuButtonVisible(true);
 		studentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-		studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class1)));
+		studentsTable.setItems(FXCollections.observableList(students));
 		studentsTable.setContextMenu(subMenu);
 		
 		forTitle.setText((forTitle.getText() + dateFormat2.format(new Date())).toUpperCase());
@@ -131,17 +117,13 @@ public class FeesList extends BorderPane {
 		classChoice.setStyle("-fx-background-color: white");
 		classChoice.getSelectionModel().selectFirst();
 		classChoice.setOnAction(e -> {
-			switch(classChoice.getSelectionModel().getSelectedItem()) {
-				case "Class 1" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class1))); break;
-				case "Class 2" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class2))); break;
-				case "Class 3" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class3))); break;
-				case "Class 4" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class4))); break;
-				case "Class 5" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class5))); break;
-				case "Class 6" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class6))); break;
-				case "Class 7" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class7))); break;
-				case "Class 8" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class8))); break;
-				default : ;
+			students.clear();
+			for(Student elem : Main.students) {
+				if(elem.getClassroom().getName().equals(classChoice.getSelectionModel().getSelectedItem().getName())) {
+					students.add(elem);
+				}
 			}
+			studentsTable.setItems(FXCollections.observableList(students));
 		});
 		classChoice.setMinHeight(30);
 		classChoice.setMinWidth(100);
@@ -263,17 +245,7 @@ public class FeesList extends BorderPane {
 					students.remove(person);
 					students.add(person);
 					Main.saveData(students, Main.STORAGEFILE_S);
-					switch(classChoice.getSelectionModel().getSelectedItem()) {
-						case "Class 1" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class1))); break;
-						case "Class 2" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class2))); break;
-						case "Class 3" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class3))); break;
-						case "Class 4" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class4))); break;
-						case "Class 5" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class5))); break;
-						case "Class 6" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class6))); break;
-						case "Class 7" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class7))); break;
-						case "Class 8" : studentsTable.setItems(FXCollections.observableList(new LinkedList<>(class8))); break;
-						default : ;
-					}
+					classChoice.fireEvent(new ActionEvent());
 					studentsTable.refresh();
 				}catch(Exception error) {
 					add.setStyle("-fx-background-color: red; -fx-text-fill: white");
@@ -340,6 +312,9 @@ public class FeesList extends BorderPane {
 				}
 				add.setOnAction(e -> {
 					person.setFeesPaidEntry(createEntry(historyContainer));
+					Main.saveData(students, Main.STORAGEFILE_S);
+					classChoice.fireEvent(new ActionEvent());
+					studentsTable.refresh();
 					cancel.fire();
 				});
 			}

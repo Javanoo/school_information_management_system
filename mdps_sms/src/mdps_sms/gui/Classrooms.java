@@ -16,6 +16,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -198,6 +200,7 @@ public class Classrooms extends BorderPane {
 		BorderPane listTab = new BorderPane();
 		Label title = new Label();
 		ListView<E> listView = new ListView<>();
+		ChoiceBox<E> attendace = new ChoiceBox<>();
 		Button remove = new Button("Remove");
 		Button cancel = new Button("Cancel");
 		HBox buttons = new HBox(cancel, remove);
@@ -463,7 +466,7 @@ public class Classrooms extends BorderPane {
 		}
 		
 		SchoolClass create(VBox subjects) {
-			if(name.getText().matches("Class \\d*")) {
+			if(!name.getText().isBlank()) {
 				try {
 					if(!fees.getText().isBlank() && Long.valueOf(fees.getText()) != null) {
 						ArrayList<String> subjectsList = new ArrayList<>();

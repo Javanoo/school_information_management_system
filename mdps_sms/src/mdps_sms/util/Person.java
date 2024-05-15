@@ -14,8 +14,8 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 	private String accountAdmin = "unknown";
 	private String salary = "unknown";
 	private String location = "unknown";
-	private String[] phone = {"none", "none"};
-	private String[] email = {"none", "none"};
+	private String[] phone = {"", ""};
+	private String[] email = {"", ""};
 	private Date dateRegistered = new Date();
 	private String description = "no description";
 
@@ -54,7 +54,10 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 	 * @return the name
 	 */
 	public String getName() {
+		if(name.length() > 0)
 		return (name.charAt(0) + "").toUpperCase() + name.substring(1);
+		
+		return name;
 	}
 
 	/**
@@ -162,7 +165,7 @@ public abstract class Person implements Cloneable, Comparable<Person>, Serializa
 	 * @return the email array
 	 */
 	public String getEmail() {
-		return email == null ? "none" : email[0];
+		return email == null ? "" : email[0];
 	}
 
 	public String[] getEmailArray() {
