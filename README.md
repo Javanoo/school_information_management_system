@@ -1,6 +1,7 @@
 # School Infomation Management System
 
 ## Summary
+![lockscreen](https://github.com/Javanoo/school_information_management_system/blob/main/sims0.png)
 On the contrary, this is not a full fledge school management system.<br>
 But rather a module of what would be, saying this because as of now the only features or operations-<br>
 one could carry out are limited. Needless to say it would such a good practice for those who want to play with <br>
@@ -13,6 +14,12 @@ java and its core features.
 3. Backup
 4. Schedule events (unstable)
 5. email stakeholders (unstable)
+   
+## ScreenShots
+
+![lockscreen](https://github.com/Javanoo/school_information_management_system/blob/main/sims1.png)
+
+![lockscreen](https://github.com/Javanoo/school_information_management_system/blob/main/sims2.png)
 
 ## Installation
 
