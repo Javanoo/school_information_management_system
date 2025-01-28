@@ -25,7 +25,7 @@ java and its core features.
 
 - Requires openjdk 17 or latter
 - import the project into eclipse (make sure you have e(fx) eclipse plugin installed)
-- provide the openjdk path in the environment variable settings of the run configuration file.
+- provide the openjdk path in the environment variable of your current run configuration.
 - run
 
 ## Developements
